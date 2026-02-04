@@ -1,0 +1,8 @@
+.env
+output/
+logs/
+.claude/
+__pycache__/
+*.pyc
+validated_candidates.json
+nul

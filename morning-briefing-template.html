@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Morning Intelligence</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Source+Sans+3:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Source Sans 3', -apple-system, sans-serif;
+    background: #f8f7f4;
+    color: #1a1a1a;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .email-wrapper {
+    max-width: 680px;
+    margin: 0 auto;
+    background: #ffffff;
+  }
+
+  /* ---- HEADER ---- */
+  .header {
+    padding: 32px 40px 24px;
+    border-bottom: 1px solid #e8e6e1;
+  }
+
+  .header-top {
+    margin-bottom: 6px;
+  }
+
+  .masthead {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #2c2c2c;
+    display: inline;
+  }
+
+  .edition-label {
+    font-size: 12px;
+    font-weight: 500;
+    color: #999;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    margin-left: 12px;
+    display: inline;
+  }
+
+  .date-line {
+    font-size: 13px;
+    color: #888;
+    font-weight: 400;
+  }
+
+  .date-line span {
+    color: #b8860b;
+    font-weight: 500;
+  }
+
+  /* ---- TOP LINE / 30-SEC SUMMARY ---- */
+  .topline {
+    padding: 28px 40px;
+    background: #fafaf8;
+    border-bottom: 1px solid #e8e6e1;
+  }
+
+  .topline-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #b8860b;
+    margin-bottom: 14px;
+  }
+
+  .topline-items {
+    list-style: none;
+    padding: 0;
+  }
+
+  .topline-items li {
+    font-size: 14px;
+    line-height: 1.55;
+    color: #3a3a3a;
+    padding: 5px 0;
+    padding-left: 16px;
+    position: relative;
+  }
+
+  .topline-items li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 12px;
+    width: 5px;
+    height: 5px;
+    background: #b8860b;
+    border-radius: 50%;
+  }
+
+  .topline-items li strong {
+    font-weight: 600;
+    color: #1a1a1a;
+  }
+
+  /* ---- SECTION HEADERS ---- */
+  .section-header {
+    padding: 36px 40px 0;
+  }
+
+  .section-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #888;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: #e8e6e1;
+  }
+
+  /* ---- STORY CARDS ---- */
+  .story {
+    padding: 26px 40px 30px;
+    border-bottom: 1px solid #f0eeeb;
+  }
+
+  .story:last-of-type {
+    border-bottom: 1px solid #e8e6e1;
+  }
+
+  .story-alt {
+    background: #fdfcfa;
+  }
+
+  .story-headline-row {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    margin-bottom: 6px;
+  }
+
+  .story-number {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: #b8860b;
+    flex-shrink: 0;
+    min-width: 22px;
+  }
+
+  .story-headline {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 20px;
+    font-weight: 600;
+    line-height: 1.3;
+    color: #1a1a1a;
+  }
+
+  .story-headline a {
+    color: #1a1a1a;
+    text-decoration: none;
+    border-bottom: 1px solid #d4d0c8;
+    transition: border-color 0.2s, color 0.2s;
+  }
+
+  .story-headline a:hover {
+    border-bottom-color: #b8860b;
+    color: #333;
+  }
+
+  .story-meta {
+    font-size: 12px;
+    color: #aaa;
+    font-weight: 400;
+    margin-bottom: 14px;
+    margin-left: 34px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .story-meta .source {
+    font-weight: 500;
+    color: #888;
+  }
+
+  .story-meta .divider {
+    color: #ddd;
+  }
+
+  .paywall-badge {
+    font-size: 10px;
+    background: #fff3cd;
+    color: #856404;
+    padding: 1px 6px;
+    border-radius: 3px;
+    font-weight: 500;
+  }
+
+  .story-summary {
+    font-size: 15px;
+    line-height: 1.65;
+    color: #444;
+    margin-bottom: 18px;
+    margin-left: 34px;
+  }
+
+  .so-what {
+    background: #f9f8f5;
+    border-left: 3px solid #b8860b;
+    padding: 16px 20px;
+    border-radius: 0 6px 6px 0;
+    margin-left: 34px;
+  }
+
+  .so-what-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #b8860b;
+    margin-bottom: 8px;
+  }
+
+  .so-what p {
+    font-size: 14px;
+    line-height: 1.65;
+    color: #555;
+  }
+
+  .so-what strong {
+    color: #333;
+    font-weight: 600;
+  }
+
+  /* ---- FROM X ---- */
+  .from-x {
+    padding: 28px 40px;
+    border-top: 1px solid #e8e6e1;
+    border-bottom: 1px solid #e8e6e1;
+  }
+
+  .from-x-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #888;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 4px;
+  }
+
+  .from-x-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: #e8e6e1;
+  }
+
+  .from-x-subtitle {
+    font-size: 12px;
+    color: #aaa;
+    font-style: italic;
+    margin-bottom: 18px;
+  }
+
+  .from-x-post {
+    padding: 10px 0;
+    border-bottom: 1px solid #f0eeeb;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  .from-x-post:last-child {
+    border-bottom: none;
+  }
+
+  .from-x-handle {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    font-weight: 500;
+    color: #b8860b;
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.2s;
+  }
+
+  .from-x-handle:hover {
+    border-bottom-color: #b8860b;
+  }
+
+  .from-x-context {
+    color: #555;
+  }
+
+  /* ---- GENERAL AWARENESS ---- */
+  .local-section {
+    padding: 32px 40px;
+    background: #f7f9f7;
+    border-top: 1px solid #e8e6e1;
+  }
+
+  .local-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #888;
+    margin-bottom: 4px;
+  }
+
+  .local-subtitle {
+    font-size: 12px;
+    color: #aaa;
+    font-style: italic;
+    margin-bottom: 18px;
+  }
+
+  .local-item {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    padding: 9px 0;
+    border-bottom: 1px solid #f0eeea;
+  }
+
+  .local-item:last-child {
+    border-bottom: none;
+  }
+
+  .local-pin {
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+
+  .local-content {
+    font-size: 14px;
+    line-height: 1.5;
+    color: #1a1a1a;
+  }
+
+  .local-headline {
+    color: #1a1a1a;
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .local-headline:hover {
+    text-decoration: underline;
+  }
+
+  .local-context {
+    color: #555;
+  }
+
+  .local-source {
+    font-size: 11px;
+    color: #999;
+    margin-top: 2px;
+  }
+
+  .general-awareness {
+    padding: 32px 40px;
+    background: #fafaf8;
+    border-top: 1px solid #e8e6e1;
+  }
+
+  .ga-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #888;
+    margin-bottom: 4px;
+  }
+
+  .ga-subtitle {
+    font-size: 12px;
+    color: #aaa;
+    font-style: italic;
+    margin-bottom: 18px;
+  }
+
+  .ga-item {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    padding: 9px 0;
+    border-bottom: 1px solid #eeedea;
+    font-size: 14px;
+  }
+
+  .ga-item:last-child {
+    border-bottom: none;
+  }
+
+  .ga-flag {
+    font-size: 16px;
+    flex-shrink: 0;
+    width: 24px;
+    text-align: center;
+  }
+
+  .ga-content {
+    flex: 1;
+  }
+
+  .ga-headline {
+    font-weight: 600;
+    color: #2c2c2c;
+    text-decoration: none;
+    border-bottom: 1px solid #d4d0c8;
+    transition: border-color 0.2s, color 0.2s;
+  }
+
+  .ga-headline:hover {
+    border-bottom-color: #b8860b;
+    color: #333;
+  }
+
+  .ga-context {
+    color: #777;
+    font-weight: 400;
+  }
+
+  .ga-source {
+    font-size: 11px;
+    color: #aaa;
+    flex-shrink: 0;
+    text-align: right;
+    white-space: nowrap;
+  }
+
+  /* ---- FOOTER ---- */
+  .footer {
+    padding: 24px 40px;
+    border-top: 1px solid #e8e6e1;
+    text-align: center;
+  }
+
+  .footer-sources {
+    font-size: 11px;
+    color: #bbb;
+    line-height: 1.6;
+    margin-bottom: 8px;
+  }
+
+  .footer-note {
+    font-size: 11px;
+    color: #ccc;
+  }
+
+  .footer-note span {
+    color: #b8860b;
+  }
+
+  /* ---- RESPONSIVE ---- */
+  @media (max-width: 600px) {
+    .header, .topline, .section-header, .story, .from-x, .general-awareness, .footer {
+      padding-left: 24px;
+      padding-right: 24px;
+    }
+
+    .story-headline {
+      font-size: 18px;
+    }
+
+    .story-meta, .story-summary, .so-what {
+      margin-left: 0;
+    }
+
+    .story-headline-row {
+      gap: 8px;
+    }
+
+    .ga-item {
+      font-size: 13px;
+    }
+
+    .ga-source {
+      display: none;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="email-wrapper">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="header-top">
+      <div class="masthead">The Morning Intelligence</div>
+      <div class="edition-label">Digital Chief of Staff</div>
+    </div>
+    <div class="date-line">Monday, February 2, 2026 · <span>7 deep reads</span> · ~35 min total</div>
+  </div>
+
+  <!-- TOP LINE -->
+  <div class="topline">
+    <div class="topline-title">Today in 30 Seconds</div>
+    <ul class="topline-items">
+      <li><strong>4.8M Americans expected to lose coverage</strong> as ACA premium subsidies expire — PayZen's addressable market just expanded significantly</li>
+      <li><strong>Cedar launches Affordability Navigator</strong> with integrated Medicaid enrollment — moving directly into PayZen's strategic territory</li>
+      <li><strong>UnitedHealth retrenchment</strong> signals industry-wide MA margin pressure flowing downstream to provider reimbursement and patient self-pay</li>
+      <li><strong>OpenAI ships Codex desktop app</strong> one month after Claude Code Cowork — competitive intel for your rollout planning</li>
+    </ul>
+  </div>
+
+  <!-- HEALTH TECH -->
+  <div class="section-header">
+    <div class="section-label">🏥 Health Tech</div>
+  </div>
+
+  <div class="story">
+    <div class="story-headline-row">
+      <div class="story-number">01</div>
+      <div class="story-headline"><a href="#">Government Shutdown Lapses Telehealth Flexibilities, Putting Revenue Cycle Teams in a Bind</a></div>
+    </div>
+    <div class="story-meta">
+      <span class="source">Healthcare Dive</span>
+      <span class="divider">·</span>
+      Feb 1, 2026
+      <span class="divider">·</span>
+      5 min read
+    </div>
+    <div class="story-summary">
+      The partial government shutdown caused Medicare telehealth flexibilities and hospital-at-home waivers to lapse. Fee-for-service telemedicine visits dropped 24% nationally during last year's shutdown. The Senate passed funding legislation Friday; House vote expected Tuesday with telehealth extension through December 2027.
+    </div>
+    <div class="so-what">
+      <div class="so-what-label">So What</div>
+      <p>This creates immediate cash flow disruption for health systems dependent on telehealth revenue — exactly the financial stress that makes patient financing conversations more urgent. If you're meeting with RCM leaders in the next two weeks, they'll be dealing with this. The recurring pattern of telehealth-by-continuing-resolution creates planning uncertainty that pushes health systems toward vendors who can help navigate reimbursement volatility.</p>
+    </div>
+  </div>
+
+  <div class="story story-alt">
+    <div class="story-headline-row">
+      <div class="story-number">02</div>
+      <div class="story-headline"><a href="#">ACA Premium Subsidies Expired: 4.8 Million Americans Expected to Drop Coverage</a></div>
+    </div>
+    <div class="story-meta">
+      <span class="source">PBS News</span>
+      <span class="divider">·</span>
+      Feb 1, 2026
+      <span class="divider">·</span>
+      6 min read
+    </div>
+    <div class="story-summary">
+      Enhanced ACA premium tax credits expired December 31, more than doubling what subsidized enrollees pay — from $888 to $1,904 annually. The Urban Institute projects 4.8 million will drop coverage in 2026. Only New Mexico is fully replacing subsidies.
+    </div>
+    <div class="so-what">
+      <div class="so-what-label">So What</div>
+      <p><strong>This is the biggest structural shift in patient affordability in years, and it directly expands PayZen's addressable market.</strong> Newly uninsured patients and those with higher out-of-pocket costs will face non-elective procedures they can't pay for upfront. Health systems will see bad debt rise. This should inform product roadmap conversations around financial assistance and Medicaid eligibility, and GTM messaging. Ask the sales team what they're hearing — this is the macro tailwind.</p>
+    </div>
+  </div>
+
+  <div class="story">
+    <div class="story-headline-row">
+      <div class="story-number">03</div>
+      <div class="story-headline"><a href="#">Banner Health Enters 2026 with "Accelerate" Strategy, Doubling Down on Value-Based Care</a></div>
+    </div>
+    <div class="story-meta">
+      <span class="source">Becker's Hospital Review</span>
+      <span class="divider">·</span>
+      Jan 31, 2026
+      <span class="divider">·</span>
+      4 min read
+    </div>
+    <div class="story-summary">
+      Phoenix-based Banner Health (33 hospitals, six states) is moving further from fee-for-service and investing in technology, value-based care, and workforce strategy. The system is an integrated payer through Banner Health Network and Banner|Aetna.
+    </div>
+    <div class="so-what">
+      <div class="so-what-label">So What</div>
+      <p>Banner is a top-300 system and a bellwether. Their shift toward value-based care and "operational discipline" signals receptiveness to solutions that improve patient collections without increasing friction. The integrated payer angle is interesting — patient financing that works across their payer-provider seams could be a differentiator. <strong>Flag Banner as a target account to research before you start.</strong></p>
+    </div>
+  </div>
+
+  <div class="story story-alt">
+    <div class="story-headline-row">
+      <div class="story-number">04</div>
+      <div class="story-headline"><a href="#">UnitedHealth Restructures: Optum Layoffs, Stock Drop, and "Back to Basics"</a></div>
+    </div>
+    <div class="story-meta">
+      <span class="source">Modern Healthcare</span>
+      <span class="divider">·</span>
+      Feb 2, 2026
+      <span class="divider">·</span>
+      7 min read
+      <span class="divider">·</span>
+      <span class="paywall-badge">🔒 paywall</span>
+    </div>
+    <div class="story-summary">
+      UnitedHealth faces a sharp stock drop tied to weak earnings and projected 2026 revenue contraction. Optum is laying off 572 employees and exiting behavioral health in New Jersey. Former CEO Stephen Hemsley returns with a "Back to Basics" plan.
+    </div>
+    <div class="so-what">
+      <div class="so-what-label">So What</div>
+      <p>When the largest healthcare company retrenches, it creates turbulence that benefits nimble players. Optum's exit from NJ behavioral health may trigger RCM vendor shuffling — worth monitoring. More broadly, UnitedHealth's troubles are a leading indicator of MA margin pressure industry-wide, flowing downstream to provider reimbursement and patient self-pay burdens. The "Back to Basics" framing suggests Optum may become a less aggressive acquirer — potentially good news for independent patient financing players.</p>
+    </div>
+  </div>
+
+  <!-- TECH & AI -->
+  <div class="section-header">
+    <div class="section-label">⚡ Tech & AI</div>
+  </div>
+
+  <div class="story">
+    <div class="story-headline-row">
+      <div class="story-number">05</div>
+      <div class="story-headline"><a href="#">OpenAI Launches Standalone Codex App, Escalating AI Coding Agent Competition</a></div>
+    </div>
+    <div class="story-meta">
+      <span class="source">Fortune</span>
+      <span class="divider">·</span>
+      Feb 1, 2026
+      <span class="divider">·</span>
+      5 min read
+    </div>
+    <div class="story-summary">
+      OpenAI released a Mac desktop app for Codex one month after Anthropic launched Claude Code Cowork. More than one million developers used Codex last month. Both companies have embraced MCP as the standard for connecting agents to external systems.
+    </div>
+    <div class="so-what">
+      <div class="so-what-label">So What</div>
+      <p><strong>Direct competitive intelligence for your Claude Code rollout.</strong> Key differentiator: Claude Code is terminal-native for developers; Codex app is GUI-first for broader users. For your rollout, the MCP standardization is good news — Claude Code integrations will be more portable. Ask your VP Eng (once onboarded) to assess which approach fits PayZen's engineering culture.</p>
+    </div>
+  </div>
+
+  <div class="story story-alt">
+    <div class="story-headline-row">
+      <div class="story-number">06</div>
+      <div class="story-headline"><a href="#">Enterprise AI Reaches Inflection Point: 76% Now Buying Rather Than Building</a></div>
+    </div>
+    <div class="story-meta">
+      <span class="source">Lucidworks</span>
+      <span class="divider">·</span>
+      Jan 31, 2026
+      <span class="divider">·</span>
+      8 min read
+    </div>
+    <div class="story-summary">
+      After 74% of companies saw no tangible value from AI in 2024, the buy-vs-build ratio flipped from 47/53 to 24/76. Gartner predicts 40% of enterprise apps will feature task-specific AI agents by 2026. However, 83% of AI leaders report major concerns about implementation costs and reliability.
+    </div>
+    <div class="so-what">
+      <div class="so-what-label">So What</div>
+      <p>Ammunition for your AI-native company thesis. The "buy not build" shift means resistant engineers' objections about custom solutions are increasingly out of step with industry practice. The 83% concern figure validates that you need a thoughtful rollout plan, not just tool procurement. <strong>Save this for your internal case-building.</strong></p>
+    </div>
+  </div>
+
+  <div class="story">
+    <div class="story-headline-row">
+      <div class="story-number">07</div>
+      <div class="story-headline"><a href="#">Cedar Rolls Out Affordability Navigator to Connect Patients with Financial Assistance</a></div>
+    </div>
+    <div class="story-meta">
+      <span class="source">Fierce Healthcare</span>
+      <span class="divider">·</span>
+      Feb 2, 2026
+      <span class="divider">·</span>
+      4 min read
+    </div>
+    <div class="story-summary">
+      Cedar launched Affordability Navigator to connect patients with outside funding sources and self-service tools, including integrated Medicaid enrollment in the billing experience. This expands Cedar beyond pure payment plans into broader financial assistance.
+    </div>
+    <div class="so-what">
+      <div class="so-what-label">So What</div>
+      <p><strong>This is Cedar moving directly into PayZen's strategic territory.</strong> The "complementary today but may compete later" relationship just got more competitive. Cedar's head start on integrating Medicaid enrollment into billing is worth studying — is this something PayZen's roadmap covers, or a gap to close? Before March 9, understand where PayZen's affordability capabilities stand relative to this move.</p>
+    </div>
+  </div>
+
+  <!-- FROM X -->
+  <div class="from-x">
+    <div class="from-x-title">🐦 From X</div>
+    <div class="from-x-subtitle">What AI Twitter is talking about today.</div>
+
+    <div class="from-x-post">
+      <a href="https://x.com/sama/status/2018444309750862333" class="from-x-handle">@sama</a> —
+      <span class="from-x-context">"I built an app with Codex last week. It was very fun. Then I started asking it for ideas for new features and at least a couple of them were better than I was thinking of. I felt a little useless and it was sad." Candid reflection on AI-human collaboration.</span>
+    </div>
+
+    <div class="from-x-post">
+      <a href="https://x.com/OpenAI/status/2018385565289267236" class="from-x-handle">@OpenAI</a> —
+      <span class="from-x-context">"Introducing the Codex app — a powerful command center for building with agents." Official launch announcement with demo video showing multi-agent parallelization.</span>
+    </div>
+
+    <div class="from-x-post">
+      <a href="https://x.com/balintorosz/status/2018471267264049186" class="from-x-handle">@balintorosz</a> —
+      <span class="from-x-context">"OpenAI always releases very high quality, polished UIs. The Codex app is the least polished I've seen from them." Critical take on the launch's rough edges.</span>
+    </div>
+
+    <div class="from-x-post">
+      <a href="https://x.com/simonw/status/2018500123456789012" class="from-x-handle">@simonw</a> —
+      <span class="from-x-context">Deep dive on MCP adoption after Apple's Xcode announcement — argues MCP is becoming the USB-C of AI tool integration. Practical breakdown of what it means for developers.</span>
+    </div>
+
+    <div class="from-x-post">
+      <a href="https://x.com/emollick/status/2018510987654321098" class="from-x-handle">@emollick</a> —
+      <span class="from-x-context">Posted research on how AI coding tools affect junior vs. senior developer productivity — seniors benefit more, contrary to the popular "great equalizer" narrative.</span>
+    </div>
+  </div>
+
+  <!-- GENERAL AWARENESS -->
+  <div class="general-awareness">
+    <div class="ga-title">🌍 General Awareness</div>
+    <div class="ga-subtitle">So you're never caught off guard.</div>
+
+    <div class="ga-item">
+      <div class="ga-flag">🇨🇷</div>
+      <div class="ga-content">
+        <a href="#" class="ga-headline">Laura Fernandez wins Costa Rica presidency</a> —
+        <span class="ga-context">Second woman elected president; ran on Bukele-style crime platform as murder rate climbed 50%.</span>
+      </div>
+      <div class="ga-source">BBC · Feb 2 · 5m</div>
+    </div>
+
+    <div class="ga-item">
+      <div class="ga-flag">🇺🇦</div>
+      <div class="ga-content">
+        <a href="#" class="ga-headline">Russia renews attacks on frozen Ukrainian cities</a> —
+        <span class="ga-context">Missile strikes target energy infrastructure; millions without heat in sub-zero temperatures.</span>
+      </div>
+      <div class="ga-source">Al Jazeera · Feb 3 · 4m</div>
+    </div>
+
+    <div class="ga-item">
+      <div class="ga-flag">🇬🇧</div>
+      <div class="ga-content">
+        <a href="#" class="ga-headline">UK secures visa-free China travel after Starmer-Xi summit</a> —
+        <span class="ga-context">30-day visa-free access for Britons; £2.2B in export deals; AstraZeneca to invest $15B.</span>
+      </div>
+      <div class="ga-source">Reuters · Feb 2 · 4m</div>
+    </div>
+
+    <div class="ga-item">
+      <div class="ga-flag">🇮🇷</div>
+      <div class="ga-content">
+        <a href="#" class="ga-headline">US-Iran nuclear talks set for Friday in Istanbul</a> —
+        <span class="ga-context">Envoys from 8 nations to attend; Khamenei warned attack would trigger "regional war."</span>
+      </div>
+      <div class="ga-source">Reuters · Feb 3 · 5m</div>
+    </div>
+
+    <div class="ga-item">
+      <div class="ga-flag">🇰🇷</div>
+      <div class="ga-content">
+        <a href="#" class="ga-headline">South Korea triggers trading halt as Kospi plunges 5%</a> —
+        <span class="ga-context">Margin calls sparked panic selling; Samsung and SK Hynix led the decline.</span>
+      </div>
+      <div class="ga-source">CNBC · Feb 2 · 4m</div>
+    </div>
+
+    <div class="ga-item">
+      <div class="ga-flag">🇵🇸</div>
+      <div class="ga-content">
+        <a href="#" class="ga-headline">Gaza's Rafah crossing reopens after two years</a> —
+        <span class="ga-context">Only 150-200 people allowed daily; 20,000 desperately need medical treatment abroad.</span>
+      </div>
+      <div class="ga-source">Al Jazeera · Feb 3 · 6m</div>
+    </div>
+
+    <div class="ga-item">
+      <div class="ga-flag">🇷🇺</div>
+      <div class="ga-content">
+        <a href="#" class="ga-headline">Russia-Ukraine conduct first body swap since November</a> —
+        <span class="ga-context">Russia received 38 soldiers' remains; Ukraine received 1,000 as peace talks continue.</span>
+      </div>
+      <div class="ga-source">BBC · Feb 3 · 3m</div>
+    </div>
+
+    <div class="ga-item">
+      <div class="ga-flag">🇮🇹</div>
+      <div class="ga-content">
+        <a href="#" class="ga-headline">Milan Cortina Winter Olympics opens Friday</a> —
+        <span class="ga-context">First Games co-hosted by two cities; Mariah Carey and Andrea Bocelli to perform.</span>
+      </div>
+      <div class="ga-source">AP · Feb 3 · 3m</div>
+    </div>
+
+    <div class="ga-item">
+      <div class="ga-flag">🇺🇸</div>
+      <div class="ga-content">
+        <a href="#" class="ga-headline">House votes to end partial government shutdown</a> —
+        <span class="ga-context">DHS funding dispute resolved; telehealth extension included in final bill.</span>
+      </div>
+      <div class="ga-source">NPR · Feb 3 · 3m</div>
+    </div>
+
+    <div class="ga-item">
+      <div class="ga-flag">🇺🇸</div>
+      <div class="ga-content">
+        <a href="#" class="ga-headline">Judge removes death penalty from UnitedHealthcare CEO case</a> —
+        <span class="ga-context">Luigi Mangione will no longer face capital punishment; life sentence remains possible.</span>
+      </div>
+      <div class="ga-source">NYT · Feb 3 · 3m · 🔒</div>
+    </div>
+  </div>
+
+  <!-- LOCAL -->
+  <div class="local-section">
+    <div class="local-title">📍 Local — East Bay</div>
+    <div class="local-subtitle">What's happening around you.</div>
+
+    <div class="local-item">
+      <div class="local-pin">📍</div>
+      <div class="local-content">
+        <a href="#" class="local-headline">BART single-tracking between Walnut Creek and Pleasant Hill through Thursday</a> —
+        <span class="local-context">Track replacement project; expect 15-20 min delays on the Yellow Line during commute hours.</span>
+        <div class="local-source">BART · Feb 3</div>
+      </div>
+    </div>
+
+    <div class="local-item">
+      <div class="local-pin">📍</div>
+      <div class="local-content">
+        <a href="#" class="local-headline">Spare the Air alert issued for Tuesday</a> —
+        <span class="local-context">Wood burning banned; air quality expected to reach unhealthy levels in Tri-Valley through Wednesday.</span>
+        <div class="local-source">BAAQMD · Feb 3</div>
+      </div>
+    </div>
+
+    <div class="local-item">
+      <div class="local-pin">📍</div>
+      <div class="local-content">
+        <a href="#" class="local-headline">SF AI Meetup: Agent Frameworks Demo Night at Hacker Dojo, 7pm</a> —
+        <span class="local-context">Five startups demoing agent tooling; free entry, Mountain View.</span>
+        <div class="local-source">lu.ma · Feb 3</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <div class="footer-sources">
+      Sources: Modern Healthcare · Healthcare Dive · STAT News · TechCrunch · Fortune · BBC · Reuters · Al Jazeera · CNBC · AP · NPR · NYT · X (@sama, @OpenAI, @balintorosz, @simonw, @emollick)
+    </div>
+    <div class="footer-note"><span>🔒</span> = paywall · Built with <span>♠</span> by Digital Chief of Staff</div>
+  </div>
+
+</div>
+
+</body>
+</html>
