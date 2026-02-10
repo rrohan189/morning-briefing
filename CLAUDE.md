@@ -48,25 +48,73 @@ When running unattended via Task Scheduler (`--dangerously-skip-permissions`):
 Gmail credentials are in `.env` — never commit this file.
 Dependencies: `pip install python-dotenv premailer`
 
+## Phase 1 Tools (phase1_validator.py)
+
+The validator script provides code-based quality gates. Use these during Phase 1 instead of manual judgment:
+
+### Tier Classification (prevents NBC Olympics-type bugs)
+```bash
+# Check a source's tier before including in GA
+python phase1_validator.py tier "NBC Olympics"
+python phase1_validator.py tier "Al Jazeera"
+python phase1_validator.py tier "Source Name" --url "https://domain.com/article"
+```
+- Tier 1/2 → ga_eligible: true (OK for GA)
+- Tier 3 → ga_eligible: false, FLAGGED (find Tier 1/2 coverage instead)
+- Local → ga_eligible: false, BLOCKED (Local section only)
+- Unknown → ga_eligible: false (classify manually before including)
+
+### GA Source Tally Gate
+```bash
+# Run automated tally check on a JSON list of GA items
+python phase1_validator.py tally ga_items.json
+```
+Checks: no source > 3, no Tier 3 in GA, flags all violations.
+
+### Batched From X Searches (4 queries instead of 14)
+```bash
+# Generate the 4 batched search queries for the current month
+python phase1_validator.py fromx "February 2026"
+```
+Use the output queries directly in WebSearch. This reduces From X handle sweep from ~14 individual searches to 4 batched queries + 1 reference query = **5 total searches**.
+
+### Status ID Validation
+```bash
+# Validate a candidate post's status ID against reference
+python phase1_validator.py statusid "https://x.com/handle/status/123" "https://x.com/OpenAI/status/456"
+```
+
+### From X Workflow (mandatory)
+1. Run `python phase1_validator.py fromx "[current month year]"` to get batched queries
+2. Run the reference query first to find a known-today brand post
+3. Run each batch query (4 searches) via WebSearch
+4. For each candidate found, run `statusid` to validate delta
+5. Apply 48h age gate on top of status ID check
+6. Report which handles returned no results (don't silently skip)
+
 ## Critical Rules
 - All dates must come from Phase 1 code extraction — never fabricated
 - Every story must have a real, fetchable URL — no hallucinated articles
 - So Whats are written in **second person** ("you", "your team") — never "Rohan should"
 - Not every story needs a PayZen angle — big tech/AI news and viral X posts earn inclusion on their own
 - Quality over quantity — 4 strong stories beat 7 padded ones
+- **GA tier gate is code-enforced** — run `phase1_validator.py tier` for every GA source. If ga_eligible=false, find Tier 1/2 alternative before including. Tier 3 exceptions require explicit justification in Phase 1 JSON.
 
 ## Pre-Flight Checklist (MUST complete before writing ANY HTML)
 
 Do not begin Phase 2 until every box is checked. If a box cannot be checked, fix it first.
 
 **Phase 1 gates:**
-- [ ] **Age Verification Table produced** — every candidate has numeric `age_hours` (integer, no tildes or "about"). All with `age_hours > 48` are marked REJECT. Verdicts computed mechanically from the number, not by judgment. If date extraction failed, verdict = REJECT (no "unverified" middle state).
+- [ ] **Age Verification Table produced** — every candidate (including Local items) has numeric `age_hours` (integer, no tildes or "about"). All with `age_hours > 48` are marked REJECT. Verdicts computed mechanically from the number, not by judgment. If date extraction failed, verdict = REJECT (no "unverified" middle state).
+- [ ] **Local items included in Age Verification Table** — Local section is not exempt from freshness rules. Every Local item must have numeric age_hours computed and verified ≤ 48.
 - [ ] **No REJECT items remain in candidate list** — all items proceeding to Phase 2 have `age_hours ≤ 48`.
-- [ ] **GA Source Tally produced** — no single outlet exceeds 3 items. Tier check included — no Tier 3 (Balkan Insight, Just Security, etc.) or local papers for national stories. US count ≤ 4.
-- [ ] **From X Status ID table produced** — every post has a delta computed against a known-today reference. Delta > 500K = REJECT. Every post has a real `x.com/handle/status/[id]` URL. Brand accounts excluded from candidates (use only for reference).
-- [ ] **From X handle sweep complete** — all 10+ handles searched, report which returned no recent results.
+- [ ] **GA Source Tally produced (code-enforced)** — run `python phase1_validator.py tally` on GA items JSON. Gate must return `passed: true`. If any Tier 3 or Local sources flagged, find Tier 1/2 alternatives. Exceptions require explicit justification. No single outlet exceeds 3 items. US count ≤ 4.
+- [ ] **From X Status ID table produced** — use batched queries from `python phase1_validator.py fromx`. Every post has a delta computed via `statusid` subcommand. Delta > 500K = REJECT. Every post has a real `x.com/handle/status/[id]` URL. Brand accounts excluded from candidates (use only for reference).
+- [ ] **From X handle sweep complete (batched)** — run all 4 batch queries + 1 reference query (5 total WebSearch calls). Report which handles returned no recent results.
 - [ ] **URL Verification Log produced** — every URL in every section was fetched. All 404s and fabricated URLs removed.
 - [ ] **Healthcare Candidate Log produced** — all 5 sources appear. If <3 pass, confirmed it's a quiet day (not silent drops).
+- [ ] **Ticket Watch sweep complete** — searched priority artists (Manchester United, Taylor Swift, Coldplay, Piano Guys) + checked Ticketmaster/major venues for Bay Area onsales. Include 🎟️ item if tickets going on sale within 48 hours.
+- [ ] **Phase 1 tables saved to disk** — write `output/phase1-YYYY-MM-DD.json` with all verification tables before proceeding to Phase 2.
 
 **Phase 2 gates:**
 - [ ] **Phase 1 output treated as immutable** — no new items added during Phase 2. No additional searching.
@@ -77,3 +125,5 @@ Do not begin Phase 2 until every box is checked. If a box cannot be checked, fix
 - [ ] **GA pre-publish counts** — US ≤ 4, international ≥ 6, ≥ 4 regions, no source > 3, no Tier 3 or local papers.
 - [ ] **Paywalls marked** — STAT News, Modern Healthcare, The Information, WSJ, NYT, FT all get 🔒.
 - [ ] **From X not skipped** — if 1-4 posts passed validation, they're included. Only omit if 0 posts passed after full sweep.
+- [ ] **Factual integrity** — no statistics, quotes, or specific claims in summaries that don't appear in the source article. When in doubt, use vaguer language.
+- [ ] **Weekend acknowledgment** — if Saturday/Sunday and Tier 1 count < 5, add editorial note in header: "Lighter edition today — weekend news cycle."

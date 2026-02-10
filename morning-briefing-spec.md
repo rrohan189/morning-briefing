@@ -210,11 +210,30 @@ Before presenting candidates, confirm you have searched all of the following. If
 - [ ] Bay Area Air Quality (baaqmd.gov)
 - [ ] lu.ma / Eventbrite for Bay Area tech events
 
+**Ticket Watch (check for priority artists + major Bay Area events):**
+- [ ] Search "Manchester United tour 2026 tickets" / "Manchester United USA"
+- [ ] Search "Taylor Swift tour 2026 tickets Bay Area"
+- [ ] Search "Coldplay tour 2026 tickets Bay Area"
+- [ ] Search "Piano Guys tour 2026 tickets Bay Area"
+- [ ] Check Ticketmaster Bay Area new onsales (ticketmaster.com)
+- [ ] Check Chase Center, Levi's Stadium, Shoreline Amphitheatre upcoming events
+
 ### Phase 1 Completeness Rule
 
 The mandatory source sweep above IS the wide net. If after completing every checkbox you still have fewer than 5 Tier 1 candidates, 5 From X posts, or 10 GA items — that's okay as long as every checkbox was searched. A thin briefing from a thorough sweep means it was a quiet news day. A thin briefing because you only searched 3 sources means the sweep was incomplete. **Never pad with stale or low-quality stories to hit a number. But always complete the full sweep before concluding the pool is thin.**
 
 The output of Phase 1 is a clean list of date-verified, recent articles with their real URLs, real dates, and real sources. The LLM never decides the date — the code hands it a fact.
+
+### Phase 1 Persistence (mandatory)
+
+All Phase 1 verification tables must be saved to `output/phase1-YYYY-MM-DD.json` containing:
+- Age Verification Table (all candidates with numeric age_hours and verdict)
+- GA Source Tally (with tier and count)
+- From X Status ID Comparison (with URLs and deltas)
+- URL Verification Log (all fetched URLs with status)
+- Healthcare Candidate Log (all 5 sources with verdicts)
+
+This file must be written before Phase 2 begins. It makes every briefing auditable after the fact — if a stale or fabricated item appears in the final briefing, the Phase 1 file will show whether it was validated or added later.
 
 ### Phase 2: Generate the Briefing (LLM generation)
 
@@ -256,6 +275,20 @@ If any count is out of range, fix before publishing.
 **Critical rule:** The model must use the `verified_date` from Phase 1 in every meta line. It must NEVER generate, modify, or override a date. Every story in the briefing must have a verified date — there are no "unverified" stories.
 
 **Source consistency rule:** Phase 2 must use the exact source and URL validated in Phase 1. If Phase 1 validated a story from Healthcare Dive, the briefing must cite Healthcare Dive — not swap to a different outlet's coverage of the same story. The two-phase architecture only works if Phase 2 output is traceable to Phase 1 validation.
+
+**Factual integrity rule:** Phase 2 summaries and context lines must not introduce statistics, quotes, or specific claims not present in the source article. If a number appears in a briefing summary (e.g., "nearly one million visitors"), it must appear in the fetched article. The LLM may paraphrase and contextualize, but it must not fabricate specifics. When in doubt, use vaguer language ("tens of thousands" instead of a made-up precise number).
+
+### Weekend Briefings (Saturday/Sunday)
+
+Healthcare trade press (Healthcare Dive, STAT, Modern Healthcare, Becker's, Fierce Healthcare), business publications, and policy sources publish minimally on weekends. This is expected — not a failure.
+
+**Weekend adjustments:**
+- If the healthcare sweep returns fewer than 2 passing stories, that's fine for a weekend
+- Lean more heavily on From X (AI Twitter doesn't sleep), GA (international news runs 24/7), and Local (events, weather, community news)
+- Consider promoting strong GA stories to Tier 1 if they warrant deeper analysis (e.g., Super Bowl as both cultural and local story)
+- When Tier 1 count is below 5, add a brief editorial note in the briefing header: "Lighter edition today — weekend news cycle." This sets expectations rather than silently delivering a thin product.
+
+The 48-hour freshness rule, URL verification, and source tier requirements still apply on weekends — don't relax quality gates just because volume is lower.
 
 ---
 
@@ -425,8 +458,8 @@ The best of AI/tech Twitter from the last 24 hours. This section surfaces high-s
 - **Source diversity:** Draw from at least 4 distinct sources. **No more than 3 items from the same outlet.** If Al Jazeera or BBC is producing most of the international coverage, swap 1-2 items for the same story from Reuters, AP, or Guardian.
 - **Source quality tiers for GA:**
   - **Tier 1 (prefer):** BBC, Reuters, AP, Al Jazeera, NPR, NYT, WSJ, The Guardian
-  - **Tier 2 (acceptable):** Bloomberg, CNBC, Financial Times, Politico, Washington Post
-  - **Tier 3 (avoid for GA):** Balkan Insight, Just Security, WORLD, Defense One, and similar niche publications, partisan outlets, or aggregators. Only use Tier 3 if they are the sole source for a significant story no major outlet has covered — then actively search for Tier 1/2 coverage before including.
+  - **Tier 2 (acceptable):** Bloomberg, CNBC, Financial Times, Politico, Washington Post, CNN, PBS, ABC News, CBS News, NBC News
+  - **Tier 3 (avoid for GA):** Balkan Insight, Just Security, WORLD, Defense One, Yahoo Sports, UNHCR, Olympics.com, Ukr. Pravda, and similar niche publications, aggregators, or single-topic sources. Only use Tier 3 if they are the sole source for a significant story no major outlet has covered — then actively search for Tier 1/2 coverage before including.
   - **Local papers (NEVER for GA):** East Bay Times, Mercury News, Patch, Danville SanRamon, and similar local papers are for the Local section only. If a national story (e.g., WaPo layoffs, PayPal earnings) is found via a local paper, find the same story from a Tier 1/Tier 2 source instead.
 - **Every GA item must have a verified URL.** "Search results" or "multiple sources confirm" is not a URL. If Phase 1 can't produce a real article URL for a GA item, the item is not validated and cannot be included.
 - **Paywalls flagged with 🔒** — same as Tier 1, mark paywalled sources in the meta line
@@ -461,6 +494,36 @@ The best of AI/tech Twitter from the last 24 hours. This section surfaces high-s
 - **Sources:** East Bay Times, Mercury News, SF Chronicle, Danville SanRamon, Patch (Danville/San Ramon), KQED, Bay Area News Group, local government sites (danville.ca.gov, contracosta.ca.gov), lu.ma, Eventbrite
 - **Same 48-hour rule applies** — no stale local news
 - **Phase 1 must verify URLs** — same as all other sections
+
+### Ticket Watch (end of Local section)
+
+A single line at the end of Local when tickets go on sale for priority artists/events or major tours announce Bay Area dates.
+
+**Priority watchlist (always include if tickets announced):**
+- Manchester United (any US tour/friendly)
+- Taylor Swift
+- Coldplay
+- Piano Guys
+
+**Also include:** Major artists/events of broad renown announcing Bay Area shows or ticket sales — arena tours, stadium concerts, sports events (Warriors, 49ers playoffs, etc.). Use judgment: a huge act announcing Levi's Stadium or Chase Center dates is worth a line; a niche artist at a small venue is not.
+
+**Format:**
+```
+🎟️ **Ticket Watch:** [Artist/Event] [Tour Name] — [Venue], [Date]. [On-sale info: date/time, presale codes if known]. [Link to tickets]
+```
+
+**Example:**
+```
+🎟️ **Ticket Watch:** Coldplay Music of the Spheres Tour — Levi's Stadium, Aug 15-16. General sale Friday 10am PT via Ticketmaster.
+```
+
+**Sources to check:** Ticketmaster new onsales, Live Nation announcements, venue sites (Chase Center, Levi's Stadium, Shoreline, Greek Theatre), artist official sites/social, Pollstar.
+
+**Rules:**
+- Only include when tickets are going on sale or just went on sale (within 48 hours of announcement)
+- Skip if the event is sold out or presale-only with no public sale announced
+- One line per event — keep it brief
+- Link directly to ticket page when possible
 
 ### Footer
 ```
