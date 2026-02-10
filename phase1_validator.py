@@ -39,9 +39,11 @@ USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTM
 # Tier 1: Prefer for GA
 TIER1_SOURCES = {
     "bbc", "bbc world", "bbc news", "bbc sport",
-    "reuters", "reuters business",
+    "reuters", "reuters business", "reuters world",
     "ap", "ap news", "associated press",
     "al jazeera",
+    "dw", "dw news", "deutsche welle",
+    "france24", "france 24",
     "npr", "npr news",
     "nyt", "new york times", "the new york times",
     "wsj", "wall street journal", "the wall street journal",
@@ -388,6 +390,12 @@ RSS_FEEDS = {
     "BBC World": "https://feeds.bbci.co.uk/news/world/rss.xml",
     "NPR News": "https://feeds.npr.org/1001/rss.xml",
     "AP News": "https://rsshub.app/apnews/topics/apf-topnews",
+
+    # International (GA diversity — ensures non-US coverage)
+    "Al Jazeera": "https://www.aljazeera.com/xml/rss/all.xml",
+    "Reuters World": "https://www.reuters.com/rssFeed/worldNews",
+    "France24": "https://www.france24.com/en/rss",
+    "DW News": "https://rss.dw.com/xml/rss-en-all",
 }
 
 # Search queries for web search (used with news aggregators)

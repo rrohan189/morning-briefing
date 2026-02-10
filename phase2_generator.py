@@ -92,9 +92,41 @@ COUNTRY_FLAGS = {
     "iraq": "🇮🇶", "iraqi": "🇮🇶", "baghdad": "🇮🇶",
     "egypt": "🇪🇬", "egyptian": "🇪🇬", "cairo": "🇪🇬",
     "south africa": "🇿🇦",
-    "nigeria": "🇳🇬", "nigerian": "🇳🇬",
+    "nigeria": "🇳🇬", "nigerian": "🇳🇬", "lagos": "🇳🇬",
     "kenya": "🇰🇪", "kenyan": "🇰🇪", "nairobi": "🇰🇪",
     "ethiopia": "🇪🇹", "ethiopian": "🇪🇹",
+    "zimbabwe": "🇿🇼", "harare": "🇿🇼",
+    "somalia": "🇸🇴", "somali": "🇸🇴", "mogadishu": "🇸🇴",
+    "lebanon": "🇱🇧", "lebanese": "🇱🇧", "beirut": "🇱🇧",
+    "bangladesh": "🇧🇩", "bangladeshi": "🇧🇩", "dhaka": "🇧🇩",
+    "myanmar": "🇲🇲", "burmese": "🇲🇲",
+    "vietnam": "🇻🇳", "vietnamese": "🇻🇳", "hanoi": "🇻🇳",
+    "indonesia": "🇮🇩", "indonesian": "🇮🇩", "jakarta": "🇮🇩",
+    "philippines": "🇵🇭", "philippine": "🇵🇭", "manila": "🇵🇭",
+    "thailand": "🇹🇭", "thai": "🇹🇭", "bangkok": "🇹🇭",
+    "singapore": "🇸🇬",
+    "malaysia": "🇲🇾", "malaysian": "🇲🇾", "kuala lumpur": "🇲🇾",
+    "colombia": "🇨🇴", "colombian": "🇨🇴", "bogota": "🇨🇴",
+    "argentina": "🇦🇷", "argentine": "🇦🇷", "buenos aires": "🇦🇷",
+    "chile": "🇨🇱", "chilean": "🇨🇱", "santiago": "🇨🇱",
+    "peru": "🇵🇪", "peruvian": "🇵🇪", "lima": "🇵🇪",
+    "morocco": "🇲🇦", "moroccan": "🇲🇦",
+    "tunisia": "🇹🇳", "tunisian": "🇹🇳",
+    "algeria": "🇩🇿", "algerian": "🇩🇿",
+    "ghana": "🇬🇭", "ghanaian": "🇬🇭",
+    "tanzania": "🇹🇿", "tanzanian": "🇹🇿",
+    "congo": "🇨🇩",
+    "sudan": "🇸🇩", "sudanese": "🇸🇩", "khartoum": "🇸🇩",
+    "libya": "🇱🇾", "libyan": "🇱🇾", "tripoli": "🇱🇾",
+    "jordan": "🇯🇴", "jordanian": "🇯🇴", "amman": "🇯🇴",
+    "qatar": "🇶🇦", "qatari": "🇶🇦", "doha": "🇶🇦",
+    "kuwait": "🇰🇼", "kuwaiti": "🇰🇼",
+    "oman": "🇴🇲", "omani": "🇴🇲",
+    "bahrain": "🇧🇭", "bahraini": "🇧🇭",
+    # Regional / supranational
+    "europe": "🇪🇺", "european": "🇪🇺", "brussels": "🇪🇺",
+    "macron": "🇫🇷", "zelensky": "🇺🇦", "modi": "🇮🇳",
+    "uae": "🇦🇪", "dubai": "🇦🇪", "abu dhabi": "🇦🇪", "emirates": "🇦🇪",
     "poland": "🇵🇱", "polish": "🇵🇱", "warsaw": "🇵🇱",
     "netherlands": "🇳🇱", "dutch": "🇳🇱", "amsterdam": "🇳🇱",
     "belgium": "🇧🇪", "belgian": "🇧🇪", "brussels": "🇧🇪",
@@ -125,7 +157,7 @@ COUNTRY_FLAGS = {
     "scotland": "🏴󠁧󠁢󠁳󠁣󠁴󠁿",
     "wales": "🏴󠁧󠁢󠁷󠁬󠁳󠁿",
     "hong kong": "🇭🇰",
-    "olympics": "🏅", "olympic": "🏅",
+    "olympics": "🌍", "olympic": "🌍",
     "un": "🇺🇳", "united nations": "🇺🇳",
     "eu": "🇪🇺", "european union": "🇪🇺", "europe": "🇪🇺",
     "nato": "🇪🇺",
@@ -136,10 +168,27 @@ COUNTRY_FLAGS = {
 }
 
 
+# Press release / vendor marketing signals — if 2+ match, penalize heavily
+_PRESS_RELEASE_SIGNALS = [
+    "completes deployment", "announces partnership", "launches new",
+    "expands operations", "signs agreement", "selected by",
+    "chosen to provide", "awards contract", "deploys",
+    "enterprise-wide", "go-live", "rolls out", "now available",
+    "partners with", "teams up with", "integrates with",
+    "unveils new", "introduces new", "expands into",
+    "achieves milestone", "reaches milestone", "surpasses",
+    "named leader", "recognized as", "positioned as",
+    "completes acquisition", "acquires", "enters partnership",
+    "signs deal", "inks deal", "secures contract",
+    "completes rollout", "completes migration",
+]
+
+
 def score_article(article: dict) -> int:
     """
     Score an article by PayZen relevance.
     Higher score = more relevant to PayZen/Rohan's priorities.
+    Penalizes press releases / vendor marketing content.
     """
     text = f"{article.get('headline', '')} {article.get('source', '')}".lower()
     score = 0
@@ -156,16 +205,35 @@ def score_article(article: dict) -> int:
         if keyword in text:
             score += 1
 
+    # Press release penalty: if 2+ signals match, this is vendor marketing
+    pr_hits = sum(1 for sig in _PRESS_RELEASE_SIGNALS if sig in text)
+    if pr_hits >= 2:
+        score -= 25
+    elif pr_hits == 1:
+        score -= 5
+
     return score
 
 
 def detect_country_flag(text: str) -> str:
-    """Detect the most relevant country flag for a headline."""
+    """Detect the most relevant country flag for a headline.
+
+    Uses word-boundary matching for short keywords (<=3 chars) to avoid
+    false matches like 'un' in 'Runway' or 'eu' in 'neural'.
+    """
+    import re
     text_lower = text.lower()
 
+    # Short keywords need word-boundary matching to avoid substring false positives
+    SHORT_KEYWORD_LEN = 3
+
     for keyword, flag in COUNTRY_FLAGS.items():
-        if keyword in text_lower:
-            return flag
+        if len(keyword) <= SHORT_KEYWORD_LEN:
+            if re.search(r'\b' + re.escape(keyword) + r'\b', text_lower):
+                return flag
+        else:
+            if keyword in text_lower:
+                return flag
 
     # Default to US if no match (most common for business news)
     return "🇺🇸"

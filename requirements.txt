@@ -3,3 +3,9 @@ beautifulsoup4>=4.12.0
 feedparser>=6.0.0
 python-dateutil>=2.8.0
 anthropic>=0.18.0
+premailer>=3.10.0
+python-dotenv>=1.0.0
+
+# Pipeline dependencies (run_pipeline.py + data_collector.py)
+trafilatura>=1.6.0          # Better article text extraction (optional, BS4 fallback)
+duckduckgo_search>=6.0.0    # Free web search for From X + edge cases (optional)

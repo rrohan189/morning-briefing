@@ -490,7 +490,7 @@ The best of AI/tech Twitter from the last 24 hours. This section surfaces high-s
   - Bay Area tech events: meetups, conferences, demo days happening today or this week (check lu.ma, Eventbrite, Meetup)
   - Weather: only if notable (heat wave, air quality advisory, storm, PG&E shutoffs)
   - Bay Area business: local company announcements, office openings/closures, layoffs that affect the area
-- **What to exclude:** National news that happens to mention the Bay Area, routine crime blotter, real estate listings
+- **What to exclude:** National news that happens to mention the Bay Area, routine crime blotter, real estate listings, opinion/editorial pieces, business promotions ("now open", "grand opening"), sports scores/rankings, advice columns, horoscopes, obituaries. The pipeline uses an **allowlist filter** (`_LOCAL_INCLUDE_PATTERNS` in `run_pipeline.py`) — only articles matching valid categories (transit, weather/air quality, local government, safety, community events, local healthcare, local economy impact) pass through. All others are dropped.
 - **Sources:** East Bay Times, Mercury News, SF Chronicle, Danville SanRamon, Patch (Danville/San Ramon), KQED, Bay Area News Group, local government sites (danville.ca.gov, contracosta.ca.gov), lu.ma, Eventbrite
 - **Same 48-hour rule applies** — no stale local news
 - **Phase 1 must verify URLs** — same as all other sections

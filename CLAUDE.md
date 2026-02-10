@@ -99,6 +99,8 @@ python phase1_validator.py statusid "https://x.com/handle/status/123" "https://x
 - Not every story needs a PayZen angle — big tech/AI news and viral X posts earn inclusion on their own
 - Quality over quantity — 4 strong stories beat 7 padded ones
 - **GA tier gate is code-enforced** — run `phase1_validator.py tier` for every GA source. If ga_eligible=false, find Tier 1/2 alternative before including. Tier 3 exceptions require explicit justification in Phase 1 JSON.
+- **Local section allowlist (code-enforced)** — Local items must match at least one valid category in `_LOCAL_INCLUDE_PATTERNS` (run_pipeline.py): transit/infrastructure, weather/air quality, local government, safety, community events, local healthcare, local economy impact (layoffs/closures/strikes). Real estate listings, opinion pieces, business promotions, sports scores, and advice columns are never valid Local content.
+- **Press release filter (code-enforced)** — Articles where the subject company is also the announcer (e.g., "Company X deploys Product Y") are vendor marketing, not news. `_PRESS_RELEASE_SIGNALS` (phase2_generator.py) penalizes scoring when 2+ signals match (e.g., "completes deployment", "enterprise-wide", "launches new", "partners with"). These articles will not reach Tier 1.
 
 ## Pre-Flight Checklist (MUST complete before writing ANY HTML)
 
