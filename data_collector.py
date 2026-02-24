@@ -4,16 +4,16 @@ Data Collection for Morning Intelligence Pipeline.
 Collects candidate articles from all sources with $0 LLM cost:
   - RSS feeds (14 configured in phase1_validator.py)
   - Google News RSS (free keyword search for gaps)
-  - DuckDuckGo (From X handle sweep + edge cases)
+  - Anthropic web_search for X/Twitter posts (Popular on X section)
   - Concurrent article fetching + date validation
 
 Reuses validation logic from phase1_validator.py (dates, tiers, age gate).
 
-Search API cost: $0 (Google News RSS + DuckDuckGo are both free, no API key).
-Upgrade path: swap DuckDuckGoBackend for SerpAPIBackend ($50/month) if needed.
+Search API cost: ~$0.08 (Anthropic web_search for X posts) + $0 for RSS/DDG/Google News.
 """
 
 import base64
+import os
 import re
 import sys
 import time
@@ -39,10 +39,6 @@ from phase1_validator import (
     estimate_read_time,
     format_date,
     format_date_iso,
-    build_from_x_batch_queries,
-    build_from_x_reference_query,
-    validate_status_id_delta,
-    extract_status_id_from_url,
     compute_age_hours,
     deduplicate_candidates,
 )
@@ -54,12 +50,80 @@ try:
 except ImportError:
     HAS_TRAFILATURA = False
 
-# Optional: duckduckgo_search for web search (From X + edge cases)
+# Optional: duckduckgo_search for web search (healthcare fallback)
 try:
     from duckduckgo_search import DDGS
     HAS_DDGS = True
 except ImportError:
     HAS_DDGS = False
+
+# Optional: anthropic SDK for web_search (Noteworthy X Posts)
+try:
+    import anthropic as _anthropic_sdk
+    HAS_ANTHROPIC = True
+except ImportError:
+    HAS_ANTHROPIC = False
+
+# Twitter Snowflake epoch (Nov 4, 2010 01:42:54.657 UTC)
+_TWITTER_EPOCH_MS = 1288834974657
+_X_POST_MAX_AGE_HOURS = 72   # 3 days — stale posts aren't useful
+_X_POST_MIN_TITLE_LEN = 50   # Skip short replies/retweets
+_X_POST_MAX_CANDIDATES = 4   # Cap section size
+_X_POST_MAX_PER_HANDLE = 2   # Diversity: no single handle dominates
+
+
+def _snowflake_to_datetime(status_id: int) -> datetime:
+    """Convert a Twitter/X Snowflake ID to a UTC datetime."""
+    timestamp_ms = (status_id >> 22) + _TWITTER_EPOCH_MS
+    return datetime.fromtimestamp(timestamp_ms / 1000, tz=timezone.utc)
+
+
+def _parse_search_date(date_str: str) -> Optional[datetime]:
+    """Parse a date string from DDG news or RSS feed into a datetime.
+
+    Handles common formats:
+      - ISO 8601: "2026-02-23T12:00:00+00:00"
+      - RFC 2822 (RSS): "Mon, 23 Feb 2026 12:00:00 GMT"
+      - DDG relative: "2 hours ago", "1 day ago"
+      - Date only: "2026-02-23"
+    """
+    if not date_str:
+        return None
+    date_str = date_str.strip()
+    try:
+        # ISO 8601
+        dt = datetime.fromisoformat(date_str.replace("Z", "+00:00"))
+        if dt.tzinfo is None:
+            dt = dt.replace(tzinfo=timezone.utc)
+        return dt
+    except (ValueError, TypeError):
+        pass
+    # RFC 2822 (RSS feeds)
+    try:
+        from email.utils import parsedate_to_datetime
+        return parsedate_to_datetime(date_str)
+    except (ValueError, TypeError):
+        pass
+    # DDG relative dates: "X hours ago", "X days ago"
+    relative_match = re.match(r"(\d+)\s+(hour|day|minute)s?\s+ago", date_str, re.IGNORECASE)
+    if relative_match:
+        amount = int(relative_match.group(1))
+        unit = relative_match.group(2).lower()
+        from datetime import timedelta
+        now = datetime.now(timezone.utc)
+        if unit == "minute":
+            return now - timedelta(minutes=amount)
+        elif unit == "hour":
+            return now - timedelta(hours=amount)
+        elif unit == "day":
+            return now - timedelta(days=amount)
+    # Date only
+    try:
+        dt = datetime.strptime(date_str[:10], "%Y-%m-%d")
+        return dt.replace(tzinfo=timezone.utc)
+    except (ValueError, TypeError):
+        pass
+    return None
 
 
 # =============================================================================
@@ -439,6 +503,16 @@ MANDATORY_HEALTHCARE_SOURCES = [
     "Fierce Healthcare",
 ]
 
+# Site-specific DDG queries for healthcare RSS fallback
+# Used when RSS returns 0 items for a mandatory source
+_HEALTHCARE_FALLBACK_QUERIES = {
+    "Healthcare Dive": "site:healthcaredive.com",
+    "Modern Healthcare": "site:modernhealthcare.com",
+    "Fierce Healthcare": "site:fiercehealthcare.com",
+    "Becker's Hospital Review": "site:beckershospitalreview.com",
+    "STAT News": "site:statnews.com",
+}
+
 
 def build_healthcare_log(all_articles: list[dict]) -> list[dict]:
     """Build Healthcare Candidate Log showing all 5 mandatory sources."""
@@ -498,7 +572,6 @@ class DataCollector:
         self.stats = {
             "rss_candidates": 0,
             "search_candidates": 0,
-            "from_x_searches": 0,
             "local_candidates": 0,
             "total_validated": 0,
             "valid": 0,
@@ -519,27 +592,31 @@ class DataCollector:
         _log("=" * 60)
 
         # 1. RSS feeds
-        _log("\n[1/5] RSS feeds...")
+        _log("\n[1/6] RSS feeds...")
         rss = self._collect_rss()
 
-        # 2. News search (healthcare gaps, tech, GA)
-        _log("\n[2/5] News search (Google News RSS)...")
+        # 1b. Healthcare RSS fallback (DDG news for sources where RSS returned 0)
+        _log("\n[2/6] Healthcare RSS fallback...")
+        healthcare_fallback = self._collect_healthcare_fallback()
+
+        # 3. News search (healthcare gaps, tech, GA)
+        _log("\n[3/6] News search (Google News RSS)...")
         search = self._collect_news_search()
 
-        # 3. From X handle sweep
-        _log("\n[3/5] From X handle sweep...")
-        from_x = self._collect_from_x()
+        # 4. Noteworthy X Posts (Anthropic web_search)
+        _log("\n[4/6] Noteworthy X Posts (web_search)...")
+        noteworthy_x = self._collect_noteworthy_x()
 
-        # 4. Local news
-        _log("\n[4/5] Local news...")
+        # 5. Local news
+        _log("\n[5/6] Local news...")
         local = self._collect_local()
 
-        # 5. Ticket watch
-        _log("\n[5/5] Ticket watch...")
+        # 6. Ticket watch
+        _log("\n[6/6] Ticket watch...")
         ticket_watch = self._collect_ticket_watch()
 
         # Merge and deduplicate article candidates
-        all_raw = rss + search + local
+        all_raw = rss + healthcare_fallback + search + local
         all_raw = deduplicate_candidates(all_raw)
         _log(f"\n  Total unique article candidates: {len(all_raw)}")
 
@@ -554,7 +631,7 @@ class DataCollector:
         _log(f"  Stale:      {self.stats['stale']}")
         _log(f"  Unverified: {self.stats['unverified']}")
         _log(f"  Errors:     {self.stats['error']}")
-        _log(f"  From X:     {len(from_x['candidates'])} candidates")
+        _log(f"  X posts:    {len(noteworthy_x['candidates'])} noteworthy")
 
         return {
             "delivery_time": self.delivery_time.isoformat(),
@@ -562,15 +639,47 @@ class DataCollector:
             "stale_articles": validated["stale"],
             "unverified_articles": validated["unverified"],
             "error_articles": validated["error"],
-            "from_x": from_x,
+            "noteworthy_x": noteworthy_x,
             "ticket_watch": ticket_watch,
             "stats": self.stats,
         }
 
     # ---- RSS FEEDS ----
 
+    def _resolve_techmeme_url(self, techmeme_url: str) -> Optional[str]:
+        """Resolve a Techmeme aggregator URL to the actual source article URL.
+
+        Techmeme RSS links point to techmeme.com/YYMMDD/pN#aNNNN which are
+        aggregator pages. The actual source article is the first external link
+        with headline text on that page.
+        """
+        try:
+            resp = self.session.get(techmeme_url, timeout=10)
+            if resp.status_code != 200:
+                return None
+            soup = BeautifulSoup(resp.text, "html.parser")
+            # Find the anchor from the fragment (e.g., a260220p12)
+            fragment = techmeme_url.split("#")[-1] if "#" in techmeme_url else ""
+            container = soup
+            if fragment:
+                anchor = soup.find("div", id=fragment) or soup.find("a", attrs={"name": fragment})
+                if anchor:
+                    container = anchor.parent or anchor
+            # Find the first external link with substantial text (the headline link)
+            for a_tag in container.find_all("a", href=True):
+                href = a_tag["href"]
+                text = a_tag.get_text(strip=True)
+                if (href.startswith("http")
+                    and "techmeme.com" not in href
+                    and len(text) > 30):
+                    return href
+        except Exception as e:
+            _log(f"    Techmeme resolve error: {e}")
+        return None
+
     def _collect_rss(self) -> list[dict]:
         candidates = []
+        self._rss_source_counts = {}  # Track per-source counts for fallback logic
         for source_name, feed_url in RSS_FEEDS.items():
             try:
                 feed = feedparser.parse(feed_url)
@@ -578,18 +687,93 @@ class DataCollector:
                 for entry in feed.entries[:10]:
                     url = entry.get("link", "")
                     headline = entry.get("title", "")
-                    if url and headline:
-                        candidates.append({
+                    # Strip HTML tags from titles (Fierce Healthcare RSS
+                    # wraps titles in <a href="..."> tags)
+                    if headline and "<" in headline:
+                        headline = BeautifulSoup(headline, "html.parser").get_text(strip=True)
+                    if not url or not headline:
+                        continue
+                    # Resolve Techmeme aggregator URLs to actual source articles
+                    rss_date = entry.get("published", "")
+                    if "techmeme.com" in url:
+                        real_url = self._resolve_techmeme_url(url)
+                        if real_url:
+                            actual_source = infer_source_from_url(real_url)
+                            candidate = {
+                                "url": real_url,
+                                "headline": headline,
+                                "source": actual_source,
+                                "collection_method": "rss_techmeme",
+                                "techmeme_url": url,
+                            }
+                        else:
+                            candidate = {
+                                "url": url,
+                                "headline": headline,
+                                "source": source_name,
+                                "collection_method": "rss",
+                            }
+                    else:
+                        candidate = {
                             "url": url,
                             "headline": headline,
                             "source": source_name,
                             "collection_method": "rss",
-                        })
-                        count += 1
+                        }
+                    if rss_date:
+                        candidate["search_date"] = rss_date
+                    candidates.append(candidate)
+                    count += 1
+                self._rss_source_counts[source_name] = count
                 _log(f"  {source_name}: {count} items")
                 self.stats["rss_candidates"] += count
             except Exception as e:
+                self._rss_source_counts[source_name] = 0
                 _log(f"  {source_name}: ERROR — {e}")
+        return candidates
+
+    # ---- HEALTHCARE RSS FALLBACK ----
+
+    def _collect_healthcare_fallback(self) -> list[dict]:
+        """DDG news fallback for mandatory healthcare sources that returned 0 from RSS.
+
+        When RSS fails (dead feed, empty response, intermittent outage), we search
+        DDG news with site:-scoped queries to recover articles from those sources.
+        """
+        if not self.ddg or not HAS_DDGS:
+            return []
+
+        candidates = []
+        for source_name in MANDATORY_HEALTHCARE_SOURCES:
+            rss_count = self._rss_source_counts.get(source_name, 0)
+            if rss_count > 0:
+                continue  # RSS worked for this source, skip fallback
+
+            site_query = _HEALTHCARE_FALLBACK_QUERIES.get(source_name)
+            if not site_query:
+                continue
+
+            _log(f"  {source_name}: RSS returned 0 — trying DDG news fallback")
+            try:
+                results = self.ddg.news_search(site_query, max_results=5)
+                time.sleep(0.8)
+                count = 0
+                for r in results:
+                    if r.url and r.title:
+                        candidate = {
+                            "url": r.url,
+                            "headline": r.title,
+                            "source": source_name,
+                            "collection_method": "ddg_fallback",
+                        }
+                        if r.date:
+                            candidate["search_date"] = r.date
+                        candidates.append(candidate)
+                        count += 1
+                _log(f"    → {count} articles recovered via DDG")
+            except Exception as e:
+                _log(f"    → DDG fallback error: {e}")
+
         return candidates
 
     # ---- NEWS SEARCH ----
@@ -622,171 +806,206 @@ class DataCollector:
                     # Skip Google News redirect URLs (can't be resolved reliably)
                     if "news.google.com" in r.url:
                         continue
-                    candidates.append({
+                    candidate = {
                         "url": r.url,
                         "headline": r.title,
                         "source": r.source or "",
                         "collection_method": "ddg_news" if self.ddg else "google_news_rss",
                         "search_query": query,
-                    })
+                    }
+                    if r.date:
+                        candidate["search_date"] = r.date
+                    candidates.append(candidate)
                 group_count += len(results)
             _log(f"    → {group_count} results")
             self.stats["search_candidates"] += group_count
 
         return candidates
 
-    # ---- FROM X ----
+    # ---- NOTEWORTHY X POSTS (Anthropic web_search) ----
 
-    def _collect_from_x(self) -> dict:
-        """Sweep From X handles using keyword-based search queries.
+    def _collect_noteworthy_x(self) -> dict:
+        """Collect noteworthy X posts via Anthropic web_search.
 
-        DDG doesn't support site:x.com well, so we use two strategies:
-          1. Per-handle keyword search: "handle_name x.com/status" (3-4 handles per query)
-          2. Filter results for x.com/handle/status URLs
-          3. Validate via status ID delta against reference post
+        Uses batched searches for priority handles, validates freshness
+        via Snowflake timestamp extraction, filters short replies.
+
+        Returns dict with candidates list and sweep report.
         """
         result = {
             "candidates": [],
-            "handle_sweep_report": {
+            "sweep_report": {
                 "handles_searched": [f"@{h}" for h in FROM_X_HANDLES],
                 "handles_with_results": [],
-                "handles_no_recent_results": [],
-                "reference_post": None,
+                "handles_no_results": [],
                 "total_search_calls": 0,
+                "search_cost_usd": 0.0,
             },
         }
 
-        if not self.ddg and not HAS_DDGS:
-            _log("  Warning: DuckDuckGo not available — From X sweep skipped")
-            _log("    Install: pip install duckduckgo_search")
-            result["handle_sweep_report"]["handles_no_recent_results"] = [
+        if not HAS_ANTHROPIC:
+            _log("  Warning: anthropic SDK not available — X post sweep skipped")
+            _log("    Install: pip install anthropic")
+            result["sweep_report"]["handles_no_results"] = [
                 f"@{h}" for h in FROM_X_HANDLES
             ]
             return result
 
-        month_year = self.delivery_time.strftime("%B %Y")
-        year_month_short = self.delivery_time.strftime("%Y")
+        api_key = os.environ.get("ANTHROPIC_API_KEY")
+        if not api_key:
+            _log("  Warning: ANTHROPIC_API_KEY not set — X post sweep skipped")
+            result["sweep_report"]["handles_no_results"] = [
+                f"@{h}" for h in FROM_X_HANDLES
+            ]
+            return result
 
-        # Step 1: Find reference post (brand account for status ID baseline)
-        _log("  Finding reference post...")
-        ref_brands = list(FROM_X_BRAND_ACCOUNTS)[:3]
-        ref_query = " OR ".join(f'"{b}" x.com status' for b in ref_brands)
-        ref_query += f" {year_month_short}"
-        ref_results = self.ddg.search(ref_query, max_results=10)
-        result["handle_sweep_report"]["total_search_calls"] += 1
-        self.stats["from_x_searches"] += 1
-        time.sleep(1)
+        client = _anthropic_sdk.Anthropic(api_key=api_key)
+        now = self.delivery_time
+        year = now.strftime("%Y")
+        date_str = now.strftime("%B %d, %Y")
 
-        reference_id = None
-        reference_handle = None
-        for r in ref_results:
-            sid = extract_status_id_from_url(r.url)
-            if sid:
-                reference_id = sid
-                match = re.search(r"x\.com/(\w+)/status", r.url)
-                reference_handle = f"@{match.group(1)}" if match else "Unknown"
-                result["handle_sweep_report"]["reference_post"] = {
-                    "handle": reference_handle,
-                    "status_id": reference_id,
-                    "url": r.url,
-                    "note": "Brand account — reference only",
-                }
-                _log(f"    Reference: {reference_handle} (ID: {reference_id})")
-                break
+        search_tool = {
+            "type": "web_search_20250305",
+            "name": "web_search",
+            "max_uses": 3,
+        }
 
-        if not reference_id:
-            _log("    Warning: No reference post found — status ID validation unavailable")
-
-        # Step 2: Search for each handle individually (DDG doesn't batch site: well)
-        # Group handles into small batches of 2 for OR queries
         handles_with_results = set()
         seen_status_ids = set()
-        handle_list = list(FROM_X_HANDLES)
+        all_posts = []
 
-        # Build per-handle search queries (individual for better DDG results)
-        batch_size = 2
-        batches = []
-        for i in range(0, len(handle_list), batch_size):
-            batch_handles = handle_list[i:i + batch_size]
-            batches.append(batch_handles)
-
-        for batch_num, batch_handles in enumerate(batches, 1):
+        for batch_num, batch_handles in enumerate(FROM_X_SEARCH_BATCHES, 1):
             handles_str = ", ".join(f"@{h}" for h in batch_handles)
-            _log(f"  Batch {batch_num}/{len(batches)}: {handles_str}")
+            _log(f"  Batch {batch_num}/{len(FROM_X_SEARCH_BATCHES)}: {handles_str}")
 
-            # Strategy: search for handle names with "x.com" as keyword
-            handle_clauses = " OR ".join(f'"{h}"' for h in batch_handles)
-            query = f'({handle_clauses}) x.com/status {year_month_short}'
+            site_clauses = " OR ".join(
+                f"site:x.com/{h}/status" for h in batch_handles
+            )
+            handle_names = " OR ".join(f'"{h}"' for h in batch_handles)
+            query = (
+                f"Search for the most recent X/Twitter posts from these accounts, "
+                f"posted in the last 10 days (around {date_str}).\n\n"
+                f"Try these searches:\n"
+                f"1. {site_clauses}\n"
+                f"2. ({handle_names}) x.com/status {year}\n\n"
+                f"Return every x.com URL you find."
+            )
 
-            search_results = self.ddg.search(query, max_results=10)
-            result["handle_sweep_report"]["total_search_calls"] += 1
-            self.stats["from_x_searches"] += 1
-            time.sleep(1)  # Rate limit for DDG
+            try:
+                response = client.messages.create(
+                    model="claude-haiku-4-5-20251001",
+                    max_tokens=1024,
+                    messages=[{"role": "user", "content": query}],
+                    tools=[search_tool],
+                )
 
-            # Also try news search for these handles (may surface x.com links)
-            if self.ddg:
-                for h in batch_handles:
-                    news_results = self.ddg.news_search(f"@{h} tweet", max_results=3)
-                    # Filter for x.com URLs only
-                    for r in news_results:
-                        if "x.com" in r.url and "/status/" in r.url:
-                            search_results.append(r)
-                    time.sleep(0.5)
-                    result["handle_sweep_report"]["total_search_calls"] += 1
+                # Track search usage
+                usage = response.usage
+                srv = getattr(usage, "server_tool_use", None)
+                if srv and hasattr(srv, "web_search_requests"):
+                    result["sweep_report"]["total_search_calls"] += srv.web_search_requests
+                else:
+                    result["sweep_report"]["total_search_calls"] += 1
 
-            for r in search_results:
-                # Only accept x.com/handle/status URLs
-                if "x.com" not in r.url or "/status/" not in r.url:
-                    continue
+                # Extract x.com URLs from search results
+                for block in response.content:
+                    if getattr(block, "type", None) == "web_search_tool_result":
+                        for r in block.content:
+                            self._process_x_result(
+                                getattr(r, "url", ""),
+                                getattr(r, "title", ""),
+                                now, seen_status_ids, handles_with_results, all_posts,
+                            )
+                    # Also extract URLs from text response
+                    elif getattr(block, "type", None) == "text":
+                        for match in re.finditer(
+                            r"https?://x\.com/(\w+)/status/(\d+)", block.text
+                        ):
+                            url = f"https://x.com/{match.group(1)}/status/{match.group(2)}"
+                            self._process_x_result(
+                                url, "(from text)", now,
+                                seen_status_ids, handles_with_results, all_posts,
+                            )
 
-                sid = extract_status_id_from_url(r.url)
-                if not sid or sid in seen_status_ids:
-                    continue
-                seen_status_ids.add(sid)
+            except Exception as e:
+                _log(f"    Error: {e}")
 
-                # Extract handle from URL
-                match = re.search(r"x\.com/(\w+)/status", r.url)
-                if not match:
-                    continue
-                handle = match.group(1)
+            time.sleep(0.5)
 
-                # Skip brand accounts
-                if handle in FROM_X_BRAND_ACCOUNTS:
-                    continue
+        # Sort by recency, enforce per-handle cap, then global cap
+        all_posts.sort(key=lambda p: p["age_hours"])
+        handle_counts: dict[str, int] = {}
+        filtered = []
+        for post in all_posts:
+            h = post["handle"]
+            handle_counts[h] = handle_counts.get(h, 0) + 1
+            if handle_counts[h] <= _X_POST_MAX_PER_HANDLE:
+                filtered.append(post)
+        result["candidates"] = filtered[:_X_POST_MAX_CANDIDATES]
 
-                # Validate status ID delta
-                delta_result = None
-                if reference_id:
-                    delta_result = validate_status_id_delta(sid, reference_id)
-                    if delta_result["verdict"] == "REJECT":
-                        _log(f"    REJECT @{handle} — delta: {delta_result['delta_display']}")
-                        continue
-
-                handles_with_results.add(f"@{handle}")
-                result["candidates"].append({
-                    "handle": f"@{handle}",
-                    "status_id": sid,
-                    "url": r.url,
-                    "topic": r.title or r.snippet,
-                    "reference_id": reference_id,
-                    "reference_source": reference_handle,
-                    "delta_raw": delta_result["delta"] if delta_result else None,
-                    "delta_display": delta_result["delta_display"] if delta_result else "N/A",
-                    "verdict": delta_result["verdict"] if delta_result else "UNVERIFIED",
-                })
-                _log(f"    PASS @{handle}: {(r.title or r.snippet)[:60]}...")
-
-        # Sweep report
-        result["handle_sweep_report"]["handles_with_results"] = sorted(handles_with_results)
-        result["handle_sweep_report"]["handles_no_recent_results"] = [
+        result["sweep_report"]["handles_with_results"] = sorted(handles_with_results)
+        result["sweep_report"]["handles_no_results"] = [
             f"@{h}" for h in FROM_X_HANDLES
             if f"@{h}" not in handles_with_results
         ]
+        search_calls = result["sweep_report"]["total_search_calls"]
+        result["sweep_report"]["search_cost_usd"] = round(search_calls * 0.01, 2)
 
-        _log(f"  → {len(result['candidates'])} From X candidates")
-        _log(f"  → Handles with results: {len(handles_with_results)}/{len(FROM_X_HANDLES)}")
+        _log(f"  -> {len(all_posts)} posts found, {len(result['candidates'])} kept (cap: {_X_POST_MAX_CANDIDATES})")
+        _log(f"  -> Handles: {len(handles_with_results)}/{len(FROM_X_HANDLES)} had results")
+        _log(f"  -> Search cost: ${result['sweep_report']['search_cost_usd']:.2f}")
 
         return result
+
+    def _process_x_result(
+        self, url: str, title: str, now: datetime,
+        seen_status_ids: set, handles_with_results: set, all_posts: list,
+    ):
+        """Process a single x.com search result. Appends to all_posts if valid."""
+        if not url or "/status/" not in url:
+            return
+
+        # Normalize URL
+        clean_url = re.sub(r"\?.*$", "", url).replace("mobile.x.com", "x.com")
+
+        match = re.search(r"x\.com/(\w+)/status/(\d+)", clean_url)
+        if not match:
+            return
+
+        handle = match.group(1)
+        status_id = int(match.group(2))
+
+        # Skip brand accounts
+        if handle in FROM_X_BRAND_ACCOUNTS:
+            return
+
+        # Dedup
+        if status_id in seen_status_ids:
+            return
+        seen_status_ids.add(status_id)
+
+        # Validate age via Snowflake timestamp
+        post_time = _snowflake_to_datetime(status_id)
+        age_hours = (now - post_time).total_seconds() / 3600
+
+        if age_hours > _X_POST_MAX_AGE_HOURS or age_hours < -1:
+            return
+
+        # Quality filter: skip short replies / retweets
+        if title and len(title) < _X_POST_MIN_TITLE_LEN:
+            return
+
+        handles_with_results.add(f"@{handle}")
+        all_posts.append({
+            "handle": f"@{handle}",
+            "status_id": status_id,
+            "url": clean_url,
+            "topic": title or "",
+            "post_time": post_time.isoformat(),
+            "age_hours": round(age_hours, 1),
+            "verdict": "PASS",
+        })
+        _log(f"    PASS @{handle} ({age_hours:.0f}h): {(title or '')[:60]}")
 
     # ---- LOCAL NEWS ----
 
@@ -926,6 +1145,26 @@ class DataCollector:
                         )
                         return "stale", result
                 else:
+                    # Fallback: use search result date (from DDG/RSS) if available
+                    search_date_str = candidate.get("search_date", "")
+                    fallback_date = _parse_search_date(search_date_str) if search_date_str else None
+                    if fallback_date:
+                        age = compute_age_hours(fallback_date.isoformat(), self.delivery_time)
+                        result["verified_date"] = format_date_iso(fallback_date)
+                        result["verified_date_display"] = format_date(fallback_date)
+                        result["age_hours"] = age
+                        result["date_method"] = "search_result_fallback"
+
+                        if age is not None and age <= MAX_AGE_HOURS:
+                            result["verdict"] = "PASS"
+                            return "valid", result
+                        else:
+                            result["verdict"] = "REJECT"
+                            result["rejection_reason"] = (
+                                f"Article is {age} hours old (max {MAX_AGE_HOURS}) [search date fallback]"
+                            )
+                            return "stale", result
+
                     result["verified_date"] = None
                     result["age_hours"] = None
                     result["verdict"] = "REJECT"
@@ -997,8 +1236,11 @@ if __name__ == "__main__":
     _log("Running data collector standalone test...\n")
 
     if not HAS_DDGS:
-        _log("⚠ duckduckgo_search not installed — From X will be skipped")
+        _log("⚠ duckduckgo_search not installed — healthcare DDG fallback will be skipped")
         _log("  Install: pip install duckduckgo_search\n")
+    if not HAS_ANTHROPIC:
+        _log("⚠ anthropic not installed — Noteworthy X posts will be skipped")
+        _log("  Install: pip install anthropic\n")
     if not HAS_TRAFILATURA:
         _log("⚠ trafilatura not installed — using BeautifulSoup for text extraction")
         _log("  Install: pip install trafilatura\n")
@@ -1013,7 +1255,6 @@ if __name__ == "__main__":
     print(f"Stale (rejected):   {len(results['stale_articles'])}")
     print(f"Unverified:         {len(results['unverified_articles'])}")
     print(f"Errors:             {len(results['error_articles'])}")
-    print(f"From X candidates:  {len(results['from_x']['candidates'])}")
     print(f"Ticket watch items: {len(results['ticket_watch'])}")
 
     if results["valid_articles"]:

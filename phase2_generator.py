@@ -43,6 +43,7 @@ BUSINESS_TARGET = (0, 2)     # optional, 0-2 stories
 # PayZen relevance keywords for scoring
 PAYZEN_KEYWORDS = {
     "high": [
+        # PayZen core business
         "patient financing", "payment plan", "patient payment", "self-pay",
         "out-of-pocket", "healthcare affordability", "medical debt", "revenue cycle",
         "rcm", "patient collections", "bad debt", "financial assistance",
@@ -50,8 +51,13 @@ PAYZEN_KEYWORDS = {
         "health system financial", "provider revenue", "telehealth reimbursement",
     ],
     "medium": [
+        # AI companies & products (SVP Product must track these)
+        "openai", "anthropic", "claude", "chatgpt", "gpt-4", "gpt-5",
+        "gemini", "deepmind", "nvidia", "meta ai", "mistral",
+        # AI industry signals
         "ai coding", "claude code", "codex", "cursor", "ai agent", "enterprise ai",
         "ai-native", "coding assistant", "developer tools", "ai adoption",
+        # Healthcare systems
         "health system", "hospital", "cleveland clinic", "banner health",
         "geisinger", "sutter health", "optum", "unitedhealth", "cms",
         "medicare", "medicaid", "aca", "affordable care act",
@@ -59,6 +65,21 @@ PAYZEN_KEYWORDS = {
     "low": [
         "healthcare", "fintech", "startup", "series", "funding",
         "artificial intelligence", "machine learning", "automation",
+        "valuation", "billion", "investment",
+    ],
+    # Market impact signals — major financial events relevant to any executive
+    "market": [
+        "market crash", "stock crash", "market selloff", "sell-off",
+        "recession", "bear market", "market correction", "downturn",
+        "nasdaq plunge", "dow plunge", "s&p plunge", "market plunge",
+        "fed rate", "rate hike", "rate cut", "interest rate",
+        "unemployment spike", "job losses", "mass layoff",
+        "bank failure", "banking crisis", "liquidity crisis",
+        "tariff", "trade war", "economic shock",
+        "ipo", "market cap", "trillion",
+        "bubble", "overvalued", "market warning",
+        "market decoupled", "economy decoupled",
+        "analyst warns", "economist warns", "economist criticizes",
     ],
 }
 
@@ -78,7 +99,7 @@ COUNTRY_FLAGS = {
     "north korea": "🇰🇵", "pyongyang": "🇰🇵",
     "germany": "🇩🇪", "german": "🇩🇪", "berlin": "🇩🇪",
     "france": "🇫🇷", "french": "🇫🇷", "paris": "🇫🇷",
-    "italy": "🇮🇹", "italian": "🇮🇹", "rome": "🇮🇹", "milan": "🇮🇹",
+    "italy": "🇮🇹", "italian": "🇮🇹", "rome": "🇮🇹", "milan": "🇮🇹", "cortina": "🇮🇹",
     "spain": "🇪🇸", "spanish": "🇪🇸", "madrid": "🇪🇸",
     "brazil": "🇧🇷", "brazilian": "🇧🇷",
     "mexico": "🇲🇽", "mexican": "🇲🇽",
@@ -157,7 +178,9 @@ COUNTRY_FLAGS = {
     "scotland": "🏴󠁧󠁢󠁳󠁣󠁴󠁿",
     "wales": "🏴󠁧󠁢󠁷󠁬󠁳󠁿",
     "hong kong": "🇭🇰",
-    "olympics": "🌍", "olympic": "🌍",
+    # Olympics: don't map to a generic globe — let country detection find the
+    # actual country (athlete nationality, host city, etc.) via other keywords.
+    # "cortina" and "milan" map to Italy via existing entries.
     "un": "🇺🇳", "united nations": "🇺🇳",
     "eu": "🇪🇺", "european union": "🇪🇺", "europe": "🇪🇺",
     "nato": "🇪🇺",
@@ -184,11 +207,25 @@ _PRESS_RELEASE_SIGNALS = [
 ]
 
 
+# High-signal tech sources get a scoring boost — PayZen is a tech company,
+# so top industry aggregator stories are always worth reviewing.
+_HIGH_SIGNAL_SOURCES = {
+    "techmeme": 5,
+    "techcrunch": 3, "techcrunch ai": 3,
+    "the verge": 3, "the verge ai": 3,
+    "ars technica": 2,
+    "wired": 2,
+    "the information": 3,
+    "mit technology review": 2,
+}
+
+
 def score_article(article: dict) -> int:
     """
     Score an article by PayZen relevance.
     Higher score = more relevant to PayZen/Rohan's priorities.
     Penalizes press releases / vendor marketing content.
+    Boosts high-signal tech sources (Techmeme, TechCrunch, etc.).
     """
     text = f"{article.get('headline', '')} {article.get('source', '')}".lower()
     score = 0
@@ -205,6 +242,19 @@ def score_article(article: dict) -> int:
         if keyword in text:
             score += 1
 
+    # Market impact: major financial events any executive should know about
+    for keyword in PAYZEN_KEYWORDS["market"]:
+        if keyword in text:
+            score += 7
+            break  # One match is enough — avoid double-counting "market crash" + "crash"
+
+    # Source boost: high-signal tech aggregators
+    source_lower = article.get("source", "").lower()
+    for src, boost in _HIGH_SIGNAL_SOURCES.items():
+        if src in source_lower:
+            score += boost
+            break
+
     # Press release penalty: if 2+ signals match, this is vendor marketing
     pr_hits = sum(1 for sig in _PRESS_RELEASE_SIGNALS if sig in text)
     if pr_hits >= 2:
@@ -218,22 +268,15 @@ def score_article(article: dict) -> int:
 def detect_country_flag(text: str) -> str:
     """Detect the most relevant country flag for a headline.
 
-    Uses word-boundary matching for short keywords (<=3 chars) to avoid
-    false matches like 'un' in 'Runway' or 'eu' in 'neural'.
+    Uses word-boundary matching for all keywords to avoid false matches
+    like 'oman' in 'woman', 'un' in 'Runway', or 'eu' in 'neural'.
     """
     import re
     text_lower = text.lower()
 
-    # Short keywords need word-boundary matching to avoid substring false positives
-    SHORT_KEYWORD_LEN = 3
-
     for keyword, flag in COUNTRY_FLAGS.items():
-        if len(keyword) <= SHORT_KEYWORD_LEN:
-            if re.search(r'\b' + re.escape(keyword) + r'\b', text_lower):
-                return flag
-        else:
-            if keyword in text_lower:
-                return flag
+        if re.search(r'\b' + re.escape(keyword) + r'\b', text_lower):
+            return flag
 
     # Default to US if no match (most common for business news)
     return "🇺🇸"

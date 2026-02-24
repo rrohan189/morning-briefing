@@ -79,6 +79,17 @@ _SPANISH_MARKERS = {
 }
 
 
+# Local section EXCLUDELIST — always reject these regardless of allowlist match.
+_LOCAL_EXCLUDE_PATTERNS = [
+    "opinion:", "editorial:", "letters:", "commentary:",
+    "op-ed:", "column:", "review:", "perspective:",
+    # Sports scores / game recaps (not actionable local news)
+    "routed by", "defeated by", "beats", "loses to", "routs",
+    "final score", "game recap", "highlights:",
+    # Advice / lifestyle
+    "dear abby", "ask amy", "horoscope", "recipe:",
+]
+
 # Local section ALLOWLIST — only these categories are valid Local content.
 # If a headline matches zero patterns, it gets dropped.
 _LOCAL_INCLUDE_PATTERNS = [
@@ -118,15 +129,34 @@ _DIGEST_URL_PATTERNS = [
     "week-in-review", "news-wrap", "headlines-today",
 ]
 
+# Headline patterns that indicate multi-topic digest/roundup articles
+_DIGEST_HEADLINE_PATTERNS = [
+    "the download:", "5 things", "five things", "your briefing",
+    "morning briefing:", "evening briefing:", "daily roundup",
+    "news roundup", "week in review", "what you need to know today",
+    "here's what", "headlines today", "top stories:",
+]
+
 
 # Company/brand aliases — map alternate names to canonical form
 _BRAND_ALIASES = {
     "facebook": "meta", "instagram": "meta", "whatsapp": "meta",
     "google": "alphabet", "youtube": "alphabet", "deepmind": "alphabet",
     "chatgpt": "openai", "gpt": "openai", "dall-e": "openai", "dalle": "openai",
-    "claude": "anthropic",
     "bing": "microsoft", "github": "microsoft", "copilot": "microsoft",
     "alexa": "amazon", "aws": "amazon",
+}
+
+# Known entities (companies + products) for entity-based dedup.
+# If two headlines share 2+ entities from this set, they're likely about the same story.
+_ENTITY_NAMES = {
+    "openai", "anthropic", "meta", "alphabet", "google", "microsoft", "apple",
+    "amazon", "nvidia", "tesla", "spacex", "xai",
+    "chatgpt", "claude", "gemini", "copilot", "codex", "siri", "alexa",
+    "spark", "grok", "llama", "mistral", "deepseek",
+    "cerebras", "groq", "modal", "glean", "databricks", "snowflake",
+    "medicare", "medicaid", "cms", "fda", "aca", "obamacare",
+    "payzen", "waystar", "r1", "change healthcare", "optum",
 }
 
 
@@ -162,15 +192,36 @@ def _normalize_words(headline: str) -> set[str]:
     return normalized
 
 
-def _is_duplicate_topic(headline_a: str, headline_b: str) -> bool:
-    """Check if two headlines are about the same topic using word overlap.
+def _extract_entities(headline: str) -> set[str]:
+    """Extract known entity names from a headline for entity-based dedup."""
+    words = set(re.findall(r'[a-z0-9]+', headline.lower()))
+    # Also try stripped forms (e.g. "openais" → "openai") for possessives
+    expanded = set()
+    for w in words:
+        expanded.add(w)
+        if w.endswith("s") and not w.endswith("ss") and len(w) > 3:
+            expanded.add(w[:-1])
+    resolved = set()
+    for w in expanded:
+        canonical = _BRAND_ALIASES.get(w, w)
+        if canonical in _ENTITY_NAMES:
+            resolved.add(canonical)
+        elif w in _ENTITY_NAMES:
+            resolved.add(w)
+    return resolved
 
-    Uses two complementary checks:
+
+def _is_duplicate_topic(headline_a: str, headline_b: str) -> bool:
+    """Check if two headlines are about the same topic.
+
+    Uses three complementary checks:
     1. Jaccard similarity >= 0.40 (overall word overlap)
     2. Coverage check: >= 55% of the shorter headline's words appear in the
        longer one AND at least 3 shared words (catches differently-phrased
        headlines about the same story, e.g. "OpenAI introduces ads in ChatGPT"
        vs "OpenAI tests ChatGPT ads for free users")
+    3. Entity overlap: if both headlines mention 2+ of the same known entities
+       (companies/products), they're likely about the same announcement
     """
     words_a = _normalize_words(headline_a)
     words_b = _normalize_words(headline_b)
@@ -185,7 +236,30 @@ def _is_duplicate_topic(headline_a: str, headline_b: str) -> bool:
 
     # Check 2: Coverage of shorter headline
     shorter = min(len(words_a), len(words_b))
-    if len(intersection) >= 3 and len(intersection) / shorter >= 0.55:
+    if len(intersection) >= 3 and len(intersection) / shorter >= 0.45:
+        return True
+
+    # Check 3: Entity overlap
+    entities_a = _extract_entities(headline_a)
+    entities_b = _extract_entities(headline_b)
+    shared_entities = entities_a & entities_b
+    # Discount parent-product pairs (e.g. "anthropic"+"claude" counts as 1, not 2)
+    _PARENT_PRODUCT = {
+        ("anthropic", "claude"), ("openai", "chatgpt"), ("openai", "codex"),
+        ("microsoft", "copilot"), ("amazon", "alexa"), ("alphabet", "gemini"),
+        ("meta", "llama"), ("xai", "grok"),
+    }
+    effective_shared = len(shared_entities)
+    for parent, product in _PARENT_PRODUCT:
+        if parent in shared_entities and product in shared_entities:
+            effective_shared -= 1  # count the pair as 1 entity, not 2
+    # 3a: 2+ effective shared entities → same announcement
+    if effective_shared >= 2:
+        return True
+    # 3b: 1 shared entity + moderate word overlap → same story, different phrasing
+    #     (e.g. "Anthropic closes $30B round" vs "Anthropic secures $30bn funding")
+    jaccard = len(intersection) / len(union)
+    if len(shared_entities) >= 1 and jaccard >= 0.20:
         return True
 
     return False
@@ -227,6 +301,36 @@ def _deduplicate_articles(articles: list[dict]) -> list[dict]:
     return kept
 
 
+def _primary_entity(article: dict) -> str | None:
+    """Return the dominant company entity in a headline, or None.
+
+    For concentration tracking: maps products to their parent company
+    so e.g. 'claude' counts toward the 'anthropic' cap.
+    """
+    entities = _extract_entities(article.get("headline", ""))
+    if not entities:
+        return None
+    _COMPANY_ENTITIES = {
+        "openai", "anthropic", "meta", "alphabet", "microsoft",
+        "apple", "amazon", "nvidia", "tesla", "deepseek",
+        "spacex", "xai", "cerebras", "payzen", "optum",
+    }
+    # Map products to parent company for concentration tracking
+    _PRODUCT_TO_PARENT = {
+        "claude": "anthropic", "chatgpt": "openai", "codex": "openai",
+        "copilot": "microsoft", "gemini": "alphabet", "alexa": "amazon",
+        "llama": "meta", "grok": "xai",
+    }
+    for e in entities:
+        if e in _COMPANY_ENTITIES:
+            return e
+    # Fall back to product → parent mapping
+    for e in entities:
+        if e in _PRODUCT_TO_PARENT:
+            return _PRODUCT_TO_PARENT[e]
+    return next(iter(entities))
+
+
 def categorize_validated_articles(valid_articles: list[dict]) -> dict:
     """
     Categorize valid articles into sections for the briefing.
@@ -254,14 +358,19 @@ def categorize_validated_articles(valid_articles: list[dict]) -> dict:
         if not article.get("headline"):
             continue
 
-        # Skip newsletter digests (multi-topic URLs that can't be cleanly summarized)
+        # Skip newsletter digests (multi-topic bundles that can't be summarized as one story)
         url_path = article.get("url", "").lower()
-        if any(pat in url_path for pat in _DIGEST_URL_PATTERNS):
+        headline_lower_check = article.get("headline", "").lower()
+        if (any(pat in url_path for pat in _DIGEST_URL_PATTERNS) or
+                any(pat in headline_lower_check for pat in _DIGEST_HEADLINE_PATTERNS)):
             continue
 
-        # Local articles go to Local section (allowlist filter)
+        # Local articles go to Local section (exclude check → allowlist filter)
         if article.get("is_local", False):
             headline_lower = article.get("headline", "").lower()
+            # Exclude list runs first — opinion, sports scores, etc.
+            if any(pat in headline_lower for pat in _LOCAL_EXCLUDE_PATTERNS):
+                continue
             if any(pat in headline_lower for pat in _LOCAL_INCLUDE_PATTERNS):
                 local_candidates.append(article)
             # If no allowlist pattern matches, article is silently dropped
@@ -308,10 +417,19 @@ def categorize_validated_articles(valid_articles: list[dict]) -> dict:
             if len(initial_tier1) >= 12:  # Collect a few extra for diversity swap
                 break
 
-    # Second pass: enforce section diversity — at least 1 tech and 1 business if available
+    # Second pass: enforce section diversity — at least 1 health, 1 tech, 1 business
     health_picks = [a for a in initial_tier1 if a.get("_category") == "health"]
     tech_picks = [a for a in initial_tier1 if a.get("_category") == "tech"]
     biz_picks = [a for a in initial_tier1 if a.get("_category") == "business"]
+
+    # If no health in top picks, find the best health article in the full pool
+    if not health_picks:
+        for article in non_local:
+            if article.get("_category") == "health" and article not in initial_tier1:
+                health_picks.append(article)
+                break
+        if health_picks:
+            initial_tier1.append(health_picks[0])
 
     # If no tech in top picks, find the best tech article in the full pool
     if not tech_picks:
@@ -319,8 +437,6 @@ def categorize_validated_articles(valid_articles: list[dict]) -> dict:
             if article.get("_category") == "tech" and article not in initial_tier1:
                 tech_picks.append(article)
                 break
-        # Also check if any tech articles are already in initial_tier1 but miscategorized
-        # If we found one, add it and we'll trim later
         if tech_picks:
             initial_tier1.append(tech_picks[0])
 
@@ -333,14 +449,40 @@ def categorize_validated_articles(valid_articles: list[dict]) -> dict:
             initial_tier1.append(biz_picks[0])
 
     # Trim to 6 Tier 1 slots, prioritizing diversity:
-    # Reserve 1 slot each for tech and business (if available), fill rest by score
+    # Reserve 1 slot each for health, tech, and business (if available), fill rest by score
+    # Enforce subject-entity concentration cap: max 2 stories about the same entity
+    TIER1_ENTITY_CAP = 2
     tier1_candidates = []
     used_urls = set()
-    # Add best tech pick first (guaranteed slot)
+    tier1_entity_counts: dict[str, int] = {}
+
+    def _can_add_entity(article: dict) -> bool:
+        """Check if adding this article would exceed entity concentration cap."""
+        entity = _primary_entity(article)
+        if entity is None:
+            return True
+        return tier1_entity_counts.get(entity, 0) < TIER1_ENTITY_CAP
+
+    def _track_entity(article: dict) -> None:
+        """Record the primary entity for concentration tracking."""
+        entity = _primary_entity(article)
+        if entity:
+            tier1_entity_counts[entity] = tier1_entity_counts.get(entity, 0) + 1
+
+    # Add best health pick first (guaranteed slot — core audience is healthcare)
+    if health_picks:
+        best_health = health_picks[0]
+        tier1_candidates.append(best_health)
+        used_urls.add(best_health.get("url"))
+        _track_entity(best_health)
+
+    # Add best tech pick (guaranteed slot)
     if tech_picks:
         best_tech = tech_picks[0]
-        tier1_candidates.append(best_tech)
-        used_urls.add(best_tech.get("url"))
+        if best_tech.get("url") not in used_urls:
+            tier1_candidates.append(best_tech)
+            used_urls.add(best_tech.get("url"))
+            _track_entity(best_tech)
 
     # Add best business pick (guaranteed slot)
     if biz_picks:
@@ -348,30 +490,40 @@ def categorize_validated_articles(valid_articles: list[dict]) -> dict:
         if best_biz.get("url") not in used_urls:
             tier1_candidates.append(best_biz)
             used_urls.add(best_biz.get("url"))
+            _track_entity(best_biz)
 
-    # Fill remaining slots from initial_tier1 by score
+    # Fill remaining slots from initial_tier1 by score, respecting entity cap
     for article in initial_tier1:
         if len(tier1_candidates) >= 6:
             break
-        if article.get("url") not in used_urls:
+        if article.get("url") not in used_urls and _can_add_entity(article):
             tier1_candidates.append(article)
             used_urls.add(article.get("url"))
+            _track_entity(article)
 
     # Sort final Tier 1 by category order: health → tech → business
     cat_order = {"health": 0, "tech": 1, "business": 2}
     tier1_candidates.sort(key=lambda a: (cat_order.get(a.get("_category", "business"), 2), -a.get("_score", 0)))
 
     # ---- GA candidates (remaining articles, GA-eligible, deduplicated) ----
+    # Also enforce entity concentration: max 2 per entity across GA
+    GA_ENTITY_CAP = 2
     tier1_urls = {a["url"] for a in tier1_candidates}
     ga_source_counts = {}
+    ga_entity_counts: dict[str, int] = {}
     ga_pool = []
     for article in non_local:
         if article["url"] not in tier1_urls:
             if article.get("_ga_eligible", False):
                 source = article.get("source", "Unknown")
-                if ga_source_counts.get(source, 0) < 3:
+                entity = _primary_entity(article)
+                entity_ok = (entity is None or
+                             ga_entity_counts.get(entity, 0) < GA_ENTITY_CAP)
+                if ga_source_counts.get(source, 0) < 3 and entity_ok:
                     ga_pool.append(article)
                     ga_source_counts[source] = ga_source_counts.get(source, 0) + 1
+                    if entity:
+                        ga_entity_counts[entity] = ga_entity_counts.get(entity, 0) + 1
 
     # Deduplicate GA against each other AND against Tier 1 headlines
     ga_deduped = []
@@ -421,6 +573,9 @@ def categorize_validated_articles(valid_articles: list[dict]) -> dict:
     # Final sort by score
     ga_candidates.sort(key=lambda x: x.get("_score", 0), reverse=True)
 
+    # Deduplicate local candidates (same story from multiple local outlets)
+    local_candidates = _deduplicate_articles(local_candidates)
+
     return {
         "tier1_candidates": tier1_candidates,
         "ga_candidates": ga_candidates,
@@ -467,13 +622,7 @@ def build_phase1_json(
             "read_time_min": article.get("estimated_read_time_min"),
         })
 
-    # ---- Table 2: From X Status ID Table ----
-    from_x_table = raw_results["from_x"]["candidates"]
-
-    # ---- Table 3: From X Handle Sweep Report ----
-    from_x_sweep = raw_results["from_x"]["handle_sweep_report"]
-
-    # ---- Table 4: GA Source Tally ----
+    # ---- Table 2: GA Source Tally ----
     ga_candidates = categorized["ga_candidates"]
     ga_items_for_tally = [
         {"source": a.get("source", "Unknown"), "url": a.get("url", "")}
@@ -485,10 +634,13 @@ def build_phase1_json(
     healthcare_log = build_healthcare_log(all_articles)
 
     # ---- URL Verification Log ----
-    url_log = _build_url_verification_log(all_articles, from_x_table)
+    url_log = _build_url_verification_log(all_articles)
 
     # ---- Ticket Watch ----
     ticket_watch = raw_results["ticket_watch"]
+
+    # ---- Noteworthy X Posts ----
+    noteworthy_x = raw_results.get("noteworthy_x", {"candidates": [], "sweep_report": {}})
 
     return {
         "generated_at": delivery_time,
@@ -501,15 +653,14 @@ def build_phase1_json(
             "stale_rejected": len(all_stale),
             "unverified_rejected": len(all_unverified),
             "error": len(all_error),
-            "from_x_candidates": len(from_x_table),
             "tier1_candidates": len(categorized["tier1_candidates"]),
             "ga_candidates": len(ga_candidates),
             "local_candidates": len(categorized["local_candidates"]),
+            "noteworthy_x_posts": len(noteworthy_x["candidates"]),
         },
         "age_verification_table": age_table,
-        "from_x_status_id_table": from_x_table,
-        "from_x_handle_sweep_report": from_x_sweep,
         "ga_source_tally": ga_tally,
+        "noteworthy_x": noteworthy_x,
         "healthcare_candidate_log": healthcare_log,
         "url_verification_log": url_log,
         "ticket_watch": ticket_watch,
@@ -564,7 +715,7 @@ def _build_ga_tally(ga_items: list[dict]) -> dict:
     }
 
 
-def _build_url_verification_log(articles: list[dict], from_x: list[dict]) -> list[dict]:
+def _build_url_verification_log(articles: list[dict]) -> list[dict]:
     """Build URL verification log for all URLs."""
     log = []
     seen = set()
@@ -580,17 +731,6 @@ def _build_url_verification_log(articles: list[dict], from_x: list[dict]) -> lis
                 "section": "Article",
                 "fetch_status": "error" if has_error else "200 OK",
                 "verdict": verdict,
-            })
-
-    for post in from_x:
-        url = post.get("url", "")
-        if url and url not in seen:
-            seen.add(url)
-            log.append({
-                "url": url[:80],
-                "section": "From X",
-                "fetch_status": "200 OK (search result)",
-                "verdict": post.get("verdict", "PASS"),
             })
 
     return log
@@ -677,10 +817,10 @@ def run_pipeline(
     _log(f"  Stale (rejected):    {summary['stale_rejected']}")
     _log(f"  Unverified (rejected): {summary['unverified_rejected']}")
     _log(f"  Errors:              {summary['error']}")
-    _log(f"  From X candidates:   {summary['from_x_candidates']}")
     _log(f"  Tier 1 candidates:   {summary['tier1_candidates']}")
     _log(f"  GA candidates:       {summary['ga_candidates']}")
     _log(f"  Local candidates:    {summary['local_candidates']}")
+    _log(f"  Noteworthy X posts:  {summary.get('noteworthy_x_posts', 0)}")
 
     if collect_only:
         _log("\n  --collect-only: stopping after Phase 1.")
@@ -690,12 +830,12 @@ def run_pipeline(
     tier1 = categorized["tier1_candidates"]
     ga = categorized["ga_candidates"][:10]
     local = categorized["local_candidates"]
-    from_x = raw_results["from_x"]["candidates"]
+    noteworthy_x = raw_results.get("noteworthy_x", {}).get("candidates", [])
 
     briefing_data = run_phase2_llm(
         tier1_articles=tier1,
         ga_articles=ga,
-        from_x_posts=from_x,
+        noteworthy_x_posts=noteworthy_x,
         local_articles=local,
         briefing_date=briefing_date,
     )
@@ -767,7 +907,6 @@ def estimate_phase2_cost(articles_for_llm: dict) -> dict:
     """
     tier1_count = len(articles_for_llm.get("tier1", []))
     ga_count = len(articles_for_llm.get("ga", []))
-    from_x_count = len(articles_for_llm.get("from_x", []))
 
     # Haiku 4.5 pricing: $0.80/1M input, $4/1M output
     # Sonnet 4.5 pricing: $3/1M input, $15/1M output
@@ -792,11 +931,6 @@ def estimate_phase2_cost(articles_for_llm: dict) -> dict:
             "model": "haiku",
             "input_tokens": ga_count * 500,
             "output_tokens": ga_count * 50,
-        },
-        "from_x_summaries": {
-            "model": "haiku",
-            "input_tokens": from_x_count * 300,
-            "output_tokens": from_x_count * 80,
         },
         "so_whats": {
             "model": "sonnet",
@@ -870,6 +1004,11 @@ if __name__ == "__main__":
         action="store_true",
         help="Print estimated Phase 2 LLM cost after Phase 1.",
     )
+    parser.add_argument(
+        "--send",
+        action="store_true",
+        help="Send the briefing via email after generation.",
+    )
 
     args = parser.parse_args()
 
@@ -880,6 +1019,20 @@ if __name__ == "__main__":
         max_workers=args.workers,
     )
 
+    # Send briefing if requested
+    if args.send and not args.collect_only and "briefing_html" in result:
+        import subprocess
+        send_script = os.path.join(os.path.dirname(__file__), "send-briefing.py")
+        _log(f"\nSending briefing via email...")
+        send_result = subprocess.run(
+            [sys.executable, send_script, result["briefing_html"]],
+            capture_output=True, text=True,
+        )
+        if send_result.returncode == 0:
+            _log(f"  Briefing sent successfully.")
+        else:
+            _log(f"  ERROR sending briefing: {send_result.stderr.strip()}")
+
     # Print cost estimate if requested (collect-only mode)
     if args.estimate_cost and "phase1_data" in result:
         categorized_for_est = categorize_validated_articles(
@@ -889,7 +1042,6 @@ if __name__ == "__main__":
         articles_for_llm = {
             "tier1": [{}] * result["phase1_data"]["summary"]["tier1_candidates"],
             "ga": [{}] * result["phase1_data"]["summary"]["ga_candidates"],
-            "from_x": [{}] * result["phase1_data"]["summary"]["from_x_candidates"],
         }
         cost = estimate_phase2_cost(articles_for_llm)
         print(f"\n{'=' * 60}")
