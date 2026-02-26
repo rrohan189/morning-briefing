@@ -32,6 +32,8 @@ load_dotenv(os.path.join(os.path.dirname(__file__), ".env"))
 from data_collector import DataCollector, build_healthcare_log, _log
 from phase1_validator import (
     MAX_AGE_HOURS,
+    TIER1_SOURCES,
+    TIER2_SOURCES,
     classify_source_tier,
     validate_ga_source_tally,
 )
@@ -309,19 +311,69 @@ def _is_non_english(article: dict) -> bool:
     return spanish_count / len(words) > 0.30
 
 
-def _deduplicate_articles(articles: list[dict]) -> list[dict]:
-    """Remove duplicate-topic articles, keeping the first (highest-scored) one."""
+def _deduplicate_articles(articles: list[dict], local: bool = False) -> list[dict]:
+    """Remove duplicate-topic articles, keeping the first (highest-scored) one.
+
+    When local=True, uses relaxed thresholds and transit-entity matching
+    because local outlets frequently cover the same event with very
+    different phrasing.
+    """
+    dedup_fn = _is_duplicate_local if local else _is_duplicate_topic
     kept = []
     for article in articles:
         headline = article.get("headline", "")
         is_dup = False
         for existing in kept:
-            if _is_duplicate_topic(headline, existing.get("headline", "")):
+            if dedup_fn(headline, existing.get("headline", "")):
                 is_dup = True
                 break
         if not is_dup:
             kept.append(article)
     return kept
+
+
+# Bay Area transit systems — if two local headlines mention the same one,
+# they're very likely covering the same service disruption or story.
+_LOCAL_TRANSIT_ENTITIES = {"bart", "caltrain", "muni", "ac transit", "vta"}
+
+
+def _is_duplicate_local(headline_a: str, headline_b: str) -> bool:
+    """Local-aware dedup with relaxed thresholds and transit entity check.
+
+    Local outlets routinely cover the same event with very different
+    phrasing (e.g. "BART service halted between West Oakland, 24th Street"
+    vs "BART loses service through Transbay Tube, downtown SF").
+    """
+    words_a = _normalize_words(headline_a)
+    words_b = _normalize_words(headline_b)
+    if not words_a or not words_b:
+        return False
+    intersection = words_a & words_b
+    union = words_a | words_b
+
+    # Relaxed Jaccard for local (0.20 vs 0.40)
+    if len(intersection) / len(union) >= 0.20:
+        # Also require at least 2 shared words to avoid spurious matches
+        if len(intersection) >= 2:
+            return True
+
+    # Relaxed coverage for local (0.35 vs 0.55)
+    shorter = min(len(words_a), len(words_b))
+    if len(intersection) >= 2 and len(intersection) / shorter >= 0.35:
+        return True
+
+    # Transit entity check: same transit system + meaningful overlap → same event
+    text_a = headline_a.lower()
+    text_b = headline_b.lower()
+    for transit in _LOCAL_TRANSIT_ENTITIES:
+        if transit in text_a and transit in text_b:
+            # Exclude the transit name itself from the overlap count
+            non_transit_overlap = intersection - _normalize_words(transit)
+            if len(non_transit_overlap) >= 2:
+                return True
+
+    # Fall back to standard dedup as a safety net
+    return _is_duplicate_topic(headline_a, headline_b)
 
 
 def _primary_entity(article: dict) -> str | None:
@@ -428,11 +480,42 @@ def categorize_validated_articles(valid_articles: list[dict]) -> dict:
     # Deduplicate by topic (keep highest-scored version)
     non_local = _deduplicate_articles(non_local)
 
+    # ---- Tier 1 source quality gate ----
+    # Only Tier 1/2 sources or recognized specialist publications may appear
+    # in Tier 1 deep reads. Unknown / Tier 3 sources go to GA only.
+    # This prevents generic SEO content from getting deep-read treatment.
+    _TIER1_ELIGIBLE_SPECIALIST_SOURCES = {
+        # Healthcare trade publications
+        "stat news", "stat", "becker's hospital review", "healthcare dive",
+        "kff health news", "fierce healthcare", "modern healthcare",
+        "healthleaders", "healthleaders media", "health affairs",
+        "medpage", "advisory board", "healthcare finance",
+        # Tech trade publications
+        "ars technica", "mit technology review", "the information",
+        "venturebeat", "semafor", "the register",
+        # Business / finance
+        "barron's", "marketwatch", "business insider", "insider",
+    }
+
+    def _is_tier1_eligible_source(article: dict) -> bool:
+        """Check if a source is high-quality enough for Tier 1 deep reads."""
+        tier = article.get("_tier", 0)
+        if tier in (1, 2):
+            return True
+        source_lower = article.get("source", "").lower()
+        for spec in _TIER1_ELIGIBLE_SPECIALIST_SOURCES:
+            if spec in source_lower:
+                return True
+        return False
+
     # ---- Tier 1 selection with section diversity ----
     # First pass: collect top candidates with source diversity (max 2 per source)
+    # Only sources that pass the quality gate are eligible
     initial_tier1 = []
     source_counts = {}
     for article in non_local:
+        if not _is_tier1_eligible_source(article):
+            continue
         source = article.get("source", "Unknown")
         if source_counts.get(source, 0) < 2:
             initial_tier1.append(article)
@@ -448,7 +531,9 @@ def categorize_validated_articles(valid_articles: list[dict]) -> dict:
     # If no health in top picks, find the best health article in the full pool
     if not health_picks:
         for article in non_local:
-            if article.get("_category") == "health" and article not in initial_tier1:
+            if (article.get("_category") == "health"
+                    and article not in initial_tier1
+                    and _is_tier1_eligible_source(article)):
                 health_picks.append(article)
                 break
         if health_picks:
@@ -457,7 +542,9 @@ def categorize_validated_articles(valid_articles: list[dict]) -> dict:
     # If no tech in top picks, find the best tech article in the full pool
     if not tech_picks:
         for article in non_local:
-            if article.get("_category") == "tech" and article not in initial_tier1:
+            if (article.get("_category") == "tech"
+                    and article not in initial_tier1
+                    and _is_tier1_eligible_source(article)):
                 tech_picks.append(article)
                 break
         if tech_picks:
@@ -465,7 +552,9 @@ def categorize_validated_articles(valid_articles: list[dict]) -> dict:
 
     if not biz_picks:
         for article in non_local:
-            if article.get("_category") == "business" and article not in initial_tier1:
+            if (article.get("_category") == "business"
+                    and article not in initial_tier1
+                    and _is_tier1_eligible_source(article)):
                 biz_picks.append(article)
                 break
         if biz_picks:
@@ -643,12 +732,27 @@ def categorize_validated_articles(valid_articles: list[dict]) -> dict:
         ga_candidates.sort(key=lambda x: x.get("_score", 0), reverse=True)
 
     # Deduplicate local candidates (same story from multiple local outlets)
-    local_candidates = _deduplicate_articles(local_candidates)
+    # Uses relaxed thresholds + transit entity matching for local news
+    local_candidates = _deduplicate_articles(local_candidates, local=True)
+
+    # Build Tier 1 backfill pool: next-best source-eligible articles
+    # that didn't make the initial Tier 1 or GA selections.
+    tier1_and_ga_urls = (
+        {a["url"] for a in tier1_candidates}
+        | {a["url"] for a in ga_candidates}
+    )
+    backfill_pool = [
+        a for a in non_local
+        if a["url"] not in tier1_and_ga_urls
+        and _is_tier1_eligible_source(a)
+    ]
+    # Already sorted by score (non_local is sorted)
 
     return {
         "tier1_candidates": tier1_candidates,
         "ga_candidates": ga_candidates,
         "local_candidates": local_candidates,
+        "tier1_backfill_pool": backfill_pool,
     }
 
 
@@ -899,6 +1003,7 @@ def run_pipeline(
     tier1 = categorized["tier1_candidates"]
     ga = categorized["ga_candidates"][:10]
     local = categorized["local_candidates"]
+    backfill = categorized.get("tier1_backfill_pool", [])
     noteworthy_x = raw_results.get("noteworthy_x", {}).get("candidates", [])
 
     briefing_data = run_phase2_llm(
@@ -907,6 +1012,7 @@ def run_pipeline(
         noteworthy_x_posts=noteworthy_x,
         local_articles=local,
         briefing_date=briefing_date,
+        backfill_candidates=backfill,
     )
 
     # Inject ticket watch from Phase 1

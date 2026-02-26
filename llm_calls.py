@@ -14,7 +14,7 @@ Architecture:
   - No multi-turn conversations — single-shot calls only
   - Token/cost tracking for every call
 
-Haiku tasks: relevance scoring, article summaries, GA one-liners, From X summaries
+Haiku tasks: relevance scoring, article summaries, GA one-liners, Noteworthy X summaries
 Sonnet tasks: So Whats, Today in 30 Seconds, quality review
 """
 
@@ -322,8 +322,11 @@ def generate_ga_oneliner(client: LLMClient, article: dict) -> dict:
     system = (
         "You are writing General Awareness items for an executive newsletter. "
         "Return JSON with: headline (rewritten, concise, informative, max 12 words), "
-        "context (one sentence explaining why it matters, max 20 words). "
-        "Be specific — include key numbers or names. No generic filler."
+        "context (one sentence of factual context — a key number, name, or concrete detail "
+        "from the article, max 20 words). "
+        "Write like a wire service, not a consultant. No marketing language, no jargon like "
+        "'stakeholder audiences', 'humanize', 'leverage', or 'competitive excellence'. "
+        "If the story is about a person, state what happened. If it involves numbers, include them."
     )
 
     user = (
@@ -334,37 +337,103 @@ def generate_ga_oneliner(client: LLMClient, article: dict) -> dict:
 
     try:
         result = client._call_json(HAIKU_MODEL, system, user, max_tokens=200)
+        ga_headline = result.get("headline", headline)
+        ga_context = result.get("context", "")
+        # Quality gate: if headline is meta-commentary, use original
+        if _is_llm_refusal(ga_headline):
+            _log(f"    GA headline unusable, using original: {headline[:40]}")
+            ga_headline = headline
+        if _is_llm_refusal(ga_context):
+            ga_context = ""
         return {
-            "headline": result.get("headline", headline),
-            "context": result.get("context", ""),
+            "headline": ga_headline,
+            "context": ga_context,
         }
     except Exception as e:
         _log(f"    GA oneliner failed for '{headline[:40]}': {e}")
         return {"headline": headline, "context": ""}
 
 
-def summarize_from_x(client: LLMClient, post: dict) -> str:
+# Patterns that indicate the LLM refused or hedged instead of summarizing
+_LLM_REFUSAL_PATTERNS = [
+    "i don't have access",
+    "i cannot access",
+    "i can't access",
+    "i can't see",
+    "i cannot see",
+    "could you share",
+    "could you provide",
+    "i'm unable to",
+    "i am unable to",
+    "the article does not contain",
+    "the article doesn't contain",
+    "not addressed in the provided",
+    "not available for summarization",
+    "i don't have enough information",
+    "i cannot determine",
+    "i cannot provide",
+    "i cannot write",
+    "i cannot summarize",
+    "i can't provide",
+    "i can't write",
+    "i can't summarize",
+    "the text provided does not contain",
+    "the article text is missing",
+    "article text itself is missing",
+    "no actual news content",
+    "no actual content",
+    "without the full article",
+    "without the actual article",
+    "if you can provide the actual",
+    # Headline-specific: LLM meta-commentary instead of actual headline
+    "i notice this",
+    "this appears to be",
+    "this seems to be",
+    "rather than a",
+    "here is a rewritten",
+    "here's a rewritten",
+    "here is the rewritten",
+    "here's the rewritten",
+    "rewritten headline:",
+    "note:",
+]
+
+
+def _is_llm_refusal(text: str) -> bool:
+    """Check if LLM output is a refusal/hedge rather than real content."""
+    text_lower = text.lower()
+    return any(p in text_lower for p in _LLM_REFUSAL_PATTERNS)
+
+
+def summarize_x_post(client: LLMClient, post: dict) -> str | None:
     """
-    Generate a 1-2 sentence summary for a From X post.
+    Generate a 1-2 sentence summary for a Noteworthy X post.
 
     Uses Haiku — these are short factual summaries.
+    Returns None if the LLM refuses or produces a bad summary.
     """
     handle = post.get("handle", "")
     topic = post.get("topic", "")
 
     system = (
-        "You are summarizing an X/Twitter post for an AI-focused newsletter. "
+        "You are summarizing an X/Twitter post for an AI-focused executive newsletter. "
+        "The post title/snippet is all you have — summarize ONLY what it says. "
         "Write 1-2 sentences: what they said/showed and why it matters to the "
-        "AI/tech community. Keep it tight. Return only the summary text."
+        "AI/tech community. Keep it tight. Return only the summary text. "
+        "If the title is too vague to summarize, return exactly: SKIP"
     )
 
     user = f"Post by {handle}:\n{topic}"
 
     try:
-        return client._call(HAIKU_MODEL, system, user, max_tokens=150)
+        result = client._call(HAIKU_MODEL, system, user, max_tokens=150)
+        if not result or result.strip() == "SKIP" or _is_llm_refusal(result):
+            _log(f"    X post summary unusable for {handle} — skipping")
+            return None
+        return result
     except Exception as e:
-        _log(f"    From X summary failed for {handle}: {e}")
-        return topic[:200]
+        _log(f"    X post summary failed for {handle}: {e}")
+        return None
 
 
 def rewrite_headline(client: LLMClient, article: dict) -> str:
@@ -372,6 +441,7 @@ def rewrite_headline(client: LLMClient, article: dict) -> str:
     Rewrite a headline to be more specific and informative.
 
     Uses Haiku — this is a quick rewrite task.
+    Falls back to the original headline if the LLM produces meta-commentary.
     """
     headline = article.get("headline", "")
     source = article.get("source", "")
@@ -380,7 +450,8 @@ def rewrite_headline(client: LLMClient, article: dict) -> str:
     system = (
         "Rewrite this news headline to be more specific and informative. "
         "Include key details (company names, numbers, actions). "
-        "Max 15 words. Return only the rewritten headline, no JSON."
+        "Max 15 words. Return ONLY the rewritten headline text — no commentary, "
+        "no explanation, no notes, no quotes around it, no JSON."
     )
 
     user = (
@@ -393,6 +464,10 @@ def rewrite_headline(client: LLMClient, article: dict) -> str:
         result = client._call(HAIKU_MODEL, system, user, max_tokens=60)
         # Clean up — remove quotes if wrapped
         result = result.strip().strip('"').strip("'")
+        # Quality gate: if LLM produced meta-commentary instead of a headline, use original
+        if _is_llm_refusal(result) or len(result) > 120:
+            _log(f"    Headline rewrite unusable, using original: {headline[:50]}")
+            return headline
         return result
     except Exception as e:
         return headline
@@ -421,7 +496,7 @@ def generate_so_what(client: LLMClient, article: dict, summary: str) -> str:
         + ROHAN_CONTEXT + "\n\n"
         + SO_WHAT_EXAMPLES + "\n\n"
         "## Rules for So Whats:\n"
-        "- Write in SECOND PERSON: 'you', 'your team', 'your VP Eng' — NEVER 'Rohan should'\n"
+        "- Write in SECOND PERSON: 'you', 'your team', 'your eng partner' — NEVER 'Rohan should'\n"
         "- Be SPECIFIC: name the business implication (pipeline opportunity, competitive signal, "
         "regulatory risk, cost tailwind)\n"
         "- Be HONEST about signal strength: 'early signal, worth monitoring' vs "
@@ -542,10 +617,11 @@ def quality_review(client: LLMClient, briefing: dict) -> dict:
 def run_phase2_llm(
     tier1_articles: list[dict],
     ga_articles: list[dict],
-    from_x_posts: list[dict],
-    local_articles: list[dict],
-    briefing_date: str,
+    noteworthy_x_posts: list[dict] = None,
+    local_articles: list[dict] = None,
+    briefing_date: str = "",
     api_key: str = None,
+    backfill_candidates: list[dict] = None,
 ) -> dict:
     """
     Run all Phase 2 LLM tasks and return structured JSON for template rendering.
@@ -555,14 +631,22 @@ def run_phase2_llm(
     Args:
         tier1_articles: Top articles selected for deep reads (with article_text)
         ga_articles: Articles selected for General Awareness (with article_text)
-        from_x_posts: From X candidates (with topic/handle)
+        noteworthy_x_posts: Noteworthy X post candidates (with topic/handle)
         local_articles: Local news articles
         briefing_date: YYYY-MM-DD string
         api_key: Anthropic API key (or from env)
+        backfill_candidates: Additional scored candidates to try if Tier 1
+            stories are rejected during summarization (content mismatch, etc.)
 
     Returns:
         Structured dict ready for Jinja2 template rendering.
     """
+    if noteworthy_x_posts is None:
+        noteworthy_x_posts = []
+    if local_articles is None:
+        local_articles = []
+    if backfill_candidates is None:
+        backfill_candidates = []
     _log("\n" + "=" * 60)
     _log("PHASE 2: LLM Content Generation")
     _log("=" * 60)
@@ -572,17 +656,19 @@ def run_phase2_llm(
     # ---- Step 1: Tier 1 — summaries + headlines (Haiku, parallel-ready) ----
     _log("\n[1/5] Generating Tier 1 summaries (Haiku)...")
     tier1_stories = []
-    for i, article in enumerate(tier1_articles[:6], 1):
-        _log(f"  Story {i}: {article.get('headline', '?')[:50]}...")
+    TIER1_TARGET = 6
+    tried_urls = {a.get("url") for a in tier1_articles}
 
-        # Rewrite headline
+    def _try_summarize(article: dict, story_num: int) -> dict | None:
+        """Attempt to summarize an article. Returns story dict or None if rejected."""
+        _log(f"  Story {story_num}: {article.get('headline', '?')[:50]}...")
         new_headline = rewrite_headline(client, article)
-
-        # Generate summary
         summary = summarize_article(client, article)
-
-        tier1_stories.append({
-            "number": i,
+        if _is_llm_refusal(summary):
+            _log(f"    REJECT story {story_num}: summary indicates content mismatch — skipping")
+            return None
+        return {
+            "number": story_num,
             "section": article.get("_category", "health"),
             "headline": new_headline,
             "original_headline": article.get("headline", ""),
@@ -595,14 +681,38 @@ def run_phase2_llm(
             "so_what": "",  # Filled in step 2
             "article_text": article.get("article_text", ""),
             "_category": article.get("_category", "general"),
-        })
-        time.sleep(0.2)  # Gentle rate limit
+        }
+
+    # Process initial Tier 1 candidates
+    story_num = 0
+    for article in tier1_articles[:TIER1_TARGET]:
+        story_num += 1
+        result = _try_summarize(article, story_num)
+        if result:
+            tier1_stories.append(result)
+        time.sleep(0.2)
+
+    # Backfill: if we have fewer than target, try additional candidates
+    backfill_idx = 0
+    while len(tier1_stories) < TIER1_TARGET and backfill_idx < len(backfill_candidates):
+        candidate = backfill_candidates[backfill_idx]
+        backfill_idx += 1
+        if candidate.get("url") in tried_urls:
+            continue
+        tried_urls.add(candidate.get("url"))
+        story_num += 1
+        _log(f"  [Backfill] Trying: {candidate.get('headline', '?')[:50]}...")
+        result = _try_summarize(candidate, story_num)
+        if result:
+            tier1_stories.append(result)
+        time.sleep(0.2)
 
     # ---- Step 2: So Whats (Sonnet — quality-critical) ----
-    _log("\n[2/5] Generating So Whats (Sonnet)...")
+    _log("\n[2/7] Generating So Whats (Sonnet)...")
+    stories_to_remove = []
     for story in tier1_stories:
         _log(f"  So What for: {story['headline'][:50]}...")
-        story["so_what"] = generate_so_what(
+        so_what = generate_so_what(
             client,
             {
                 "headline": story["headline"],
@@ -612,7 +722,37 @@ def run_phase2_llm(
             },
             story["summary"],
         )
+
+        # Quality gate: if So What failed, retry once
+        if so_what.startswith("[So What generation failed"):
+            _log(f"    Retrying So What for: {story['headline'][:50]}...")
+            time.sleep(1)
+            so_what = generate_so_what(
+                client,
+                {
+                    "headline": story["headline"],
+                    "source": story["source"],
+                    "article_text": story.get("article_text", ""),
+                    "_category": story.get("_category", "general"),
+                },
+                story["summary"],
+            )
+
+        # If still failed or is a refusal, mark for removal
+        if so_what.startswith("[So What generation failed") or _is_llm_refusal(so_what):
+            _log(f"    DROPPING story: So What unusable after retry — {story['headline'][:50]}")
+            stories_to_remove.append(story)
+        else:
+            story["so_what"] = so_what
         time.sleep(0.3)
+
+    # Remove stories with failed So Whats
+    for story in stories_to_remove:
+        tier1_stories.remove(story)
+
+    # Renumber remaining stories
+    for i, story in enumerate(tier1_stories, 1):
+        story["number"] = i
 
     # Strip article_text from output (large, not needed for template)
     for story in tier1_stories:
@@ -637,18 +777,22 @@ def run_phase2_llm(
         time.sleep(0.2)
     _log(f"    Generated {len(ga_items)} GA items")
 
-    # ---- Step 4: From X summaries (Haiku) ----
-    _log("\n[4/5] Generating From X summaries (Haiku)...")
-    from_x_items = []
-    for post in from_x_posts[:5]:
-        summary = summarize_from_x(client, post)
-        from_x_items.append({
+    # ---- Step 4: Noteworthy X post summaries (Haiku) ----
+    _log("\n[4/7] Generating Noteworthy X summaries (Haiku)...")
+    x_post_items = []
+    for post in noteworthy_x_posts[:4]:
+        summary = summarize_x_post(client, post)
+        if summary is None:
+            continue  # Skip posts where summary was unusable
+        x_post_items.append({
             "handle": post.get("handle", ""),
             "url": post.get("url", ""),
             "summary": summary,
+            "age_hours": post.get("age_hours"),
+            "post_time": post.get("post_time", ""),
         })
         time.sleep(0.2)
-    _log(f"    Generated {len(from_x_items)} From X summaries")
+    _log(f"    Generated {len(x_post_items)} X post summaries")
 
     # ---- Step 5: Today in 30 Seconds (Sonnet) ----
     today_30 = generate_today_30_seconds(client, tier1_stories)
@@ -668,7 +812,6 @@ def run_phase2_llm(
     draft_briefing = {
         "tier1_stories": tier1_stories,
         "general_awareness": ga_items,
-        "from_x": from_x_items,
     }
     review = quality_review(client, draft_briefing)
     if not review.get("passed", True):
@@ -695,8 +838,8 @@ def run_phase2_llm(
         all_sources.add(s["source"])
     for g in ga_items:
         all_sources.add(g["source"])
-    for f in from_x_items:
-        handle = f.get("handle", "").lstrip("@")
+    for x in x_post_items:
+        handle = x.get("handle", "").lstrip("@")
         if handle:
             all_sources.add(f"X/@{handle}")
 
@@ -716,7 +859,7 @@ def run_phase2_llm(
         },
         "today_30_seconds": today_30,
         "tier1_stories": tier1_stories,
-        "from_x": from_x_items,
+        "noteworthy_x": x_post_items,
         "general_awareness": ga_items,
         "local": local_items,
         "ticket_watch": None,  # Populated from Phase 1 data if relevant
@@ -765,7 +908,7 @@ if __name__ == "__main__":
             + ROHAN_CONTEXT + "\n\n"
             + SO_WHAT_EXAMPLES + "\n\n"
             "## Rules for So Whats:\n"
-            "- Write in SECOND PERSON: 'you', 'your team', 'your VP Eng' — NEVER 'Rohan should'\n"
+            "- Write in SECOND PERSON: 'you', 'your team', 'your eng partner' — NEVER 'Rohan should'\n"
             "- Be SPECIFIC: name the business implication (pipeline opportunity, competitive signal, "
             "regulatory risk, cost tailwind)\n"
             "- Be HONEST about signal strength: 'early signal, worth monitoring' vs "
@@ -793,27 +936,23 @@ if __name__ == "__main__":
         # Typical counts
         tier1 = 5
         ga = 10
-        from_x = 4
         print(f"  Tier 1 stories: {tier1}")
         print(f"  GA items: {ga}")
-        print(f"  From X posts: {from_x}")
         print()
 
         # Haiku calls
-        haiku_calls = 1 + tier1 * 2 + ga + from_x  # rank + (summary + headline) * tier1 + ga + from_x
+        haiku_calls = 1 + tier1 * 2 + ga  # rank + (summary + headline) * tier1 + ga
         haiku_input = (
             3000  # ranking
             + tier1 * 3500  # summaries (3000 article + 500 prompt)
             + tier1 * 1500  # headline rewrites
             + ga * 2000  # GA one-liners
-            + from_x * 500  # From X summaries
         )
         haiku_output = (
             2000  # ranking
             + tier1 * 300  # summaries
             + tier1 * 60  # headlines
             + ga * 200  # GA
-            + from_x * 150  # From X
         )
 
         # Sonnet calls
@@ -844,11 +983,10 @@ if __name__ == "__main__":
         print()
         print(f"  Phase 1 (Python): $0.00")
         print(f"  Phase 2 (LLM):    ${haiku_cost + sonnet_cost:.4f}")
-        print(f"  From X search:    ~$0.50 (WebSearch)")
         print(f"  -" * 20)
-        print(f"  Total per briefing: ~${haiku_cost + sonnet_cost + 0.50:.2f}")
+        print(f"  Total per briefing: ~${haiku_cost + sonnet_cost:.2f}")
         print(f"  Current system:     ~$77.00")
-        print(f"  Savings:            ~{(1 - (haiku_cost + sonnet_cost + 0.50) / 77) * 100:.0f}%")
+        print(f"  Savings:            ~{(1 - (haiku_cost + sonnet_cost) / 77) * 100:.0f}%")
 
     else:
         print(f"Command '{args.command}' requires API key and Phase 1 data.")
