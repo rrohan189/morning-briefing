@@ -75,11 +75,25 @@ PAYZEN_KEYWORDS = {
         "fed rate", "rate hike", "rate cut", "interest rate",
         "unemployment spike", "job losses", "mass layoff",
         "bank failure", "banking crisis", "liquidity crisis",
-        "tariff", "trade war", "economic shock",
+        "tariff", "tariffs", "trade war", "economic shock",
         "ipo", "market cap", "trillion",
         "bubble", "overvalued", "market warning",
         "market decoupled", "economy decoupled",
         "analyst warns", "economist warns", "economist criticizes",
+        # Broad business/finance terms (added 2026-02-26)
+        "economy", "gdp", "inflation", "earnings", " layoffs",
+        "stocks", "deficit", "government shutdown",
+        "imf", "fed ", "trade deal", "trade policy",
+        "trade strategy", "trade deficit", "trade talks", "job cuts",
+        "jobs report", "labor market", "debt ceiling",
+        "fiscal", "treasury", "central bank",
+    ],
+    # Geopolitical signals — international events an executive should track
+    "geopolitical": [
+        "sanctions", "nato", "opec",
+        "g7 ", "g20 ", "united nations", "diplomacy", "embassy",
+        "ceasefire", "peace deal", "arms deal", "nuclear talks",
+        "nuclear deal", "territorial", "sovereignty",
     ],
 }
 
@@ -248,6 +262,12 @@ def score_article(article: dict) -> int:
             score += 7
             break  # One match is enough — avoid double-counting "market crash" + "crash"
 
+    # Geopolitical: international events an executive should track
+    for keyword in PAYZEN_KEYWORDS["geopolitical"]:
+        if keyword in text:
+            score += 5
+            break  # Single match sufficient
+
     # Source boost: high-signal tech aggregators
     source_lower = article.get("source", "").lower()
     for src, boost in _HIGH_SIGNAL_SOURCES.items():
@@ -283,8 +303,34 @@ def detect_country_flag(text: str) -> str:
 
 
 def categorize_article(article: dict) -> str:
-    """Categorize article into a section."""
-    text = f"{article.get('headline', '')} {article.get('source', '')}".lower()
+    """Categorize article into a section.
+
+    Source-based overrides take priority over headline keywords —
+    a STAT News story about Congress is still health news.
+    """
+    source = article.get("source", "").lower()
+
+    # Source-based overrides: strongest signal for category
+    _HEALTH_SOURCES = [
+        "stat news", "stat", "becker", "healthcare dive", "kff health",
+        "fierce healthcare", "modern healthcare", "healthleaders",
+        "health affairs", "medpage", "advisory board",
+    ]
+    _BUSINESS_SOURCES = [
+        "financial times", "bloomberg", "wall street journal", "wsj",
+        "reuters business", "cnbc", "fortune", "barron", "economist",
+        "business insider", "insider", "marketwatch",
+    ]
+
+    for src in _HEALTH_SOURCES:
+        if src in source:
+            return "health"
+    for src in _BUSINESS_SOURCES:
+        if src in source:
+            return "business"
+
+    # Headline keyword fallback
+    text = f"{article.get('headline', '')} {source}".lower()
 
     health_keywords = [
         "health", "hospital", "patient", "medical", "medicare", "medicaid",

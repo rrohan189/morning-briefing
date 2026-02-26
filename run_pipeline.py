@@ -138,6 +138,29 @@ _DIGEST_HEADLINE_PATTERNS = [
 ]
 
 
+# Headline entity keywords — for strict entity concentration cap.
+# Maps parent company to all keywords that indicate the headline is about them.
+_HEADLINE_ENTITY_KEYWORDS = {
+    "anthropic": ["anthropic", "claude"],
+    "openai": ["openai", "chatgpt", "gpt-4", "gpt-5", "dall-e"],
+    "alphabet": ["google", "gemini", "deepmind"],
+    "microsoft": ["microsoft", "copilot", "bing"],
+    "meta": ["meta ai", "llama"],
+    "nvidia": ["nvidia"],
+    "apple": ["apple", "siri"],
+    "amazon": ["amazon", "alexa", "aws"],
+}
+
+
+def _headline_mentions_entity(headline: str, entity: str) -> bool:
+    """Check if headline mentions any keyword associated with an entity."""
+    text = headline.lower()
+    for kw in _HEADLINE_ENTITY_KEYWORDS.get(entity, []):
+        if kw in text:
+            return True
+    return False
+
+
 # Company/brand aliases — map alternate names to canonical form
 _BRAND_ALIASES = {
     "facebook": "meta", "instagram": "meta", "whatsapp": "meta",
@@ -501,6 +524,31 @@ def categorize_validated_articles(valid_articles: list[dict]) -> dict:
             used_urls.add(article.get("url"))
             _track_entity(article)
 
+    # ---- Strict entity audit: headline-based concentration cap ----
+    # _primary_entity() can miss cases where a headline doesn't name the company
+    # directly but the story is still about them. Scan all headlines for keywords.
+    entity_headline_counts: dict[str, int] = {}
+    for article in tier1_candidates:
+        headline = article.get("headline", "").lower()
+        for entity, keywords in _HEADLINE_ENTITY_KEYWORDS.items():
+            for kw in keywords:
+                if kw in headline:
+                    entity_headline_counts[entity] = entity_headline_counts.get(entity, 0) + 1
+                    break
+
+    # If any entity appears in 3+ headlines, demote lowest-scoring ones
+    for entity, count in entity_headline_counts.items():
+        if count > TIER1_ENTITY_CAP:
+            entity_articles = [
+                a for a in tier1_candidates
+                if _headline_mentions_entity(a.get("headline", ""), entity)
+            ]
+            entity_articles.sort(key=lambda a: a.get("_score", 0))
+            while len(entity_articles) > TIER1_ENTITY_CAP:
+                demoted = entity_articles.pop(0)
+                tier1_candidates.remove(demoted)
+                _log(f"  Entity cap: demoted '{demoted.get('headline', '')[:60]}' (entity: {entity})")
+
     # Sort final Tier 1 by category order: health → tech → business
     cat_order = {"health": 0, "tech": 1, "business": 2}
     tier1_candidates.sort(key=lambda a: (cat_order.get(a.get("_category", "business"), 2), -a.get("_score", 0)))
@@ -572,6 +620,27 @@ def categorize_validated_articles(valid_articles: list[dict]) -> dict:
 
     # Final sort by score
     ga_candidates.sort(key=lambda x: x.get("_score", 0), reverse=True)
+
+    # ---- Enforce international floor: at least 5 non-US items when candidates exist ----
+    GA_INTL_FLOOR = 5
+    intl_count = sum(1 for a in ga_candidates if a.get("_flag", US_FLAG) != US_FLAG)
+    if intl_count < GA_INTL_FLOOR:
+        intl_needed = GA_INTL_FLOOR - intl_count
+        existing_urls = {a["url"] for a in ga_candidates}
+        intl_extras = [
+            a for a in ga_deduped
+            if a["url"] not in existing_urls
+            and a.get("_flag", US_FLAG) != US_FLAG
+        ]
+        for extra in intl_extras[:intl_needed]:
+            if len(ga_candidates) >= GA_TARGET:
+                # Replace lowest-scoring US item to make room
+                us_items = [a for a in ga_candidates if a.get("_flag", US_FLAG) == US_FLAG]
+                if us_items:
+                    worst_us = min(us_items, key=lambda a: a.get("_score", 0))
+                    ga_candidates.remove(worst_us)
+            ga_candidates.append(extra)
+        ga_candidates.sort(key=lambda x: x.get("_score", 0), reverse=True)
 
     # Deduplicate local candidates (same story from multiple local outlets)
     local_candidates = _deduplicate_articles(local_candidates)
