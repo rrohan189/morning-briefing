@@ -42,11 +42,43 @@ from phase2_generator import (
     categorize_article,
     detect_country_flag,
 )
-from llm_calls import run_phase2_llm
+from llm_calls import run_phase2_llm, generate_healthcare_academy, generate_agents_lab
 from render_briefing import render_html
 
 # Output directory
 OUTPUT_DIR = os.path.join(os.path.dirname(__file__), "output")
+
+# Data directory (curriculum JSON files)
+DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
+
+# State file (day counters)
+STATE_PATH = os.path.join(os.path.dirname(__file__), "state.json")
+
+
+def _load_state() -> dict:
+    """Load state.json, returning defaults if missing."""
+    if os.path.exists(STATE_PATH):
+        with open(STATE_PATH, encoding="utf-8") as f:
+            return json.load(f)
+    return {"healthcare_day": 1, "agents_day": 1}
+
+
+def _save_state(state: dict) -> None:
+    with open(STATE_PATH, "w", encoding="utf-8") as f:
+        json.dump(state, f, indent=2)
+
+
+def _load_curriculum(filename: str) -> list:
+    """Load a curriculum JSON file from data/."""
+    path = os.path.join(DATA_DIR, filename)
+    with open(path, encoding="utf-8") as f:
+        return json.load(f)
+
+
+def _get_curriculum_entry(curriculum: list, day: int) -> dict:
+    """Get entry for given day (1-based). Wraps around if day > len."""
+    idx = (day - 1) % len(curriculum)
+    return curriculum[idx]
 
 
 # =============================================================================
@@ -80,6 +112,26 @@ _SPANISH_MARKERS = {
     "reducción", "subsidios", "retención", "incierta", "aumento",
 }
 
+
+# Local section GEOGRAPHIC EXCLUSION — reject stories clearly outside the East Bay.
+# Checked before the allowlist: a Sonoma County crime story still fails this gate
+# even though "crime" is in _LOCAL_INCLUDE_PATTERNS.
+_LOCAL_NON_EASTBAY_PATTERNS = [
+    # North Bay
+    "sonoma county", "sonoma", "santa rosa", "petaluma", "rohnert park",
+    "sebastopol", "healdsburg", "cloverdale", "windsor, ca",
+    "marin county", "marin", "san rafael", "novato", "mill valley",
+    "sausalito", "tiburon", "corte madera", "fairfax", "san anselmo",
+    "napa county", "napa valley", "napa,",
+    # Peninsula / South Bay
+    "san jose", "silicon valley", "sunnyvale", "santa clara", "cupertino",
+    "mountain view", "palo alto", "menlo park", "redwood city", "san mateo",
+    "burlingame", "belmont", "san carlos", "foster city",
+    # Beyond the Bay
+    "santa cruz", "monterey", "salinas",
+    "stockton", "modesto", "sacramento",
+    "los angeles", "san diego",
+]
 
 # Local section EXCLUDELIST — always reject these regardless of allowlist match.
 _LOCAL_EXCLUDE_PATTERNS = [
@@ -236,17 +288,35 @@ def _extract_entities(headline: str) -> set[str]:
     return resolved
 
 
+# Event-anchor words: named actors/contexts that pin a story to a specific event.
+# Two headlines sharing 1 company entity + 1 event anchor are about the same event
+# even when their wording diverges (e.g. "Pentagon ban" vs "users flee to Claude").
+_EVENT_ANCHOR_WORDS = {
+    "pentagon", "dod", "military", "defense", "surveillance",
+    "ban", "blacklist", "blocked", "restriction",
+    "congress", "senate", "fda", "cms", "hhs", "sec", "ftc",
+    "lawsuit", "court", "trial", "verdict", "settlement",
+    "merger", "acquisition", "deal", "buyout",
+    "layoff", "layoffs", "job cut", "restructur",
+    "shutdown", "outage", "breach", "hack", "arrest",
+    "fine", "penalty", "investigation", "hearing",
+    "ipo", "fundrais", "valuation",
+}
+
+
 def _is_duplicate_topic(headline_a: str, headline_b: str) -> bool:
     """Check if two headlines are about the same topic.
 
-    Uses three complementary checks:
+    Uses four complementary checks:
     1. Jaccard similarity >= 0.40 (overall word overlap)
-    2. Coverage check: >= 55% of the shorter headline's words appear in the
+    2. Coverage check: >= 45% of the shorter headline's words appear in the
        longer one AND at least 3 shared words (catches differently-phrased
        headlines about the same story, e.g. "OpenAI introduces ads in ChatGPT"
        vs "OpenAI tests ChatGPT ads for free users")
     3. Entity overlap: if both headlines mention 2+ of the same known entities
        (companies/products), they're likely about the same announcement
+    4. Event anchor: 1 shared entity + 1 shared event-context word
+       (e.g. "Anthropic refuses Pentagon" vs "Users flee ChatGPT after Pentagon ban")
     """
     words_a = _normalize_words(headline_a)
     words_b = _normalize_words(headline_b)
@@ -286,6 +356,30 @@ def _is_duplicate_topic(headline_a: str, headline_b: str) -> bool:
     jaccard = len(intersection) / len(union)
     if len(shared_entities) >= 1 and jaccard >= 0.20:
         return True
+
+    # Check 4: Same event anchor
+    raw_a = set(re.findall(r'[a-z]+', headline_a.lower()))
+    raw_b = set(re.findall(r'[a-z]+', headline_b.lower()))
+    shared_raw = raw_a & raw_b
+
+    # 4a: High-specificity anchors are sufficient alone — these words are so
+    #     contextually specific that two headlines sharing one are almost certainly
+    #     about the same event, even if they name different companies (e.g.,
+    #     "OpenAI caves to Pentagon" vs "Claude tops charts after Pentagon feud").
+    _HIGH_SPECIFICITY_ANCHORS = {
+        "pentagon", "dod", "impeach", "indicted",
+    }
+    for anchor in _HIGH_SPECIFICITY_ANCHORS:
+        if anchor in raw_a and anchor in raw_b:
+            return True
+
+    # 4b: 1 shared company entity + 1 shared event-context word. Catches
+    #     reaction stories about the same underlying event, e.g.:
+    #     "Anthropic refuses Pentagon" vs "Users flee to Claude after Pentagon ban"
+    if len(shared_entities) >= 1:
+        for anchor in _EVENT_ANCHOR_WORDS:
+            if anchor in raw_a and anchor in raw_b:
+                return True
 
     return False
 
@@ -440,11 +534,14 @@ def categorize_validated_articles(valid_articles: list[dict]) -> dict:
                 any(pat in headline_lower_check for pat in _DIGEST_HEADLINE_PATTERNS)):
             continue
 
-        # Local articles go to Local section (exclude check → allowlist filter)
+        # Local articles go to Local section (exclude check → geo check → allowlist filter)
         if article.get("is_local", False):
             headline_lower = article.get("headline", "").lower()
             # Exclude list runs first — opinion, sports scores, etc.
             if any(pat in headline_lower for pat in _LOCAL_EXCLUDE_PATTERNS):
+                continue
+            # Geographic exclusion — reject stories outside the East Bay
+            if any(pat in headline_lower for pat in _LOCAL_NON_EASTBAY_PATTERNS):
                 continue
             if any(pat in headline_lower for pat in _LOCAL_INCLUDE_PATTERNS):
                 local_candidates.append(article)
@@ -625,6 +722,11 @@ def categorize_validated_articles(valid_articles: list[dict]) -> dict:
                     entity_headline_counts[entity] = entity_headline_counts.get(entity, 0) + 1
                     break
 
+    # Log entity counts for debugging
+    concentrated = {e: c for e, c in entity_headline_counts.items() if c > 0}
+    if concentrated:
+        _log(f"  Entity headline counts (before audit): {concentrated}")
+
     # If any entity appears in 3+ headlines, demote lowest-scoring ones
     for entity, count in entity_headline_counts.items():
         if count > TIER1_ENTITY_CAP:
@@ -637,6 +739,8 @@ def categorize_validated_articles(valid_articles: list[dict]) -> dict:
                 demoted = entity_articles.pop(0)
                 tier1_candidates.remove(demoted)
                 _log(f"  Entity cap: demoted '{demoted.get('headline', '')[:60]}' (entity: {entity})")
+
+    _log(f"  Tier 1 after entity audit: {len(tier1_candidates)} stories")
 
     # Sort final Tier 1 by category order: health → tech → business
     cat_order = {"health": 0, "tech": 1, "business": 2}
@@ -1017,6 +1121,66 @@ def run_pipeline(
 
     # Inject ticket watch from Phase 1
     briefing_data["ticket_watch"] = raw_results.get("ticket_watch")
+
+    # ---- Post-LLM GA dedup ----
+    # The pre-LLM dedup compares raw candidate headlines by URL and topic similarity.
+    # It can miss cases where two different outlets cover the same story with enough
+    # headline variation to slip past _is_duplicate_topic (e.g., "wrongful death lawsuit"
+    # vs "Father sues Google"). After LLM rewrites Tier 1 headlines, run a second pass
+    # comparing GA items against final Tier 1 headlines.
+    t1_headlines = [s.get("headline", "") for s in briefing_data.get("tier1_stories", [])]
+    ga_final = []
+    for ga_item in briefing_data.get("general_awareness", []):
+        ga_hl = ga_item.get("headline", "")
+        if any(_is_duplicate_topic(ga_hl, t1_hl) for t1_hl in t1_headlines):
+            _log(f"  Post-LLM GA dedup: removed '{ga_hl[:70]}' (matches Tier 1)")
+        else:
+            ga_final.append(ga_item)
+    briefing_data["general_awareness"] = ga_final
+
+    # ---- Phase 2b: Daily learning sections ----
+    _log(f"\n{'=' * 60}")
+    _log("PHASE 2b: Daily Learning Sections (Haiku)")
+    _log(f"{'=' * 60}")
+
+    from llm_calls import LLMClient
+    from dotenv import load_dotenv as _ld
+    _ld(os.path.join(os.path.dirname(__file__), ".env"))
+    _client = LLMClient()
+
+    state = _load_state()
+    hc_curriculum = _load_curriculum("healthcare_curriculum.json")
+    ag_curriculum  = _load_curriculum("agents_curriculum.json")
+
+    hc_day = state.get("healthcare_day", 1)
+    ag_day = state.get("agents_day", 1)
+
+    hc_entry = _get_curriculum_entry(hc_curriculum, hc_day)
+    ag_entry  = _get_curriculum_entry(ag_curriculum, ag_day)
+
+    _log(f"  Healthcare Academy Day {hc_day}: {hc_entry['concept']}")
+    hc_content = generate_healthcare_academy(_client, hc_entry)
+
+    _log(f"  AI Agents Lab Day {ag_day}: {ag_entry['concept']}")
+    ag_content = generate_agents_lab(_client, ag_entry)
+
+    briefing_data["healthcare_academy"] = {
+        "day": hc_day,
+        "level": hc_entry["level"],
+        "concept": hc_entry["concept"],
+        "content": hc_content,
+    }
+    briefing_data["agents_lab"] = {
+        "day": ag_day,
+        "concept": ag_entry["concept"],
+        "content": ag_content,
+    }
+
+    # Increment counters and save state
+    state["healthcare_day"] = hc_day + 1
+    state["agents_day"] = ag_day + 1
+    _save_state(state)
+    _log(f"  State updated: healthcare_day={hc_day+1}, agents_day={ag_day+1}")
 
     # ---- Phase 3: ASSEMBLE (render_briefing.py) ----
     _log(f"\n{'=' * 60}")

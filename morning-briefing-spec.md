@@ -262,7 +262,7 @@ Using ONLY the validated candidate list from Phase 1:
 
 **Cross-reference check (mandatory).** Before finalizing HTML, verify that every URL in the final briefing appears in the Phase 1 URL Verification Log. If a URL is in the briefing but not in the log, it was added after Phase 1 and must be removed.
 
-**Deduplication check (mandatory).** Before finalizing, list all headlines across all sections (Tier 1, From X, GA, Local). If the same story or event appears in more than one section, keep it in the most relevant section and remove it from the other. The same URL cannot appear twice in the briefing.
+**Deduplication check (mandatory).** Before finalizing, list all headlines across all sections (Tier 1, From X, GA, Local). If the same story or event appears in more than one section, keep it in the most relevant section and remove it from the other. The same URL cannot appear twice in the briefing. The pipeline enforces two dedup passes: (1) pre-LLM, comparing raw candidate headlines by URL and topic similarity; (2) post-LLM, comparing GA items against final Tier 1 headlines after rewriting — this catches cases where different outlets cover the same story with headlines different enough to slip past the first pass.
 
 **GA pre-publish counts (mandatory):**
 - US items: ___ / 4 max
@@ -490,7 +490,7 @@ The best of AI/tech Twitter from the last 24 hours. This section surfaces high-s
   - Bay Area tech events: meetups, conferences, demo days happening today or this week (check lu.ma, Eventbrite, Meetup)
   - Weather: only if notable (heat wave, air quality advisory, storm, PG&E shutoffs)
   - Bay Area business: local company announcements, office openings/closures, layoffs that affect the area
-- **What to exclude:** National news that happens to mention the Bay Area, routine crime blotter, real estate listings, opinion/editorial pieces, business promotions ("now open", "grand opening"), sports scores/rankings, advice columns, horoscopes, obituaries. The pipeline uses an **allowlist filter** (`_LOCAL_INCLUDE_PATTERNS` in `run_pipeline.py`) — only articles matching valid categories (transit, weather/air quality, local government, safety, community events, local healthcare, local economy impact) pass through. All others are dropped.
+- **What to exclude:** National news that happens to mention the Bay Area, routine crime blotter, real estate listings, opinion/editorial pieces, business promotions ("now open", "grand opening"), sports scores/rankings, advice columns, horoscopes, obituaries. Also exclude stories from **outside the East Bay** — North Bay (Sonoma, Marin, Napa), Peninsula (Palo Alto, San Mateo), and South Bay (San Jose, Silicon Valley) stories are rejected even if they come from an East Bay outlet. The pipeline enforces three gates in order: (1) `_LOCAL_EXCLUDE_PATTERNS` — opinion/sports/advice; (2) `_LOCAL_NON_EASTBAY_PATTERNS` — geographic exclusion; (3) `_LOCAL_INCLUDE_PATTERNS` — only valid categories (transit, weather/air quality, local government, safety, community events, local healthcare, local economy impact) pass through. All others are dropped.
 - **Sources:** East Bay Times, Mercury News, SF Chronicle, Danville SanRamon, Patch (Danville/San Ramon), KQED, Bay Area News Group, local government sites (danville.ca.gov, contracosta.ca.gov), lu.ma, Eventbrite
 - **Same 48-hour rule applies** — no stale local news
 - **Phase 1 must verify URLs** — same as all other sections

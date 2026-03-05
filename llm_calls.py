@@ -196,6 +196,18 @@ class LLMClient:
             return json.loads(text[json_start:json_end])
         raise ValueError(f"No JSON found in response: {text[:200]}")
 
+    def call_haiku(
+        self,
+        prompt: str,
+        system: str,
+        max_tokens: int = 600,
+        task_label: str = "",
+    ) -> str:
+        """Convenience wrapper: call Haiku with a single user prompt."""
+        if task_label:
+            _log(f"  [Haiku] {task_label}...")
+        return self._call(HAIKU_MODEL, system, prompt, max_tokens=max_tokens)
+
     def get_cost_summary(self) -> dict:
         return {
             "total_calls": self.call_count,
@@ -692,7 +704,37 @@ def run_phase2_llm(
             tier1_stories.append(result)
         time.sleep(0.2)
 
-    # Backfill: if we have fewer than target, try additional candidates
+    # Backfill: if we have fewer than target, try additional candidates.
+    # Enforce entity concentration cap so backfill doesn't re-introduce
+    # stories demoted by the entity audit in categorize_validated_articles.
+    _BACKFILL_ENTITY_KWS = {
+        "anthropic": ["anthropic", "claude"],
+        "openai": ["openai", "chatgpt", "gpt"],
+        "alphabet": ["google", "gemini", "deepmind"],
+        "microsoft": ["microsoft", "copilot"],
+        "meta": ["meta ai", "llama"],
+        "nvidia": ["nvidia"],
+        "apple": ["apple", "siri"],
+        "amazon": ["amazon", "alexa", "aws"],
+    }
+    BACKFILL_ENTITY_CAP = 2
+
+    def _backfill_entity_ok(candidate: dict) -> bool:
+        """Return False if adding this candidate would exceed entity cap."""
+        hl = candidate.get("headline", "").lower()
+        for entity, kws in _BACKFILL_ENTITY_KWS.items():
+            if any(kw in hl for kw in kws):
+                current = sum(
+                    1 for s in tier1_stories
+                    if any(kw in s.get("original_headline", s.get("headline", "")).lower()
+                           for kw in kws)
+                )
+                if current >= BACKFILL_ENTITY_CAP:
+                    _log(f"  [Backfill] Skip (entity cap '{entity}'={current}): "
+                         f"{candidate.get('headline','?')[:50]}")
+                    return False
+        return True
+
     backfill_idx = 0
     while len(tier1_stories) < TIER1_TARGET and backfill_idx < len(backfill_candidates):
         candidate = backfill_candidates[backfill_idx]
@@ -700,6 +742,8 @@ def run_phase2_llm(
         if candidate.get("url") in tried_urls:
             continue
         tried_urls.add(candidate.get("url"))
+        if not _backfill_entity_ok(candidate):
+            continue
         story_num += 1
         _log(f"  [Backfill] Trying: {candidate.get('headline', '?')[:50]}...")
         result = _try_summarize(candidate, story_num)
@@ -879,6 +923,110 @@ def run_phase2_llm(
     _log(f"  Total cost:    ${cost['total_cost_usd']:.4f}")
 
     return output
+
+
+# =============================================================================
+# HEALTHCARE ACADEMY and AI AGENTS LAB generators
+# =============================================================================
+
+def generate_healthcare_academy(client: "LLMClient", entry: dict) -> str:
+    """Generate one Healthcare Academy section using Haiku.
+
+    Args:
+        entry: Dict from healthcare_curriculum.json with keys:
+               day, level, concept, description, learn_more
+    Returns:
+        Formatted HTML-ready text for the section body.
+    """
+    day   = entry["day"]
+    level = entry["level"]
+    concept = entry["concept"]
+    description = entry["description"]
+    learn_more = entry.get("learn_more", [])
+
+    learn_more_md = "\n".join(
+        f"- [{lm['name']}]({lm['url']})" for lm in learn_more
+    )
+
+    prompt = f"""Generate a Healthcare Academy entry. Output ONLY the content — no preamble, no "Here is", no extra commentary.
+
+Day: {day}
+Level: {level} Level
+Concept: {concept}
+Topic hint: {description}
+
+Format your response EXACTLY like this (use **bold** for all field labels):
+
+**{concept}**
+
+**What it is:** [3-4 sentences. Precise definition, no oversimplification. Explain as you would to a smart person who is new to healthcare.]
+
+**How it works:** [2-3 sentences on the mechanics — the "plumbing." How does this actually function in practice?]
+
+**Why it matters for PayZen:** [2-3 sentences connecting to patient financing, health system revenue, collections, or PayZen's target market. Be specific.]
+
+**Common misconception:** [1-2 sentences on what smart people often get wrong about this concept.]
+
+**Learn more:**
+{learn_more_md}
+
+Target 200-250 words total."""
+
+    response = client.call_haiku(
+        prompt=prompt,
+        system="You are an expert healthcare finance educator writing for an SVP of Product at a healthcare fintech company.",
+        max_tokens=600,
+        task_label="healthcare_academy",
+    )
+    return response.strip()
+
+
+def generate_agents_lab(client: "LLMClient", entry: dict) -> str:
+    """Generate one AI Agents Lab section using Haiku.
+
+    Args:
+        entry: Dict from agents_curriculum.json with keys:
+               day, level, concept, description, learn_more
+    Returns:
+        Formatted HTML-ready text for the section body.
+    """
+    day   = entry["day"]
+    concept = entry["concept"]
+    description = entry["description"]
+    learn_more = entry.get("learn_more", [])
+
+    learn_more_md = "\n".join(
+        f"- [{lm['name']}]({lm['url']})" for lm in learn_more
+    )
+
+    prompt = f"""Generate an AI Agents Lab entry. Output ONLY the content — no preamble, no "Here is", no extra commentary.
+
+Day: {day}
+Concept: {concept}
+Topic hint: {description}
+
+Format your response EXACTLY like this (use **bold** for all field labels):
+
+**{concept}**
+
+**What it is:** [2-3 sentences. What is this technique, pattern, or tool?]
+
+**How it works:** [3-4 sentences on the technical mechanism. Enough detail to understand the approach, not a full implementation guide.]
+
+**Why it matters for PayZen agents:** [2-3 sentences on how this applies to eligibility triage, financial assistance workflows, or provider-facing automation. Be concrete.]
+
+**Learn more:**
+{learn_more_md}
+
+Target 200-250 words total."""
+
+    response = client.call_haiku(
+        prompt=prompt,
+        system="You are an expert AI engineer writing for a healthcare fintech team building production AI agents.",
+        max_tokens=600,
+        task_label="agents_lab",
+    )
+    return response.strip()
 
 
 # =============================================================================

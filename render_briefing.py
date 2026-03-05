@@ -19,7 +19,7 @@ def render_html(briefing_data: dict) -> str:
 
     Args:
         briefing_data: Output from llm_calls.run_phase2_llm(), containing:
-            header, today_30_seconds, tier1_stories, from_x,
+            header, today_30_seconds, tier1_stories,
             general_awareness, local, ticket_watch, sources_list
 
     Returns:
@@ -66,27 +66,32 @@ def render_html(briefing_data: dict) -> str:
             stories_html += _render_story(s, story_num)
             story_num += 1
 
-    # ---- From X ----
-    from_x_html = ""
-    from_x_posts = briefing_data.get("from_x", [])
-    if from_x_posts:
+    # ---- Noteworthy X Posts ----
+    noteworthy_x_html = ""
+    x_posts = briefing_data.get("noteworthy_x", [])
+    if x_posts:
         posts_html = ""
-        for post in from_x_posts:
+        for post in x_posts:
             handle = _esc(post.get("handle", ""))
             url = _esc(post.get("url", "#"))
             summary = _esc(post.get("summary", ""))
+            age_hours = post.get("age_hours")
+            age_display = f"{int(age_hours)}h ago" if age_hours and age_hours < 48 else (
+                f"{int(age_hours / 24)}d ago" if age_hours else ""
+            )
             posts_html += (
                 f'    <div class="from-x-post">\n'
                 f'      <a href="{url}" class="from-x-handle">{handle}</a> &mdash;\n'
                 f'      <span class="from-x-context">{summary}</span>\n'
+                f'      <span class="from-x-age">{age_display}</span>\n'
                 f'    </div>\n\n'
             )
 
-        from_x_html = (
-            f'  <!-- FROM X -->\n'
+        noteworthy_x_html = (
+            f'  <!-- NOTEWORTHY X POSTS -->\n'
             f'  <div class="from-x">\n'
-            f'    <div class="from-x-title">\U0001f426 From X</div>\n'
-            f'    <div class="from-x-subtitle">What AI Twitter is talking about today.</div>\n\n'
+            f'    <div class="from-x-title">\U0001f4ac Noteworthy X Posts from the Last 10 Days</div>\n'
+            f'    <div class="from-x-subtitle">What AI/tech leaders are talking about.</div>\n\n'
             f'{posts_html}'
             f'  </div>\n'
         )
@@ -150,6 +155,30 @@ def render_html(briefing_data: dict) -> str:
     # ---- Sources list ----
     sources = " &middot; ".join(_esc(s) for s in briefing_data.get("sources_list", []))
 
+    # ---- Healthcare Academy ----
+    hc_html = ""
+    hc = briefing_data.get("healthcare_academy")
+    if hc and hc.get("content"):
+        hc_html = _render_learning_section(
+            icon="📚",
+            title="Healthcare Academy",
+            day=hc["day"],
+            badge=f"{hc['level']} Level",
+            content=hc["content"],
+        )
+
+    # ---- AI Agents Lab ----
+    ag_html = ""
+    ag = briefing_data.get("agents_lab")
+    if ag and ag.get("content"):
+        ag_html = _render_learning_section(
+            icon="🤖",
+            title="AI Agents Lab",
+            day=ag["day"],
+            badge=None,
+            content=ag["content"],
+        )
+
     # ---- Assemble full HTML ----
     return TEMPLATE.format(
         date_display=_esc(date_display),
@@ -157,9 +186,11 @@ def render_html(briefing_data: dict) -> str:
         total_minutes=total_minutes,
         topline_items=topline_items,
         stories_html=stories_html,
-        from_x_html=from_x_html,
+        noteworthy_x_html=noteworthy_x_html,
         ga_items_html=ga_items_html,
         local_html=local_html,
+        healthcare_academy_html=hc_html,
+        agents_lab_html=ag_html,
         sources=sources,
     )
 
@@ -172,6 +203,43 @@ def _esc(text: str) -> str:
     # Convert **bold** to <strong>bold</strong>
     escaped = re.sub(r'\*\*(.+?)\*\*', r'<strong>\1</strong>', escaped)
     return escaped
+
+
+def _render_learning_section(icon: str, title: str, day: int, badge: str | None, content: str) -> str:
+    """Render a daily learning section (Healthcare Academy or AI Agents Lab)."""
+    badge_html = f'<span class="learning-badge">{_esc(badge)}</span>' if badge else ""
+    day_label = f"Day {day}"
+
+    # Convert markdown links [text](url) in content to <a> tags
+    import re as _re
+    content_html = _esc(content)
+    content_html = _re.sub(
+        r'\[([^\]]+)\]\(([^)]+)\)',
+        r'<a href="\2" class="learning-link">\1</a>',
+        content_html,
+    )
+    # Convert bare URLs left after _esc
+    content_html = _re.sub(
+        r'(?<!["\'])https?://[^\s<>"]+',
+        lambda m: f'<a href="{m.group()}" class="learning-link">{m.group()}</a>',
+        content_html,
+    )
+
+    # Split into paragraphs (double newline or single for readability)
+    paragraphs = [p.strip() for p in content_html.split("\n") if p.strip()]
+    body_html = "\n".join(f'    <p class="learning-body">{p}</p>' for p in paragraphs)
+
+    return (
+        f'\n  <div class="learning-section">\n'
+        f'    <div class="learning-header">\n'
+        f'      <span class="learning-icon">{icon}</span>\n'
+        f'      <span class="learning-title">{_esc(title)}</span>\n'
+        f'      <span class="learning-day">{day_label}</span>\n'
+        f'      {badge_html}\n'
+        f'    </div>\n'
+        f'{body_html}\n'
+        f'  </div>\n'
+    )
 
 
 def _section_header(label: str) -> str:
@@ -699,6 +767,74 @@ TEMPLATE = '''<!DOCTYPE html>
     color: #b8860b;
   }}
 
+  /* ── Daily Learning Sections ── */
+  .learning-section {{
+    background: #f8f6ff;
+    border-left: 3px solid #7c5cbf;
+    margin: 0 0 0 0;
+    padding: 20px 40px 20px 40px;
+  }}
+
+  .learning-header {{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+  }}
+
+  .learning-icon {{
+    font-size: 16px;
+  }}
+
+  .learning-title {{
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #7c5cbf;
+  }}
+
+  .learning-day {{
+    font-size: 11px;
+    font-weight: 600;
+    color: #888;
+    letter-spacing: 0.04em;
+  }}
+
+  .learning-badge {{
+    font-size: 10px;
+    font-weight: 600;
+    color: #fff;
+    background: #7c5cbf;
+    border-radius: 3px;
+    padding: 1px 6px;
+    letter-spacing: 0.04em;
+  }}
+
+  .learning-body {{
+    font-size: 14px;
+    line-height: 1.65;
+    color: #2c2c2c;
+    margin: 0 0 6px 0;
+  }}
+
+  .learning-body strong {{
+    color: #1a1a1a;
+  }}
+
+  .learning-link {{
+    color: #7c5cbf;
+    text-decoration: underline;
+  }}
+
+  @media (max-width: 600px) {{
+    .learning-section {{
+      padding-left: 24px;
+      padding-right: 24px;
+    }}
+  }}
+
   @media (max-width: 600px) {{
     .header, .topline, .section-header, .story, .from-x, .general-awareness, .local-section, .footer {{
       padding-left: 24px;
@@ -749,7 +885,7 @@ TEMPLATE = '''<!DOCTYPE html>
 
 {stories_html}
 
-{from_x_html}
+{noteworthy_x_html}
 
   <!-- GENERAL AWARENESS -->
   <div class="general-awareness">
@@ -760,6 +896,10 @@ TEMPLATE = '''<!DOCTYPE html>
   </div>
 
 {local_html}
+
+{healthcare_academy_html}
+
+{agents_lab_html}
 
   <!-- FOOTER -->
   <div class="footer">

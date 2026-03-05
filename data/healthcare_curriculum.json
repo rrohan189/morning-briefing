@@ -1,0 +1,3202 @@
+[
+  {
+    "day": 1,
+    "level": "101",
+    "concept": "Patient Registration",
+    "description": "The front door of revenue cycle — demographics collection, insurance cards, consent forms, financial counseling, and pre-service verification.",
+    "learn_more": [
+      {
+        "name": "HFMA",
+        "url": "https://www.hfma.org/revenue-cycle-management/"
+      },
+      {
+        "name": "CMS Medicare",
+        "url": "https://www.cms.gov/medicare"
+      }
+    ]
+  },
+  {
+    "day": 2,
+    "level": "101",
+    "concept": "Insurance Eligibility Verification",
+    "description": "Confirming active coverage, benefit levels, deductibles, and copays before or at time of service — 270/271 electronic transactions.",
+    "learn_more": [
+      {
+        "name": "HFMA",
+        "url": "https://www.hfma.org/revenue-cycle-management/"
+      },
+      {
+        "name": "CMS",
+        "url": "https://www.cms.gov"
+      }
+    ]
+  },
+  {
+    "day": 3,
+    "level": "101",
+    "concept": "Prior Authorization",
+    "description": "Insurer pre-approval requirement for specific procedures, drugs, or services — clinical criteria, turnaround timelines, burden on providers.",
+    "learn_more": [
+      {
+        "name": "AHA",
+        "url": "https://www.aha.org/topics"
+      },
+      {
+        "name": "KFF",
+        "url": "https://www.kff.org"
+      }
+    ]
+  },
+  {
+    "day": 4,
+    "level": "101",
+    "concept": "Charge Capture",
+    "description": "Recording billable services rendered — Charge Description Master (CDM), charge codes, charge reconciliation, fee schedule.",
+    "learn_more": [
+      {
+        "name": "HFMA",
+        "url": "https://www.hfma.org/revenue-cycle-management/"
+      },
+      {
+        "name": "Healthcare Dive",
+        "url": "https://www.healthcaredive.com"
+      }
+    ]
+  },
+  {
+    "day": 5,
+    "level": "101",
+    "concept": "Medical Coding — ICD-10, CPT, HCPCS",
+    "description": "The translation layer between clinical care and billing — ICD-10 diagnosis codes, CPT procedure codes, HCPCS supply/device codes.",
+    "learn_more": [
+      {
+        "name": "CMS",
+        "url": "https://www.cms.gov"
+      },
+      {
+        "name": "HFMA",
+        "url": "https://www.hfma.org/revenue-cycle-management/"
+      }
+    ]
+  },
+  {
+    "day": 6,
+    "level": "101",
+    "concept": "Claim Submission",
+    "description": "Electronic 837 transactions to payers via clearinghouses — clean claim requirements, scrubbing rules, claim edits.",
+    "learn_more": [
+      {
+        "name": "CMS",
+        "url": "https://www.cms.gov"
+      },
+      {
+        "name": "HFMA",
+        "url": "https://www.hfma.org/revenue-cycle-management/"
+      }
+    ]
+  },
+  {
+    "day": 7,
+    "level": "101",
+    "concept": "Remittance Advice and EOB",
+    "description": "835 electronic remittance advice and Explanation of Benefits — contractual adjustments, allowed amounts, patient responsibility.",
+    "learn_more": [
+      {
+        "name": "CMS Medicare",
+        "url": "https://www.cms.gov/medicare"
+      },
+      {
+        "name": "HFMA",
+        "url": "https://www.hfma.org/revenue-cycle-management/"
+      }
+    ]
+  },
+  {
+    "day": 8,
+    "level": "101",
+    "concept": "Claim Adjudication",
+    "description": "How payers process and pay claims — contractual allowable amounts, bundling edits, coordination of benefits, timely payment rules.",
+    "learn_more": [
+      {
+        "name": "CMS",
+        "url": "https://www.cms.gov"
+      },
+      {
+        "name": "HFMA",
+        "url": "https://www.hfma.org/revenue-cycle-management/"
+      }
+    ]
+  },
+  {
+    "day": 9,
+    "level": "101",
+    "concept": "Payment Posting",
+    "description": "Applying received payments to patient accounts — auto-posting via 835, manual posting exceptions, unapplied cash, reconciliation.",
+    "learn_more": [
+      {
+        "name": "HFMA",
+        "url": "https://www.hfma.org/revenue-cycle-management/"
+      },
+      {
+        "name": "Healthcare Dive",
+        "url": "https://www.healthcaredive.com"
+      }
+    ]
+  },
+  {
+    "day": 10,
+    "level": "101",
+    "concept": "Denial Management",
+    "description": "Identifying, appealing, and preventing underpaid or rejected claims — denial categories (clinical, administrative, eligibility, authorization), first-pass clean claim rate.",
+    "learn_more": [
+      {
+        "name": "HFMA",
+        "url": "https://www.hfma.org/revenue-cycle-management/"
+      },
+      {
+        "name": "AHA",
+        "url": "https://www.aha.org/topics"
+      }
+    ]
+  },
+  {
+    "day": 11,
+    "level": "101",
+    "concept": "Accounts Receivable (AR) Aging",
+    "description": "Tracking outstanding patient and insurance balances by time bucket (0-30, 31-60, 61-90, 90+ days) — aged AR as indicator of collection health.",
+    "learn_more": [
+      {
+        "name": "HFMA",
+        "url": "https://www.hfma.org/revenue-cycle-management/"
+      },
+      {
+        "name": "Becker's",
+        "url": "https://www.beckershospitalreview.com/finance"
+      }
+    ]
+  },
+  {
+    "day": 12,
+    "level": "101",
+    "concept": "Patient Statements and Self-Pay Collections",
+    "description": "Billing patients for cost-share — statement cycles, payment plans, propensity-to-pay scoring, digital payment options.",
+    "learn_more": [
+      {
+        "name": "HFMA",
+        "url": "https://www.hfma.org/revenue-cycle-management/"
+      },
+      {
+        "name": "Healthcare Dive",
+        "url": "https://www.healthcaredive.com"
+      }
+    ]
+  },
+  {
+    "day": 13,
+    "level": "101",
+    "concept": "Bad Debt and Charity Care",
+    "description": "Classifying unrecoverable patient balances — write-off policies, charity care programs, 501(r) requirements, community benefit reporting.",
+    "learn_more": [
+      {
+        "name": "KFF",
+        "url": "https://www.kff.org"
+      },
+      {
+        "name": "CMS",
+        "url": "https://www.cms.gov"
+      }
+    ]
+  },
+  {
+    "day": 14,
+    "level": "101",
+    "concept": "Days in Accounts Receivable (DAR)",
+    "description": "Key RCM KPI measuring average time to collect — formula, industry benchmark (<50 days), payer mix impact, trending methodology.",
+    "learn_more": [
+      {
+        "name": "HFMA",
+        "url": "https://www.hfma.org/revenue-cycle-management/"
+      },
+      {
+        "name": "MGMA",
+        "url": "https://www.mgma.com/resources"
+      }
+    ]
+  },
+  {
+    "day": 15,
+    "level": "101",
+    "concept": "Net Collection Rate",
+    "description": "Ultimate RCM efficiency metric — actual collections as % of net collectible charges (after contractual adjustments), benchmark >95%.",
+    "learn_more": [
+      {
+        "name": "HFMA",
+        "url": "https://www.hfma.org/revenue-cycle-management/"
+      },
+      {
+        "name": "Becker's",
+        "url": "https://www.beckershospitalreview.com/finance"
+      }
+    ]
+  },
+  {
+    "day": 16,
+    "level": "101",
+    "concept": "Commercial Insurance Basics",
+    "description": "How employer-sponsored health plans work — premiums, deductibles, copays, coinsurance, out-of-pocket maximums, EOI, network tiers.",
+    "learn_more": [
+      {
+        "name": "KFF",
+        "url": "https://www.kff.org"
+      },
+      {
+        "name": "CMS",
+        "url": "https://www.cms.gov"
+      }
+    ]
+  },
+  {
+    "day": 17,
+    "level": "101",
+    "concept": "Medicare Fee-for-Service Overview",
+    "description": "Parts A and B — who qualifies, what is covered, how hospitals (DRGs) and physicians (fee schedule) are paid, beneficiary cost-sharing.",
+    "learn_more": [
+      {
+        "name": "CMS Medicare",
+        "url": "https://www.cms.gov/medicare"
+      },
+      {
+        "name": "KFF",
+        "url": "https://www.kff.org"
+      }
+    ]
+  },
+  {
+    "day": 18,
+    "level": "101",
+    "concept": "Medicare Advantage (Part C)",
+    "description": "Privatized Medicare managed by commercial insurers — risk adjustment, Star ratings, network requirements, supplemental benefits.",
+    "learn_more": [
+      {
+        "name": "CMS Medicare",
+        "url": "https://www.cms.gov/medicare"
+      },
+      {
+        "name": "KFF",
+        "url": "https://www.kff.org"
+      }
+    ]
+  },
+  {
+    "day": 19,
+    "level": "101",
+    "concept": "Medicaid Overview",
+    "description": "State-federal low-income program — ACA expansion, eligibility categories, covered services, state variation, managed Medicaid.",
+    "learn_more": [
+      {
+        "name": "CMS Medicaid",
+        "url": "https://www.cms.gov/medicaid"
+      },
+      {
+        "name": "KFF",
+        "url": "https://www.kff.org"
+      }
+    ]
+  },
+  {
+    "day": 20,
+    "level": "101",
+    "concept": "ACA Marketplace Plans",
+    "description": "Exchange plans — metal tiers (bronze through platinum), premium tax credits, cost-sharing reductions, special enrollment periods.",
+    "learn_more": [
+      {
+        "name": "KFF",
+        "url": "https://www.kff.org"
+      },
+      {
+        "name": "CMS",
+        "url": "https://www.cms.gov"
+      }
+    ]
+  },
+  {
+    "day": 21,
+    "level": "101",
+    "concept": "Self-Pay and Uninsured Patients",
+    "description": "Uninsured and underinsured patients — fastest-growing payer segment, charity care obligations, financial counseling, presumptive eligibility.",
+    "learn_more": [
+      {
+        "name": "KFF",
+        "url": "https://www.kff.org"
+      },
+      {
+        "name": "CMS",
+        "url": "https://www.cms.gov"
+      }
+    ]
+  },
+  {
+    "day": 22,
+    "level": "101",
+    "concept": "TRICARE",
+    "description": "Healthcare coverage for military members, retirees, and dependents — regional plan types, network/non-network billing rules, claims processing.",
+    "learn_more": [
+      {
+        "name": "CMS",
+        "url": "https://www.cms.gov"
+      },
+      {
+        "name": "Healthcare Dive",
+        "url": "https://www.healthcaredive.com"
+      }
+    ]
+  },
+  {
+    "day": 23,
+    "level": "101",
+    "concept": "Workers' Compensation Insurance",
+    "description": "Occupational injury and illness coverage — state-based variation, separate billing rules, lien resolution, no patient cost-share.",
+    "learn_more": [
+      {
+        "name": "CMS",
+        "url": "https://www.cms.gov"
+      },
+      {
+        "name": "Healthcare Dive",
+        "url": "https://www.healthcaredive.com"
+      }
+    ]
+  },
+  {
+    "day": 24,
+    "level": "101",
+    "concept": "Payer Contracting Basics",
+    "description": "How hospitals negotiate rates with commercial payers — fee schedule negotiation, reference-based pricing, contract terms, renewal cycles.",
+    "learn_more": [
+      {
+        "name": "HFMA",
+        "url": "https://www.hfma.org/revenue-cycle-management/"
+      },
+      {
+        "name": "AHA",
+        "url": "https://www.aha.org/topics"
+      }
+    ]
+  },
+  {
+    "day": 25,
+    "level": "101",
+    "concept": "Network Adequacy",
+    "description": "Insurer obligations to maintain sufficient provider networks — time/distance standards, specialty requirements, network adequacy reviews.",
+    "learn_more": [
+      {
+        "name": "CMS",
+        "url": "https://www.cms.gov"
+      },
+      {
+        "name": "KFF",
+        "url": "https://www.kff.org"
+      }
+    ]
+  },
+  {
+    "day": 26,
+    "level": "101",
+    "concept": "Coordination of Benefits (COB)",
+    "description": "Handling patients with multiple payers — primary/secondary payer determination, birthday rule, Medicare Secondary Payer rules.",
+    "learn_more": [
+      {
+        "name": "CMS Medicare",
+        "url": "https://www.cms.gov/medicare"
+      },
+      {
+        "name": "HFMA",
+        "url": "https://www.hfma.org/revenue-cycle-management/"
+      }
+    ]
+  },
+  {
+    "day": 27,
+    "level": "101",
+    "concept": "Capitation vs Fee-for-Service",
+    "description": "Two fundamental payment models — per-member-per-month (PMPM) flat payment vs pay-per-visit, risk allocation, incentive differences.",
+    "learn_more": [
+      {
+        "name": "KFF",
+        "url": "https://www.kff.org"
+      },
+      {
+        "name": "CMS CMMI",
+        "url": "https://innovation.cms.gov"
+      }
+    ]
+  },
+  {
+    "day": 28,
+    "level": "101",
+    "concept": "High-Deductible Health Plans (HDHPs) and HSAs",
+    "description": "Consumer-directed plans — IRS HDHP thresholds, HSA contribution limits, impact on patient cost exposure and collection behavior.",
+    "learn_more": [
+      {
+        "name": "KFF",
+        "url": "https://www.kff.org"
+      },
+      {
+        "name": "CMS",
+        "url": "https://www.cms.gov"
+      }
+    ]
+  },
+  {
+    "day": 29,
+    "level": "101",
+    "concept": "Balance Billing and the No Surprises Act",
+    "description": "What it means to bill beyond contractual allowed amounts — federal NSA prohibition for out-of-network surprise bills, patient protections.",
+    "learn_more": [
+      {
+        "name": "CMS",
+        "url": "https://www.cms.gov"
+      },
+      {
+        "name": "KFF",
+        "url": "https://www.kff.org"
+      }
+    ]
+  },
+  {
+    "day": 30,
+    "level": "101",
+    "concept": "Subrogation and Third-Party Liability",
+    "description": "Recovering payments when a third party (auto insurer, liability) is responsible — subrogation liens, medical payment coverage, lien resolution.",
+    "learn_more": [
+      {
+        "name": "HFMA",
+        "url": "https://www.hfma.org/revenue-cycle-management/"
+      },
+      {
+        "name": "Healthcare Dive",
+        "url": "https://www.healthcaredive.com"
+      }
+    ]
+  },
+  {
+    "day": 31,
+    "level": "101",
+    "concept": "Nonprofit vs For-Profit Hospitals",
+    "description": "Ownership models — tax-exempt 501(c)(3) nonprofits, investor-owned for-profits, government hospitals; community benefit, mission vs margin.",
+    "learn_more": [
+      {
+        "name": "KFF",
+        "url": "https://www.kff.org"
+      },
+      {
+        "name": "AHA",
+        "url": "https://www.aha.org/topics"
+      }
+    ]
+  },
+  {
+    "day": 32,
+    "level": "101",
+    "concept": "Integrated Delivery Networks (IDNs)",
+    "description": "Multi-hospital health systems — shared services, system-level payer contracting, scale advantages, governance structures.",
+    "learn_more": [
+      {
+        "name": "AHA",
+        "url": "https://www.aha.org/topics"
+      },
+      {
+        "name": "Healthcare Dive",
+        "url": "https://www.healthcaredive.com"
+      }
+    ]
+  },
+  {
+    "day": 33,
+    "level": "101",
+    "concept": "Academic Medical Centers (AMCs)",
+    "description": "Teaching hospitals — GME funding, DSH payments, research missions, higher cost structures, case mix complexity.",
+    "learn_more": [
+      {
+        "name": "AHA",
+        "url": "https://www.aha.org/topics"
+      },
+      {
+        "name": "KFF",
+        "url": "https://www.kff.org"
+      }
+    ]
+  },
+  {
+    "day": 34,
+    "level": "101",
+    "concept": "Safety-Net Hospitals",
+    "description": "Disproportionate share hospitals serving high Medicaid/uninsured volume — DSH payments, financial vulnerability, mission tension.",
+    "learn_more": [
+      {
+        "name": "KFF",
+        "url": "https://www.kff.org"
+      },
+      {
+        "name": "CMS Medicaid",
+        "url": "https://www.cms.gov/medicaid"
+      }
+    ]
+  },
+  {
+    "day": 35,
+    "level": "101",
+    "concept": "Critical Access Hospitals (CAHs)",
+    "description": "Rural hospitals under 25 beds — cost-based reimbursement (101% of Medicare cost), sustainability challenges, rural health access.",
+    "learn_more": [
+      {
+        "name": "CMS Medicare",
+        "url": "https://www.cms.gov/medicare"
+      },
+      {
+        "name": "Healthcare Dive",
+        "url": "https://www.healthcaredive.com"
+      }
+    ]
+  },
+  {
+    "day": 36,
+    "level": "101",
+    "concept": "Physician Groups and Medical Practices",
+    "description": "Independent vs employed physicians — professional billing (Part B), RVU-based compensation, group practice structures, specialty variation.",
+    "learn_more": [
+      {
+        "name": "MGMA",
+        "url": "https://www.mgma.com/resources"
+      },
+      {
+        "name": "CMS Medicare",
+        "url": "https://www.cms.gov/medicare"
+      }
+    ]
+  },
+  {
+    "day": 37,
+    "level": "101",
+    "concept": "Federally Qualified Health Centers (FQHCs)",
+    "description": "Community health centers — HRSA section 330 funding, enhanced Medicaid PPS rates, sliding-fee scale, FQHC look-alike status.",
+    "learn_more": [
+      {
+        "name": "CMS Medicaid",
+        "url": "https://www.cms.gov/medicaid"
+      },
+      {
+        "name": "KFF",
+        "url": "https://www.kff.org"
+      }
+    ]
+  },
+  {
+    "day": 38,
+    "level": "101",
+    "concept": "Ambulatory Surgery Centers (ASCs)",
+    "description": "Outpatient surgical facilities — cost advantages over hospital ORs, HOPD site-neutral payment debate, ownership models, OPPS vs ASC rates.",
+    "learn_more": [
+      {
+        "name": "CMS Medicare",
+        "url": "https://www.cms.gov/medicare"
+      },
+      {
+        "name": "Healthcare Dive",
+        "url": "https://www.healthcaredive.com"
+      }
+    ]
+  },
+  {
+    "day": 39,
+    "level": "101",
+    "concept": "Hospital Service Line Economics",
+    "description": "Margin variation across cardiology, oncology, orthopedics, behavioral health — cross-subsidization, contribution margin analysis.",
+    "learn_more": [
+      {
+        "name": "Becker's",
+        "url": "https://www.beckershospitalreview.com/finance"
+      },
+      {
+        "name": "Healthcare Dive",
+        "url": "https://www.healthcaredive.com"
+      }
+    ]
+  },
+  {
+    "day": 40,
+    "level": "101",
+    "concept": "Physician Employment Trends",
+    "description": "Market shift from independent to employed physicians — billing implications, referral patterns, compensation models, health system strategy.",
+    "learn_more": [
+      {
+        "name": "AHA",
+        "url": "https://www.aha.org/topics"
+      },
+      {
+        "name": "MGMA",
+        "url": "https://www.mgma.com/resources"
+      }
+    ]
+  },
+  {
+    "day": 41,
+    "level": "101",
+    "concept": "Case Mix Index (CMI)",
+    "description": "Measure of patient acuity and resource consumption — DRG-weighted CMI, payer mix impact, benchmarking, documentation improvement.",
+    "learn_more": [
+      {
+        "name": "CMS Medicare",
+        "url": "https://www.cms.gov/medicare"
+      },
+      {
+        "name": "Becker's",
+        "url": "https://www.beckershospitalreview.com/finance"
+      }
+    ]
+  },
+  {
+    "day": 42,
+    "level": "101",
+    "concept": "340B Drug Pricing Program",
+    "description": "Discounted outpatient drugs for safety-net providers — eligibility criteria, contract pharmacy arrangements, manufacturer restrictions, controversy.",
+    "learn_more": [
+      {
+        "name": "Healthcare Dive",
+        "url": "https://www.healthcaredive.com"
+      },
+      {
+        "name": "KFF",
+        "url": "https://www.kff.org"
+      }
+    ]
+  },
+  {
+    "day": 43,
+    "level": "101",
+    "concept": "Graduate Medical Education (GME) Funding",
+    "description": "Medicare payments for resident physician training — direct GME (salary/benefits), indirect GME (extra costs), IME adjustment, teaching hospital economics.",
+    "learn_more": [
+      {
+        "name": "CMS Medicare",
+        "url": "https://www.cms.gov/medicare"
+      },
+      {
+        "name": "KFF",
+        "url": "https://www.kff.org"
+      }
+    ]
+  },
+  {
+    "day": 44,
+    "level": "101",
+    "concept": "Hospital Community Benefit Requirements",
+    "description": "Nonprofit hospital IRS 501(r) obligations — financial assistance policy, application process, collections restrictions, community benefit report.",
+    "learn_more": [
+      {
+        "name": "KFF",
+        "url": "https://www.kff.org"
+      },
+      {
+        "name": "HHS OIG",
+        "url": "https://oig.hhs.gov/compliance/"
+      }
+    ]
+  },
+  {
+    "day": 45,
+    "level": "101",
+    "concept": "Health System Governance",
+    "description": "Board structure for nonprofit hospitals — trustee fiduciary duties, conflict of interest, IRS 990 transparency, CEO accountability.",
+    "learn_more": [
+      {
+        "name": "AHA",
+        "url": "https://www.aha.org/topics"
+      },
+      {
+        "name": "KFF",
+        "url": "https://www.kff.org"
+      }
+    ]
+  },
+  {
+    "day": 46,
+    "level": "101",
+    "concept": "HIPAA Privacy Rule",
+    "description": "Patient health information protections — covered entities, minimum necessary standard, patient access rights, authorization requirements.",
+    "learn_more": [
+      {
+        "name": "CMS",
+        "url": "https://www.cms.gov"
+      },
+      {
+        "name": "HHS OIG",
+        "url": "https://oig.hhs.gov/compliance/"
+      }
+    ]
+  },
+  {
+    "day": 47,
+    "level": "101",
+    "concept": "HIPAA Security Rule",
+    "description": "Electronic PHI safeguards — administrative, physical, and technical safeguards, risk analysis, breach notification, business associate agreements.",
+    "learn_more": [
+      {
+        "name": "CMS",
+        "url": "https://www.cms.gov"
+      },
+      {
+        "name": "HHS OIG",
+        "url": "https://oig.hhs.gov/compliance/"
+      }
+    ]
+  },
+  {
+    "day": 48,
+    "level": "101",
+    "concept": "EMTALA",
+    "description": "Emergency Medical Treatment and Labor Act — mandatory emergency screening and stabilization, transfer obligations, on-call requirements, penalties.",
+    "learn_more": [
+      {
+        "name": "CMS",
+        "url": "https://www.cms.gov"
+      },
+      {
+        "name": "AHA",
+        "url": "https://www.aha.org/topics"
+      }
+    ]
+  },
+  {
+    "day": 49,
+    "level": "101",
+    "concept": "No Surprises Act",
+    "description": "Federal surprise billing prohibition for out-of-network emergency care and non-emergency scheduled care — good faith estimates, independent dispute resolution.",
+    "learn_more": [
+      {
+        "name": "CMS",
+        "url": "https://www.cms.gov"
+      },
+      {
+        "name": "KFF",
+        "url": "https://www.kff.org"
+      }
+    ]
+  },
+  {
+    "day": 50,
+    "level": "101",
+    "concept": "Hospital Price Transparency Rule",
+    "description": "CMS machine-readable file requirements — standard charges, shoppable services display, compliance timelines, payer negotiations disclosure.",
+    "learn_more": [
+      {
+        "name": "CMS",
+        "url": "https://www.cms.gov"
+      },
+      {
+        "name": "Healthcare Dive",
+        "url": "https://www.healthcaredive.com"
+      }
+    ]
+  },
+  {
+    "day": 51,
+    "level": "101",
+    "concept": "501(r) Financial Assistance Requirements",
+    "description": "Nonprofit hospital IRS obligations — financial assistance policy content, broad publicization, emergency care without discrimination, collection limits.",
+    "learn_more": [
+      {
+        "name": "KFF",
+        "url": "https://www.kff.org"
+      },
+      {
+        "name": "HHS OIG",
+        "url": "https://oig.hhs.gov/compliance/"
+      }
+    ]
+  },
+  {
+    "day": 52,
+    "level": "101",
+    "concept": "Stark Law and Anti-Kickback Statute",
+    "description": "Physician self-referral prohibition (Stark) and fraud/bribery prohibition (AKS) — exceptions, safe harbors, penalties, CMS/DOJ enforcement.",
+    "learn_more": [
+      {
+        "name": "HHS OIG",
+        "url": "https://oig.hhs.gov/compliance/"
+      },
+      {
+        "name": "CMS",
+        "url": "https://www.cms.gov"
+      }
+    ]
+  },
+  {
+    "day": 53,
+    "level": "101",
+    "concept": "False Claims Act",
+    "description": "Federal civil statute against fraudulent claims to government payers — qui tam relator provisions, triple damages, healthcare enforcement priorities.",
+    "learn_more": [
+      {
+        "name": "HHS OIG",
+        "url": "https://oig.hhs.gov/compliance/"
+      },
+      {
+        "name": "CMS",
+        "url": "https://www.cms.gov"
+      }
+    ]
+  },
+  {
+    "day": 54,
+    "level": "101",
+    "concept": "HITECH Act and EHR Interoperability",
+    "description": "Meaningful use incentives for EHR adoption, 21st Century Cures Act interoperability rules — information blocking prohibition, TEFCA.",
+    "learn_more": [
+      {
+        "name": "CMS",
+        "url": "https://www.cms.gov"
+      },
+      {
+        "name": "Healthcare Dive",
+        "url": "https://www.healthcaredive.com"
+      }
+    ]
+  },
+  {
+    "day": 55,
+    "level": "101",
+    "concept": "CMS Conditions of Participation (CoPs)",
+    "description": "Requirements to participate in Medicare and Medicaid — survey and certification process, compliance surveys, deficiency citations, remedies.",
+    "learn_more": [
+      {
+        "name": "CMS",
+        "url": "https://www.cms.gov"
+      },
+      {
+        "name": "AHA",
+        "url": "https://www.aha.org/topics"
+      }
+    ]
+  },
+  {
+    "day": 56,
+    "level": "101",
+    "concept": "Certificate of Need (CON) Laws",
+    "description": "State approval requirements for new healthcare facilities or capital expenditures — which states have CON, economic rationale, reform debates.",
+    "learn_more": [
+      {
+        "name": "KFF",
+        "url": "https://www.kff.org"
+      },
+      {
+        "name": "Healthcare Dive",
+        "url": "https://www.healthcaredive.com"
+      }
+    ]
+  },
+  {
+    "day": 57,
+    "level": "101",
+    "concept": "CMS Auditors — RAC, MAC, OIG",
+    "description": "Post-payment audit programs — Recovery Audit Contractors, Medicare Administrative Contractors, OIG work plan, statistical sampling.",
+    "learn_more": [
+      {
+        "name": "CMS Medicare",
+        "url": "https://www.cms.gov/medicare"
+      },
+      {
+        "name": "HHS OIG",
+        "url": "https://oig.hhs.gov/compliance/"
+      }
+    ]
+  },
+  {
+    "day": 58,
+    "level": "101",
+    "concept": "Information Blocking Rule",
+    "description": "21st Century Cures prohibition on restricting patient data access — electronic health information (EHI), disincentives, TEFCA framework.",
+    "learn_more": [
+      {
+        "name": "CMS",
+        "url": "https://www.cms.gov"
+      },
+      {
+        "name": "Healthcare Dive",
+        "url": "https://www.healthcaredive.com"
+      }
+    ]
+  },
+  {
+    "day": 59,
+    "level": "101",
+    "concept": "Healthcare Fraud and Abuse Enforcement",
+    "description": "Federal enforcement priorities — OIG work plan, corporate integrity agreements, exclusion authority, civil monetary penalties.",
+    "learn_more": [
+      {
+        "name": "HHS OIG",
+        "url": "https://oig.hhs.gov/compliance/"
+      },
+      {
+        "name": "CMS",
+        "url": "https://www.cms.gov"
+      }
+    ]
+  },
+  {
+    "day": 60,
+    "level": "101",
+    "concept": "HIPAA Business Associate Agreements (BAAs)",
+    "description": "Contracts required when PHI is shared with vendors — BAA contents, covered services, subcontractor chains, breach liability allocation.",
+    "learn_more": [
+      {
+        "name": "CMS",
+        "url": "https://www.cms.gov"
+      },
+      {
+        "name": "HHS OIG",
+        "url": "https://oig.hhs.gov/compliance/"
+      }
+    ]
+  },
+  {
+    "day": 61,
+    "level": "201",
+    "concept": "Denial Categories and Root Causes",
+    "description": "Taxonomy of claim denials — eligibility, authorization, coding, medical necessity, timely filing, duplicate claim; upstream vs downstream causes.",
+    "learn_more": [
+      {
+        "name": "HFMA",
+        "url": "https://www.hfma.org/revenue-cycle-management/"
+      },
+      {
+        "name": "AHA",
+        "url": "https://www.aha.org/topics"
+      }
+    ]
+  },
+  {
+    "day": 62,
+    "level": "201",
+    "concept": "Prior Authorization Burden and Reform",
+    "description": "Quantifying PA administrative waste — AMA data, gold carding, electronic PA standards, CMS proposed rule changes, bipartisan legislation.",
+    "learn_more": [
+      {
+        "name": "AHA",
+        "url": "https://www.aha.org/topics"
+      },
+      {
+        "name": "KFF",
+        "url": "https://www.kff.org"
+      }
+    ]
+  },
+  {
+    "day": 63,
+    "level": "201",
+    "concept": "Claim Appeal Process",
+    "description": "Internal and external appeal workflows — peer-to-peer review, reconsideration, first-level appeal, independent review organizations, timelines.",
+    "learn_more": [
+      {
+        "name": "HFMA",
+        "url": "https://www.hfma.org/revenue-cycle-management/"
+      },
+      {
+        "name": "AHA",
+        "url": "https://www.aha.org/topics"
+      }
+    ]
+  },
+  {
+    "day": 64,
+    "level": "201",
+    "concept": "Clean Claim Rate and Denial Rate Benchmarks",
+    "description": "Industry benchmarks — clean claim rate >95%, initial denial rate <5%, overturn rate >50%; how to track and trend denial KPIs.",
+    "learn_more": [
+      {
+        "name": "HFMA",
+        "url": "https://www.hfma.org/revenue-cycle-management/"
+      },
+      {
+        "name": "Becker's",
+        "url": "https://www.beckershospitalreview.com/finance"
+      }
+    ]
+  },
+  {
+    "day": 65,
+    "level": "201",
+    "concept": "Denial Prevention vs Denial Management",
+    "description": "Upstream prevention (eligibility, auth, documentation) vs downstream management (appeal workflow) — ROI comparison, measurement.",
+    "learn_more": [
+      {
+        "name": "HFMA",
+        "url": "https://www.hfma.org/revenue-cycle-management/"
+      },
+      {
+        "name": "Healthcare Dive",
+        "url": "https://www.healthcaredive.com"
+      }
+    ]
+  },
+  {
+    "day": 66,
+    "level": "201",
+    "concept": "Risk Adjustment Overview",
+    "description": "How CMS adjusts Medicare Advantage plan payments for member health status — demographic and HCC-based adjustment, plan payment implications.",
+    "learn_more": [
+      {
+        "name": "CMS Medicare",
+        "url": "https://www.cms.gov/medicare"
+      },
+      {
+        "name": "KFF",
+        "url": "https://www.kff.org"
+      }
+    ]
+  },
+  {
+    "day": 67,
+    "level": "201",
+    "concept": "HCC Coding (Hierarchical Condition Categories)",
+    "description": "Chronic condition coding completeness — HCC model structure, additive vs hierarchical categories, coding gaps, annual capture requirements.",
+    "learn_more": [
+      {
+        "name": "CMS Medicare",
+        "url": "https://www.cms.gov/medicare"
+      },
+      {
+        "name": "Healthcare Dive",
+        "url": "https://www.healthcaredive.com"
+      }
+    ]
+  },
+  {
+    "day": 68,
+    "level": "201",
+    "concept": "Risk Adjustment Factor (RAF) Scores",
+    "description": "How RAF is calculated from demographics and HCCs — CMS-HCC model, RAF impact on plan revenue, prospective vs concurrent adjustment.",
+    "learn_more": [
+      {
+        "name": "CMS Medicare",
+        "url": "https://www.cms.gov/medicare"
+      },
+      {
+        "name": "KFF",
+        "url": "https://www.kff.org"
+      }
+    ]
+  },
+  {
+    "day": 69,
+    "level": "201",
+    "concept": "RADV — Risk Adjustment Data Validation",
+    "description": "CMS audits of MA plan risk scores — chart validation, error rate extrapolation, overpayment recovery, plan compliance obligations.",
+    "learn_more": [
+      {
+        "name": "CMS Medicare",
+        "url": "https://www.cms.gov/medicare"
+      },
+      {
+        "name": "Healthcare Dive",
+        "url": "https://www.healthcaredive.com"
+      }
+    ]
+  },
+  {
+    "day": 70,
+    "level": "201",
+    "concept": "Prospective vs Retrospective Risk Adjustment",
+    "description": "Timing of condition capture — annual wellness visits, prospective gap closure programs, retrospective chart review, coding quality programs.",
+    "learn_more": [
+      {
+        "name": "CMS Medicare",
+        "url": "https://www.cms.gov/medicare"
+      },
+      {
+        "name": "NCQA",
+        "url": "https://www.ncqa.org"
+      }
+    ]
+  },
+  {
+    "day": 71,
+    "level": "201",
+    "concept": "Accountable Care Organizations (ACOs)",
+    "description": "Voluntary risk-sharing arrangements — MSSP tracks, shared savings and losses, quality performance requirements, attribution methodology.",
+    "learn_more": [
+      {
+        "name": "CMS Medicare",
+        "url": "https://www.cms.gov/medicare"
+      },
+      {
+        "name": "CMS CMMI",
+        "url": "https://innovation.cms.gov"
+      }
+    ]
+  },
+  {
+    "day": 72,
+    "level": "201",
+    "concept": "Bundled Payments",
+    "description": "Episode-based payment models — CMS BPCIA, Comprehensive Care for Joint Replacement, cardiac bundles, gain/loss calculation.",
+    "learn_more": [
+      {
+        "name": "CMS CMMI",
+        "url": "https://innovation.cms.gov"
+      },
+      {
+        "name": "CMS Medicare",
+        "url": "https://www.cms.gov/medicare"
+      }
+    ]
+  },
+  {
+    "day": 73,
+    "level": "201",
+    "concept": "Capitation in Managed Care",
+    "description": "PMPM payment mechanics — global capitation vs carved-out services, stop-loss protection, actuarial soundness, full vs delegated risk.",
+    "learn_more": [
+      {
+        "name": "KFF",
+        "url": "https://www.kff.org"
+      },
+      {
+        "name": "CMS CMMI",
+        "url": "https://innovation.cms.gov"
+      }
+    ]
+  },
+  {
+    "day": 74,
+    "level": "201",
+    "concept": "Population Health Management",
+    "description": "Managing outcomes for defined patient populations — care gap registries, risk stratification, outreach programs, quality measure closure.",
+    "learn_more": [
+      {
+        "name": "NCQA",
+        "url": "https://www.ncqa.org"
+      },
+      {
+        "name": "CMS CMMI",
+        "url": "https://innovation.cms.gov"
+      }
+    ]
+  },
+  {
+    "day": 75,
+    "level": "201",
+    "concept": "Value-Based Care Transition Challenges",
+    "description": "Barriers to moving from FFS to value — data infrastructure, attribution, quality measurement burden, downside risk readiness.",
+    "learn_more": [
+      {
+        "name": "CMS CMMI",
+        "url": "https://innovation.cms.gov"
+      },
+      {
+        "name": "KFF",
+        "url": "https://www.kff.org"
+      }
+    ]
+  },
+  {
+    "day": 76,
+    "level": "201",
+    "concept": "Medicaid Eligibility and Enrollment",
+    "description": "ACA MAGI-based eligibility rules, categorical groups, presumptive eligibility, CHIP linkage, state-based eligibility systems (MMIS).",
+    "learn_more": [
+      {
+        "name": "CMS Medicaid",
+        "url": "https://www.cms.gov/medicaid"
+      },
+      {
+        "name": "KFF",
+        "url": "https://www.kff.org"
+      }
+    ]
+  },
+  {
+    "day": 77,
+    "level": "201",
+    "concept": "Medicaid Redetermination",
+    "description": "Annual eligibility renewal — continuous enrollment unwinding post-COVID, churn impact, coverage gaps, provider revenue implications.",
+    "learn_more": [
+      {
+        "name": "CMS Medicaid",
+        "url": "https://www.cms.gov/medicaid"
+      },
+      {
+        "name": "KFF",
+        "url": "https://www.kff.org"
+      }
+    ]
+  },
+  {
+    "day": 78,
+    "level": "201",
+    "concept": "Managed Medicaid (MCOs)",
+    "description": "State contracting with commercial managed care organizations — capitation rate development, actuarial soundness, quality requirements, oversight.",
+    "learn_more": [
+      {
+        "name": "CMS Medicaid",
+        "url": "https://www.cms.gov/medicaid"
+      },
+      {
+        "name": "KFF",
+        "url": "https://www.kff.org"
+      }
+    ]
+  },
+  {
+    "day": 79,
+    "level": "201",
+    "concept": "Medicaid DSH Payments",
+    "description": "Disproportionate Share Hospital payments for hospitals serving low-income patients — allotment calculation, state distribution, ACA cuts.",
+    "learn_more": [
+      {
+        "name": "CMS Medicaid",
+        "url": "https://www.cms.gov/medicaid"
+      },
+      {
+        "name": "KFF",
+        "url": "https://www.kff.org"
+      }
+    ]
+  },
+  {
+    "day": 80,
+    "level": "201",
+    "concept": "Medicaid FQHC Prospective Payment System",
+    "description": "Enhanced FQHC reimbursement — PPS rate methodology, scope of service, new access points, managed care wrap payments.",
+    "learn_more": [
+      {
+        "name": "CMS Medicaid",
+        "url": "https://www.cms.gov/medicaid"
+      },
+      {
+        "name": "KFF",
+        "url": "https://www.kff.org"
+      }
+    ]
+  },
+  {
+    "day": 81,
+    "level": "201",
+    "concept": "Medicare Part A — Inpatient Hospital",
+    "description": "Hospital Insurance — DRG payment, benefit periods, inpatient deductible, SNF benefit, hospice, IPPS wage index.",
+    "learn_more": [
+      {
+        "name": "CMS Medicare",
+        "url": "https://www.cms.gov/medicare"
+      },
+      {
+        "name": "KFF",
+        "url": "https://www.kff.org"
+      }
+    ]
+  },
+  {
+    "day": 82,
+    "level": "201",
+    "concept": "Medicare Part B — Physician and Outpatient",
+    "description": "Medical Insurance — physician fee schedule, RVUs, conversion factor, OPPS for hospital outpatient, Part B premium, income-related adjustment.",
+    "learn_more": [
+      {
+        "name": "CMS Medicare",
+        "url": "https://www.cms.gov/medicare"
+      },
+      {
+        "name": "KFF",
+        "url": "https://www.kff.org"
+      }
+    ]
+  },
+  {
+    "day": 83,
+    "level": "201",
+    "concept": "Medicare Part D — Prescription Drug Coverage",
+    "description": "Stand-alone PDPs and MA-PD plans — formularies, coverage phases (deductible, initial, coverage gap, catastrophic), Low Income Subsidy.",
+    "learn_more": [
+      {
+        "name": "CMS Medicare",
+        "url": "https://www.cms.gov/medicare"
+      },
+      {
+        "name": "KFF",
+        "url": "https://www.kff.org"
+      }
+    ]
+  },
+  {
+    "day": 84,
+    "level": "201",
+    "concept": "IPPS — Inpatient Prospective Payment System",
+    "description": "DRG-based hospital payment — MS-DRG structure, wage index, outlier payments, IME/DSH adjustments, annual update methodology.",
+    "learn_more": [
+      {
+        "name": "CMS Medicare",
+        "url": "https://www.cms.gov/medicare"
+      },
+      {
+        "name": "HFMA",
+        "url": "https://www.hfma.org/revenue-cycle-management/"
+      }
+    ]
+  },
+  {
+    "day": 85,
+    "level": "201",
+    "concept": "OPPS — Outpatient Prospective Payment System",
+    "description": "APC-based outpatient payment — status indicators, packaging rules, pass-through payments, comprehensive APCs, annual update.",
+    "learn_more": [
+      {
+        "name": "CMS Medicare",
+        "url": "https://www.cms.gov/medicare"
+      },
+      {
+        "name": "HFMA",
+        "url": "https://www.hfma.org/revenue-cycle-management/"
+      }
+    ]
+  },
+  {
+    "day": 86,
+    "level": "201",
+    "concept": "Physician Fee Schedule and RVU System",
+    "description": "Resource-based relative value system — work RVUs, practice expense RVUs, malpractice RVUs, geographic adjustment, conversion factor.",
+    "learn_more": [
+      {
+        "name": "CMS Medicare",
+        "url": "https://www.cms.gov/medicare"
+      },
+      {
+        "name": "MGMA",
+        "url": "https://www.mgma.com/resources"
+      }
+    ]
+  },
+  {
+    "day": 87,
+    "level": "201",
+    "concept": "Observation Status vs Inpatient Admission",
+    "description": "Two-midnight rule — criteria for inpatient vs outpatient observation, patient cost-share impact, SNF eligibility consequences, appeal rights.",
+    "learn_more": [
+      {
+        "name": "CMS Medicare",
+        "url": "https://www.cms.gov/medicare"
+      },
+      {
+        "name": "KFF",
+        "url": "https://www.kff.org"
+      }
+    ]
+  },
+  {
+    "day": 88,
+    "level": "201",
+    "concept": "Charge Description Master (CDM)",
+    "description": "Hospital master price list — CDM structure, maintenance processes, charge capture linkage, price transparency obligations, chargemaster strategy.",
+    "learn_more": [
+      {
+        "name": "HFMA",
+        "url": "https://www.hfma.org/revenue-cycle-management/"
+      },
+      {
+        "name": "Healthcare Dive",
+        "url": "https://www.healthcaredive.com"
+      }
+    ]
+  },
+  {
+    "day": 89,
+    "level": "201",
+    "concept": "Clinical Documentation Integrity (CDI)",
+    "description": "Concurrent CDI programs — physician query management, CMI improvement, HCC capture for MA, impact on quality metrics and reimbursement.",
+    "learn_more": [
+      {
+        "name": "HFMA",
+        "url": "https://www.hfma.org/revenue-cycle-management/"
+      },
+      {
+        "name": "Becker's",
+        "url": "https://www.beckershospitalreview.com/finance"
+      }
+    ]
+  },
+  {
+    "day": 90,
+    "level": "201",
+    "concept": "Revenue Integrity",
+    "description": "Ensuring charges match services rendered — charge capture audits, charge reconciliation, CDM accuracy, revenue leakage prevention.",
+    "learn_more": [
+      {
+        "name": "HFMA",
+        "url": "https://www.hfma.org/revenue-cycle-management/"
+      },
+      {
+        "name": "Healthcare Dive",
+        "url": "https://www.healthcaredive.com"
+      }
+    ]
+  },
+  {
+    "day": 91,
+    "level": "201",
+    "concept": "Patient Financial Experience",
+    "description": "Price estimates, digital statements, payment plans, patient portals — satisfaction impact, collection rate correlation, HCAHPS linkage.",
+    "learn_more": [
+      {
+        "name": "HFMA",
+        "url": "https://www.hfma.org/revenue-cycle-management/"
+      },
+      {
+        "name": "Healthcare Dive",
+        "url": "https://www.healthcaredive.com"
+      }
+    ]
+  },
+  {
+    "day": 92,
+    "level": "201",
+    "concept": "Propensity-to-Pay Scoring",
+    "description": "Predicting which patients can pay — income data, credit attributes, public benefit eligibility signals, segmentation for collection strategy.",
+    "learn_more": [
+      {
+        "name": "HFMA",
+        "url": "https://www.hfma.org/revenue-cycle-management/"
+      },
+      {
+        "name": "Healthcare Dive",
+        "url": "https://www.healthcaredive.com"
+      }
+    ]
+  },
+  {
+    "day": 93,
+    "level": "201",
+    "concept": "Medical Debt and Collections Regulations",
+    "description": "CFPB rulemaking on medical debt credit reporting, state collection laws, FDCPA in healthcare, charity care pre-collection requirements.",
+    "learn_more": [
+      {
+        "name": "KFF",
+        "url": "https://www.kff.org"
+      },
+      {
+        "name": "CMS",
+        "url": "https://www.cms.gov"
+      }
+    ]
+  },
+  {
+    "day": 94,
+    "level": "201",
+    "concept": "Readmission Reduction Program (HRRP)",
+    "description": "CMS penalty for excess readmissions — target conditions (pneumonia, CHF, COPD, hip/knee), calculation methodology, payment adjustment.",
+    "learn_more": [
+      {
+        "name": "CMS Medicare",
+        "url": "https://www.cms.gov/medicare"
+      },
+      {
+        "name": "KFF",
+        "url": "https://www.kff.org"
+      }
+    ]
+  },
+  {
+    "day": 95,
+    "level": "201",
+    "concept": "Value-Based Purchasing (VBP)",
+    "description": "CMS quality-based payment adjustment for hospitals — performance domains, scoring methodology, budget-neutral zero-sum structure.",
+    "learn_more": [
+      {
+        "name": "CMS Medicare",
+        "url": "https://www.cms.gov/medicare"
+      },
+      {
+        "name": "NCQA",
+        "url": "https://www.ncqa.org"
+      }
+    ]
+  },
+  {
+    "day": 96,
+    "level": "201",
+    "concept": "Hospital-Acquired Condition (HAC) Reduction Program",
+    "description": "Payment reduction for worst-performing hospitals on preventable conditions — HAC domains, 1% penalty, impact on safety programs.",
+    "learn_more": [
+      {
+        "name": "CMS Medicare",
+        "url": "https://www.cms.gov/medicare"
+      },
+      {
+        "name": "Healthcare Dive",
+        "url": "https://www.healthcaredive.com"
+      }
+    ]
+  },
+  {
+    "day": 97,
+    "level": "201",
+    "concept": "MIPS for Physicians",
+    "description": "Merit-based Incentive Payment System under MACRA — performance categories (quality, cost, PI, improvement activities), scoring, payment adjustment.",
+    "learn_more": [
+      {
+        "name": "CMS Medicare",
+        "url": "https://www.cms.gov/medicare"
+      },
+      {
+        "name": "MGMA",
+        "url": "https://www.mgma.com/resources"
+      }
+    ]
+  },
+  {
+    "day": 98,
+    "level": "201",
+    "concept": "HEDIS Quality Measures",
+    "description": "Healthcare Effectiveness Data and Information Set — measure domains, data collection methods (administrative, hybrid, electronic), plan ratings impact.",
+    "learn_more": [
+      {
+        "name": "NCQA",
+        "url": "https://www.ncqa.org"
+      },
+      {
+        "name": "CMS Medicare",
+        "url": "https://www.cms.gov/medicare"
+      }
+    ]
+  },
+  {
+    "day": 99,
+    "level": "201",
+    "concept": "Social Determinants of Health (SDOH) in Billing",
+    "description": "Z-codes for SDOH documentation, screening tools, risk stratification, payer SDOH programs, linkage to charity care eligibility screening.",
+    "learn_more": [
+      {
+        "name": "CMS",
+        "url": "https://www.cms.gov"
+      },
+      {
+        "name": "KFF",
+        "url": "https://www.kff.org"
+      }
+    ]
+  },
+  {
+    "day": 100,
+    "level": "201",
+    "concept": "Insurance Verification Automation",
+    "description": "Real-time eligibility (RTE) via 270/271, FHIR-based eligibility, AI-driven benefit discovery — reducing manual verification calls.",
+    "learn_more": [
+      {
+        "name": "CMS",
+        "url": "https://www.cms.gov"
+      },
+      {
+        "name": "HFMA",
+        "url": "https://www.hfma.org/revenue-cycle-management/"
+      }
+    ]
+  },
+  {
+    "day": 101,
+    "level": "201",
+    "concept": "Prior Auth Automation and Electronic PA",
+    "description": "Da Vinci PAS use case, CMS e-PA rule, clinical decision support at point of order, gold carding programs — reducing auth burden.",
+    "learn_more": [
+      {
+        "name": "CMS",
+        "url": "https://www.cms.gov"
+      },
+      {
+        "name": "AHA",
+        "url": "https://www.aha.org/topics"
+      }
+    ]
+  },
+  {
+    "day": 102,
+    "level": "201",
+    "concept": "RCM Analytics and Dashboards",
+    "description": "Key metrics (DAR, NCR, denial rate, clean claim rate), lagging vs leading indicators, payer-level drill-down, operational visibility.",
+    "learn_more": [
+      {
+        "name": "HFMA",
+        "url": "https://www.hfma.org/revenue-cycle-management/"
+      },
+      {
+        "name": "Becker's",
+        "url": "https://www.beckershospitalreview.com/finance"
+      }
+    ]
+  },
+  {
+    "day": 103,
+    "level": "201",
+    "concept": "NLP-Assisted Medical Coding",
+    "description": "Computer-assisted coding (CAC), LLM-based code suggestion, coder augmentation vs replacement, accuracy measurement, compliance risk.",
+    "learn_more": [
+      {
+        "name": "HFMA",
+        "url": "https://www.hfma.org/revenue-cycle-management/"
+      },
+      {
+        "name": "Healthcare Dive",
+        "url": "https://www.healthcaredive.com"
+      }
+    ]
+  },
+  {
+    "day": 104,
+    "level": "201",
+    "concept": "FHIR and Healthcare Interoperability",
+    "description": "HL7 FHIR R4 standard — RESTful APIs, resource types, SMART on FHIR authorization, payer-to-provider data exchange, Da Vinci project.",
+    "learn_more": [
+      {
+        "name": "CMS",
+        "url": "https://www.cms.gov"
+      },
+      {
+        "name": "Healthcare Dive",
+        "url": "https://www.healthcaredive.com"
+      }
+    ]
+  },
+  {
+    "day": 105,
+    "level": "201",
+    "concept": "Patient Financing Partnerships",
+    "description": "Third-party patient financing — revolving credit products, installment plans, 0% promotional offers, hospital vs fintech economics.",
+    "learn_more": [
+      {
+        "name": "HFMA",
+        "url": "https://www.hfma.org/revenue-cycle-management/"
+      },
+      {
+        "name": "Healthcare Dive",
+        "url": "https://www.healthcaredive.com"
+      }
+    ]
+  },
+  {
+    "day": 106,
+    "level": "201",
+    "concept": "Self-Pay Collections Strategy",
+    "description": "Segmentation by propensity-to-pay, early-out vs bad debt placement, payment plan design, financial counseling ROI.",
+    "learn_more": [
+      {
+        "name": "HFMA",
+        "url": "https://www.hfma.org/revenue-cycle-management/"
+      },
+      {
+        "name": "Healthcare Dive",
+        "url": "https://www.healthcaredive.com"
+      }
+    ]
+  },
+  {
+    "day": 107,
+    "level": "201",
+    "concept": "Collection Agency and Bad Debt Sales",
+    "description": "Internal early-out programs, placement to agencies, debt portfolio sales — timing, vendor selection, 501(r) collection restrictions.",
+    "learn_more": [
+      {
+        "name": "HFMA",
+        "url": "https://www.hfma.org/revenue-cycle-management/"
+      },
+      {
+        "name": "KFF",
+        "url": "https://www.kff.org"
+      }
+    ]
+  },
+  {
+    "day": 108,
+    "level": "201",
+    "concept": "Telehealth Billing",
+    "description": "CPT codes for telehealth, audio-only vs video requirements, originating site rules, PHE waivers becoming permanent, payer variation.",
+    "learn_more": [
+      {
+        "name": "CMS Medicare",
+        "url": "https://www.cms.gov/medicare"
+      },
+      {
+        "name": "Healthcare Dive",
+        "url": "https://www.healthcaredive.com"
+      }
+    ]
+  },
+  {
+    "day": 109,
+    "level": "201",
+    "concept": "Professional vs Technical Component Billing",
+    "description": "Global vs split billing — TC modifier (technical), 26 modifier (professional), concurrent vs interpretive services, anti-markup rules.",
+    "learn_more": [
+      {
+        "name": "CMS Medicare",
+        "url": "https://www.cms.gov/medicare"
+      },
+      {
+        "name": "HFMA",
+        "url": "https://www.hfma.org/revenue-cycle-management/"
+      }
+    ]
+  },
+  {
+    "day": 110,
+    "level": "201",
+    "concept": "Global Surgery Packages",
+    "description": "Pre/intra/post-operative periods — bundled payment for surgical care, unbundling violations, assistant surgeon billing, modifiers.",
+    "learn_more": [
+      {
+        "name": "CMS Medicare",
+        "url": "https://www.cms.gov/medicare"
+      },
+      {
+        "name": "HFMA",
+        "url": "https://www.hfma.org/revenue-cycle-management/"
+      }
+    ]
+  },
+  {
+    "day": 111,
+    "level": "201",
+    "concept": "Hospital Outpatient vs Physician Office Site Differential",
+    "description": "The ~260% HOPD rate premium — site-neutral payment policy debate, facility fee controversy, CMS off-campus provider-based rules.",
+    "learn_more": [
+      {
+        "name": "KFF",
+        "url": "https://www.kff.org"
+      },
+      {
+        "name": "CMS Medicare",
+        "url": "https://www.cms.gov/medicare"
+      }
+    ]
+  },
+  {
+    "day": 112,
+    "level": "201",
+    "concept": "Payer Audits and RAC Risk Management",
+    "description": "High-risk areas (inpatient vs outpatient, one-day stays, medical necessity), ADR process, probe audits, documentation improvement.",
+    "learn_more": [
+      {
+        "name": "CMS Medicare",
+        "url": "https://www.cms.gov/medicare"
+      },
+      {
+        "name": "HHS OIG",
+        "url": "https://oig.hhs.gov/compliance/"
+      }
+    ]
+  },
+  {
+    "day": 113,
+    "level": "201",
+    "concept": "Pharmacy Benefit Managers (PBMs)",
+    "description": "Express Scripts, CVS Caremark, OptumRx — rebate mechanics, formulary management, spread pricing, DIR fees, vertical integration.",
+    "learn_more": [
+      {
+        "name": "KFF",
+        "url": "https://www.kff.org"
+      },
+      {
+        "name": "Healthcare Dive",
+        "url": "https://www.healthcaredive.com"
+      }
+    ]
+  },
+  {
+    "day": 114,
+    "level": "201",
+    "concept": "Drug Pricing — AWP, WAC, and Acquisition Cost",
+    "description": "Average Wholesale Price, Wholesale Acquisition Cost, actual acquisition cost — pricing spread, 340B arbitrage, ASP for physician-administered drugs.",
+    "learn_more": [
+      {
+        "name": "KFF",
+        "url": "https://www.kff.org"
+      },
+      {
+        "name": "CMS Medicaid",
+        "url": "https://www.cms.gov/medicaid"
+      }
+    ]
+  },
+  {
+    "day": 115,
+    "level": "201",
+    "concept": "Specialty Drug Economics",
+    "description": "Biologics and gene therapies — prior auth burden, specialty pharmacy channel, buy-and-bill vs white bagging, copay accumulator programs.",
+    "learn_more": [
+      {
+        "name": "KFF",
+        "url": "https://www.kff.org"
+      },
+      {
+        "name": "Healthcare Dive",
+        "url": "https://www.healthcaredive.com"
+      }
+    ]
+  },
+  {
+    "day": 116,
+    "level": "201",
+    "concept": "Behavioral Health Billing",
+    "description": "Mental health parity law, carve-out vs carve-in payer approaches, CPT codes, facility vs professional billing, NPI taxonomy codes.",
+    "learn_more": [
+      {
+        "name": "CMS",
+        "url": "https://www.cms.gov"
+      },
+      {
+        "name": "KFF",
+        "url": "https://www.kff.org"
+      }
+    ]
+  },
+  {
+    "day": 117,
+    "level": "201",
+    "concept": "Skilled Nursing Facility (SNF) Billing",
+    "description": "Patient-Driven Payment Model (PDPM), three-day qualifying inpatient stay, Medicare SNF benefit days, NTA components, ADL scoring.",
+    "learn_more": [
+      {
+        "name": "CMS Medicare",
+        "url": "https://www.cms.gov/medicare"
+      },
+      {
+        "name": "Healthcare Dive",
+        "url": "https://www.healthcaredive.com"
+      }
+    ]
+  },
+  {
+    "day": 118,
+    "level": "201",
+    "concept": "Home Health Agency Billing",
+    "description": "Patient-Driven Groupings Model (PDGM), 30-day payment periods, LUPA thresholds, functional impairment scoring, OASIS assessment.",
+    "learn_more": [
+      {
+        "name": "CMS Medicare",
+        "url": "https://www.cms.gov/medicare"
+      },
+      {
+        "name": "Healthcare Dive",
+        "url": "https://www.healthcaredive.com"
+      }
+    ]
+  },
+  {
+    "day": 119,
+    "level": "201",
+    "concept": "Medicare Cost Report",
+    "description": "Annual hospital filing reporting costs and utilization — occupancy, wage data, graduate medical education, disproportionate share, settlement.",
+    "learn_more": [
+      {
+        "name": "CMS Medicare",
+        "url": "https://www.cms.gov/medicare"
+      },
+      {
+        "name": "HFMA",
+        "url": "https://www.hfma.org/revenue-cycle-management/"
+      }
+    ]
+  },
+  {
+    "day": 120,
+    "level": "201",
+    "concept": "Health Equity in CMS Programs",
+    "description": "CMS health equity strategy — disparity reduction measures, stratified quality reporting, equity adjustments in VBP, underserved populations.",
+    "learn_more": [
+      {
+        "name": "CMS",
+        "url": "https://www.cms.gov"
+      },
+      {
+        "name": "KFF",
+        "url": "https://www.kff.org"
+      }
+    ]
+  },
+  {
+    "day": 121,
+    "level": "301",
+    "concept": "Health System M&A — Antitrust and Regulatory Review",
+    "description": "FTC scrutiny of hospital mergers — certificate of public advantage (COPA), price effects research, community benefit review, recent enforcement.",
+    "learn_more": [
+      {
+        "name": "KFF",
+        "url": "https://www.kff.org"
+      },
+      {
+        "name": "Healthcare Dive",
+        "url": "https://www.healthcaredive.com"
+      }
+    ]
+  },
+  {
+    "day": 122,
+    "level": "301",
+    "concept": "Health System M&A — Integration Mechanics",
+    "description": "System conversion challenges — EHR migration, contract renegotiation, culture integration, service rationalization, financial consolidation.",
+    "learn_more": [
+      {
+        "name": "Healthcare Dive",
+        "url": "https://www.healthcaredive.com"
+      },
+      {
+        "name": "Becker's",
+        "url": "https://www.beckershospitalreview.com/finance"
+      }
+    ]
+  },
+  {
+    "day": 123,
+    "level": "301",
+    "concept": "Health System M&A — Financial Rationale",
+    "description": "Scale in managed care contracting, supply chain savings, overhead leverage, market power — empirical evidence on merger outcomes.",
+    "learn_more": [
+      {
+        "name": "KFF",
+        "url": "https://www.kff.org"
+      },
+      {
+        "name": "Healthcare Dive",
+        "url": "https://www.healthcaredive.com"
+      }
+    ]
+  },
+  {
+    "day": 124,
+    "level": "301",
+    "concept": "Strategic Affiliations and Joint Operating Agreements",
+    "description": "Non-merger partnership alternatives — JOAs, management services agreements, clinical affiliations, shared governance models.",
+    "learn_more": [
+      {
+        "name": "AHA",
+        "url": "https://www.aha.org/topics"
+      },
+      {
+        "name": "Healthcare Dive",
+        "url": "https://www.healthcaredive.com"
+      }
+    ]
+  },
+  {
+    "day": 125,
+    "level": "301",
+    "concept": "Private Equity in Physician Practices",
+    "description": "PE rollup of specialty practices — dermatology, ophthalmology, anesthesia, emergency medicine — platform strategy, multiple arbitrage, quality concerns.",
+    "learn_more": [
+      {
+        "name": "KFF",
+        "url": "https://www.kff.org"
+      },
+      {
+        "name": "Healthcare Dive",
+        "url": "https://www.healthcaredive.com"
+      }
+    ]
+  },
+  {
+    "day": 126,
+    "level": "301",
+    "concept": "Private Equity in RCM",
+    "description": "PE ownership of Waystar, R1 RCM, Conifer, nThrive — investment thesis, technology leverage, margin expansion, market consolidation.",
+    "learn_more": [
+      {
+        "name": "Healthcare Dive",
+        "url": "https://www.healthcaredive.com"
+      },
+      {
+        "name": "Becker's",
+        "url": "https://www.beckershospitalreview.com/finance"
+      }
+    ]
+  },
+  {
+    "day": 127,
+    "level": "301",
+    "concept": "Private Equity in Specialty Pharmacy",
+    "description": "High-margin PE targets — 340B contract pharmacy arbitrage, specialty distribution, infusion therapy, gene therapy access programs.",
+    "learn_more": [
+      {
+        "name": "KFF",
+        "url": "https://www.kff.org"
+      },
+      {
+        "name": "Healthcare Dive",
+        "url": "https://www.healthcaredive.com"
+      }
+    ]
+  },
+  {
+    "day": 128,
+    "level": "301",
+    "concept": "Epic — Platform Strategy and Market Dominance",
+    "description": "Epic's RCM modules, Community Connect strategy, App Orchard marketplace, interoperability stance, ~38% hospital market share.",
+    "learn_more": [
+      {
+        "name": "Healthcare Dive",
+        "url": "https://www.healthcaredive.com"
+      },
+      {
+        "name": "Becker's",
+        "url": "https://www.beckershospitalreview.com/finance"
+      }
+    ]
+  },
+  {
+    "day": 129,
+    "level": "301",
+    "concept": "R1 RCM — Business Model and Strategy",
+    "description": "End-to-end RCM outsourcing — hospital partnership structures, technology-enabled services, performance guarantees, revenue share models.",
+    "learn_more": [
+      {
+        "name": "Healthcare Dive",
+        "url": "https://www.healthcaredive.com"
+      },
+      {
+        "name": "Becker's",
+        "url": "https://www.beckershospitalreview.com/finance"
+      }
+    ]
+  },
+  {
+    "day": 130,
+    "level": "301",
+    "concept": "Conifer Health Solutions — Business Model",
+    "description": "Tenet Healthcare spinout, full-service RCM and managed care contracting — ownership structure, client mix, competitive positioning.",
+    "learn_more": [
+      {
+        "name": "Healthcare Dive",
+        "url": "https://www.healthcaredive.com"
+      },
+      {
+        "name": "Becker's",
+        "url": "https://www.beckershospitalreview.com/finance"
+      }
+    ]
+  },
+  {
+    "day": 131,
+    "level": "301",
+    "concept": "Ensemble Health Partners and nThrive",
+    "description": "Full-service RCM platforms — technology + services integration, analytics layers, physician billing, competitive differentiation.",
+    "learn_more": [
+      {
+        "name": "Healthcare Dive",
+        "url": "https://www.healthcaredive.com"
+      },
+      {
+        "name": "Becker's",
+        "url": "https://www.beckershospitalreview.com/finance"
+      }
+    ]
+  },
+  {
+    "day": 132,
+    "level": "301",
+    "concept": "Build vs Buy in RCM Technology",
+    "description": "Decision framework — in-house Epic modules vs best-of-breed point solutions vs full outsourcing; TCO analysis, capability gaps, strategic control.",
+    "learn_more": [
+      {
+        "name": "HFMA",
+        "url": "https://www.hfma.org/revenue-cycle-management/"
+      },
+      {
+        "name": "Becker's",
+        "url": "https://www.beckershospitalreview.com/finance"
+      }
+    ]
+  },
+  {
+    "day": 133,
+    "level": "301",
+    "concept": "Managed Care Contracting Deep Dive",
+    "description": "Rate negotiation strategy — fee schedule benchmarks, carve-outs, carve-ins, outlier protection, performance bonuses, contract term optimization.",
+    "learn_more": [
+      {
+        "name": "HFMA",
+        "url": "https://www.hfma.org/revenue-cycle-management/"
+      },
+      {
+        "name": "AHA",
+        "url": "https://www.aha.org/topics"
+      }
+    ]
+  },
+  {
+    "day": 134,
+    "level": "301",
+    "concept": "Payer Contract Language and Clauses",
+    "description": "Most-favored nation clauses, clean claim timely payment requirements, audit rights, termination for cause vs convenience, rate escalators.",
+    "learn_more": [
+      {
+        "name": "HFMA",
+        "url": "https://www.hfma.org/revenue-cycle-management/"
+      },
+      {
+        "name": "AHA",
+        "url": "https://www.aha.org/topics"
+      }
+    ]
+  },
+  {
+    "day": 135,
+    "level": "301",
+    "concept": "Payer Rate Benchmarking",
+    "description": "CMS fee schedule percentage benchmarks, FAIR Health commercial rate data, Turquoise Health transparency data, negotiation leverage.",
+    "learn_more": [
+      {
+        "name": "HFMA",
+        "url": "https://www.hfma.org/revenue-cycle-management/"
+      },
+      {
+        "name": "KFF",
+        "url": "https://www.kff.org"
+      }
+    ]
+  },
+  {
+    "day": 136,
+    "level": "301",
+    "concept": "NSA Independent Dispute Resolution (IDR) Mechanics",
+    "description": "IDR process for NSA disputes — qualifying payment amount (QPA) as benchmark, arbitration outcomes, provider leverage, market rate implications.",
+    "learn_more": [
+      {
+        "name": "CMS",
+        "url": "https://www.cms.gov"
+      },
+      {
+        "name": "KFF",
+        "url": "https://www.kff.org"
+      }
+    ]
+  },
+  {
+    "day": 137,
+    "level": "301",
+    "concept": "CMS Notice-and-Comment Rulemaking",
+    "description": "The proposed-to-final rule pipeline — NPRM, public comment period, final rule, effective date, implementation — how to influence policy.",
+    "learn_more": [
+      {
+        "name": "CMS",
+        "url": "https://www.cms.gov"
+      },
+      {
+        "name": "AHA",
+        "url": "https://www.aha.org/topics"
+      }
+    ]
+  },
+  {
+    "day": 138,
+    "level": "301",
+    "concept": "Reading and Analyzing IPPS Proposed Rules",
+    "description": "Annual IPPS proposed rule structure — DRG weight updates, wage index changes, quality program modifications, estimating provider impact.",
+    "learn_more": [
+      {
+        "name": "CMS Medicare",
+        "url": "https://www.cms.gov/medicare"
+      },
+      {
+        "name": "HFMA",
+        "url": "https://www.hfma.org/revenue-cycle-management/"
+      }
+    ]
+  },
+  {
+    "day": 139,
+    "level": "301",
+    "concept": "Reading and Analyzing OPPS Proposed Rules",
+    "description": "APC rate updates, packaging changes, new technology add-ons, site-neutral payment proposals — provider comment strategy.",
+    "learn_more": [
+      {
+        "name": "CMS Medicare",
+        "url": "https://www.cms.gov/medicare"
+      },
+      {
+        "name": "HFMA",
+        "url": "https://www.hfma.org/revenue-cycle-management/"
+      }
+    ]
+  },
+  {
+    "day": 140,
+    "level": "301",
+    "concept": "Reading and Analyzing Physician Fee Schedule Rules",
+    "description": "RVU relative value updates, conversion factor changes, E&M reform, specialty-level payment impact modeling.",
+    "learn_more": [
+      {
+        "name": "CMS Medicare",
+        "url": "https://www.cms.gov/medicare"
+      },
+      {
+        "name": "MGMA",
+        "url": "https://www.mgma.com/resources"
+      }
+    ]
+  },
+  {
+    "day": 141,
+    "level": "301",
+    "concept": "Hospital Capital Structure and Bond Ratings",
+    "description": "Tax-exempt revenue bonds, Moody's/Fitch rating methodology — key credit metrics: operating margin, DSCR, days cash on hand, debt ratio.",
+    "learn_more": [
+      {
+        "name": "Healthcare Dive",
+        "url": "https://www.healthcaredive.com"
+      },
+      {
+        "name": "Becker's",
+        "url": "https://www.beckershospitalreview.com/finance"
+      }
+    ]
+  },
+  {
+    "day": 142,
+    "level": "301",
+    "concept": "Hospital Margin Analysis and Benchmarking",
+    "description": "Operating margin, EBITDA margin, days cash on hand — AHA and MedPAC benchmarks, margin compression drivers, turnaround indicators.",
+    "learn_more": [
+      {
+        "name": "AHA",
+        "url": "https://www.aha.org/topics"
+      },
+      {
+        "name": "KFF",
+        "url": "https://www.kff.org"
+      }
+    ]
+  },
+  {
+    "day": 143,
+    "level": "301",
+    "concept": "Health System Cost Accounting",
+    "description": "Standard costs, case costing methodology, contribution margin by service line, cost-to-charge ratios, decision support for cost reduction.",
+    "learn_more": [
+      {
+        "name": "HFMA",
+        "url": "https://www.hfma.org/revenue-cycle-management/"
+      },
+      {
+        "name": "Becker's",
+        "url": "https://www.beckershospitalreview.com/finance"
+      }
+    ]
+  },
+  {
+    "day": 144,
+    "level": "301",
+    "concept": "Labor Cost Management in Health Systems",
+    "description": "Largest hospital expense (~60% of operating costs) — agency nursing premium, FTE ratios, productivity metrics, union dynamics.",
+    "learn_more": [
+      {
+        "name": "AHA",
+        "url": "https://www.aha.org/topics"
+      },
+      {
+        "name": "Healthcare Dive",
+        "url": "https://www.healthcaredive.com"
+      }
+    ]
+  },
+  {
+    "day": 145,
+    "level": "301",
+    "concept": "Supply Chain Economics in Health Systems",
+    "description": "GPO contracting, drug cost management, medical device pricing, standardization savings, supply expense per adjusted discharge.",
+    "learn_more": [
+      {
+        "name": "AHA",
+        "url": "https://www.aha.org/topics"
+      },
+      {
+        "name": "Healthcare Dive",
+        "url": "https://www.healthcaredive.com"
+      }
+    ]
+  },
+  {
+    "day": 146,
+    "level": "301",
+    "concept": "Non-Operating Revenue in Health Systems",
+    "description": "Investment income, philanthropy/foundations, real estate, parking — income statement anatomy, endowment management, COVID impact.",
+    "learn_more": [
+      {
+        "name": "AHA",
+        "url": "https://www.aha.org/topics"
+      },
+      {
+        "name": "Becker's",
+        "url": "https://www.beckershospitalreview.com/finance"
+      }
+    ]
+  },
+  {
+    "day": 147,
+    "level": "301",
+    "concept": "Health System Financial Distress",
+    "description": "Predictors of distress, restructuring options, Chapter 11 bankruptcy mechanics, state bailout programs, turnaround firm strategies.",
+    "learn_more": [
+      {
+        "name": "Healthcare Dive",
+        "url": "https://www.healthcaredive.com"
+      },
+      {
+        "name": "Becker's",
+        "url": "https://www.beckershospitalreview.com/finance"
+      }
+    ]
+  },
+  {
+    "day": 148,
+    "level": "301",
+    "concept": "Medicaid Supplemental Payments",
+    "description": "Upper Payment Limit (UPL) programs, Intergovernmental Transfers (IGTs), directed payments — complexity of supplemental payment structures.",
+    "learn_more": [
+      {
+        "name": "CMS Medicaid",
+        "url": "https://www.cms.gov/medicaid"
+      },
+      {
+        "name": "KFF",
+        "url": "https://www.kff.org"
+      }
+    ]
+  },
+  {
+    "day": 149,
+    "level": "301",
+    "concept": "Medicare Bad Debt Reimbursement",
+    "description": "Medicare's 65% reimbursement of uncollectible Medicare beneficiary cost-sharing — eligibility criteria, documentation, cost report filing.",
+    "learn_more": [
+      {
+        "name": "CMS Medicare",
+        "url": "https://www.cms.gov/medicare"
+      },
+      {
+        "name": "HFMA",
+        "url": "https://www.hfma.org/revenue-cycle-management/"
+      }
+    ]
+  },
+  {
+    "day": 150,
+    "level": "301",
+    "concept": "CMMI Innovation Models — Current Portfolio",
+    "description": "CMS Innovation Center model portfolio strategy — testing payment and delivery models, scaling successful ones, sunsetting underperformers.",
+    "learn_more": [
+      {
+        "name": "CMS CMMI",
+        "url": "https://innovation.cms.gov"
+      },
+      {
+        "name": "KFF",
+        "url": "https://www.kff.org"
+      }
+    ]
+  },
+  {
+    "day": 151,
+    "level": "301",
+    "concept": "Prior Auth Reform — Legislative and Regulatory Landscape",
+    "description": "Improving Seniors' Timely Access to Care Act, CMS electronic PA final rule, gold carding provisions, real-time clinical decision support.",
+    "learn_more": [
+      {
+        "name": "CMS",
+        "url": "https://www.cms.gov"
+      },
+      {
+        "name": "AHA",
+        "url": "https://www.aha.org/topics"
+      }
+    ]
+  },
+  {
+    "day": 152,
+    "level": "301",
+    "concept": "Site-Neutral Payment Policy",
+    "description": "CMS efforts to equalize rates for off-campus HOPDs and physician offices — provider-based rule, acquired hospital exception, legal challenges.",
+    "learn_more": [
+      {
+        "name": "KFF",
+        "url": "https://www.kff.org"
+      },
+      {
+        "name": "CMS Medicare",
+        "url": "https://www.cms.gov/medicare"
+      }
+    ]
+  },
+  {
+    "day": 153,
+    "level": "301",
+    "concept": "340B Program Controversies",
+    "description": "Drug manufacturer restrictions on 340B contract pharmacies — HRSA guidance, federal litigation, policy reform proposals, hospital advocacy.",
+    "learn_more": [
+      {
+        "name": "Healthcare Dive",
+        "url": "https://www.healthcaredive.com"
+      },
+      {
+        "name": "KFF",
+        "url": "https://www.kff.org"
+      }
+    ]
+  },
+  {
+    "day": 154,
+    "level": "301",
+    "concept": "Physician Compensation Models Deep Dive",
+    "description": "wRVU-based productivity, salary, quality bonuses, value-based compensation — MGMA benchmarks, compliance with Stark exceptions.",
+    "learn_more": [
+      {
+        "name": "MGMA",
+        "url": "https://www.mgma.com/resources"
+      },
+      {
+        "name": "HFMA",
+        "url": "https://www.hfma.org/revenue-cycle-management/"
+      }
+    ]
+  },
+  {
+    "day": 155,
+    "level": "301",
+    "concept": "Clinical Documentation Improvement Programs",
+    "description": "Concurrent CDI workflow, physician query types and compliance, CDI impact on DRG assignment, CMI improvement, MA HCC capture.",
+    "learn_more": [
+      {
+        "name": "HFMA",
+        "url": "https://www.hfma.org/revenue-cycle-management/"
+      },
+      {
+        "name": "Becker's",
+        "url": "https://www.beckershospitalreview.com/finance"
+      }
+    ]
+  },
+  {
+    "day": 156,
+    "level": "301",
+    "concept": "IRS Form 990 Analysis for Nonprofits",
+    "description": "Reading hospital 990s — executive compensation schedules, community benefit table, governance questionnaire, joint venture disclosures.",
+    "learn_more": [
+      {
+        "name": "KFF",
+        "url": "https://www.kff.org"
+      },
+      {
+        "name": "HHS OIG",
+        "url": "https://oig.hhs.gov/compliance/"
+      }
+    ]
+  },
+  {
+    "day": 157,
+    "level": "301",
+    "concept": "Revenue Cycle Benchmarking Frameworks",
+    "description": "HFMA MAP keys, MGMA benchmarks, Advisory Board, Definitive Healthcare — selecting appropriate peer groups, interpreting variance.",
+    "learn_more": [
+      {
+        "name": "HFMA",
+        "url": "https://www.hfma.org/revenue-cycle-management/"
+      },
+      {
+        "name": "MGMA",
+        "url": "https://www.mgma.com/resources"
+      }
+    ]
+  },
+  {
+    "day": 158,
+    "level": "301",
+    "concept": "Patient Access Center Design",
+    "description": "Centralized scheduling, insurance verification, pre-registration — technology infrastructure, staffing ratios, ROI on upstream investment.",
+    "learn_more": [
+      {
+        "name": "HFMA",
+        "url": "https://www.hfma.org/revenue-cycle-management/"
+      },
+      {
+        "name": "Healthcare Dive",
+        "url": "https://www.healthcaredive.com"
+      }
+    ]
+  },
+  {
+    "day": 159,
+    "level": "301",
+    "concept": "Charity Care Policy Design and 501(r) Compliance",
+    "description": "Income and asset thresholds, application process simplification, presumptive eligibility criteria, extraordinary collection actions definition.",
+    "learn_more": [
+      {
+        "name": "KFF",
+        "url": "https://www.kff.org"
+      },
+      {
+        "name": "CMS",
+        "url": "https://www.cms.gov"
+      }
+    ]
+  },
+  {
+    "day": 160,
+    "level": "301",
+    "concept": "Health Information Exchange and RCM",
+    "description": "Care transition data for preadmission, FHIR payer connectivity, ADT feed monetization, interoperability ROI for revenue cycle.",
+    "learn_more": [
+      {
+        "name": "CMS",
+        "url": "https://www.cms.gov"
+      },
+      {
+        "name": "Healthcare Dive",
+        "url": "https://www.healthcaredive.com"
+      }
+    ]
+  },
+  {
+    "day": 161,
+    "level": "301",
+    "concept": "Alternative Site Billing — Infusion and Urgent Care",
+    "description": "Infusion center billing complexity (CPT codes, revenue codes, site of service), urgent care coding, payer-specific policy variation.",
+    "learn_more": [
+      {
+        "name": "HFMA",
+        "url": "https://www.hfma.org/revenue-cycle-management/"
+      },
+      {
+        "name": "Healthcare Dive",
+        "url": "https://www.healthcaredive.com"
+      }
+    ]
+  },
+  {
+    "day": 162,
+    "level": "301",
+    "concept": "Clinical Trial Billing Compliance",
+    "description": "Routine care vs research costs, coverage analysis process, billing grid development, Medicare coverage analysis, sponsor billing.",
+    "learn_more": [
+      {
+        "name": "CMS Medicare",
+        "url": "https://www.cms.gov/medicare"
+      },
+      {
+        "name": "HHS OIG",
+        "url": "https://oig.hhs.gov/compliance/"
+      }
+    ]
+  },
+  {
+    "day": 163,
+    "level": "301",
+    "concept": "Population Health Technology Landscape",
+    "description": "Care management platforms, risk stratification analytics, payer-provider data sharing — vendors (Arcadia, Health Catalyst, Innovaccer).",
+    "learn_more": [
+      {
+        "name": "CMS CMMI",
+        "url": "https://innovation.cms.gov"
+      },
+      {
+        "name": "Healthcare Dive",
+        "url": "https://www.healthcaredive.com"
+      }
+    ]
+  },
+  {
+    "day": 164,
+    "level": "301",
+    "concept": "Denial Automation and AI in Appeals",
+    "description": "ML-based denial prediction, automated appeal letter generation, prior auth decision support, clinical criteria matching tools.",
+    "learn_more": [
+      {
+        "name": "HFMA",
+        "url": "https://www.hfma.org/revenue-cycle-management/"
+      },
+      {
+        "name": "Healthcare Dive",
+        "url": "https://www.healthcaredive.com"
+      }
+    ]
+  },
+  {
+    "day": 165,
+    "level": "301",
+    "concept": "EHR-to-Payer API Standards (Da Vinci)",
+    "description": "Da Vinci Project FHIR use cases — CDex (clinical documentation exchange), HRex (coverage), PAS (prior auth support), PDex (payer data).",
+    "learn_more": [
+      {
+        "name": "CMS",
+        "url": "https://www.cms.gov"
+      },
+      {
+        "name": "Healthcare Dive",
+        "url": "https://www.healthcaredive.com"
+      }
+    ]
+  },
+  {
+    "day": 166,
+    "level": "301",
+    "concept": "Medicare Advantage Stars Quality Program",
+    "description": "Five-star quality rating system — domains (HEDIS, CAHPS, HOS), bonus payments, enrollment implications, plan strategy.",
+    "learn_more": [
+      {
+        "name": "CMS Medicare",
+        "url": "https://www.cms.gov/medicare"
+      },
+      {
+        "name": "NCQA",
+        "url": "https://www.ncqa.org"
+      }
+    ]
+  },
+  {
+    "day": 167,
+    "level": "301",
+    "concept": "Actuarial Concepts for Healthcare Finance Leaders",
+    "description": "Actuarial soundness, loss ratios, IBNR reserves, credibility weighting — what finance leaders need to understand about actuarial methodology.",
+    "learn_more": [
+      {
+        "name": "KFF",
+        "url": "https://www.kff.org"
+      },
+      {
+        "name": "HFMA",
+        "url": "https://www.hfma.org/revenue-cycle-management/"
+      }
+    ]
+  },
+  {
+    "day": 168,
+    "level": "301",
+    "concept": "Long-Term Care Billing",
+    "description": "SNF, nursing facility, and assisted living billing — MDS assessments, PDPM components, Medicaid daily rates, managed care friction.",
+    "learn_more": [
+      {
+        "name": "CMS Medicare",
+        "url": "https://www.cms.gov/medicare"
+      },
+      {
+        "name": "KFF",
+        "url": "https://www.kff.org"
+      }
+    ]
+  },
+  {
+    "day": 169,
+    "level": "301",
+    "concept": "Hospice Billing and Economics",
+    "description": "Medicare hospice benefit — four levels of care, per diem rates, cap calculations, election statement, 80/20 attending physician rule.",
+    "learn_more": [
+      {
+        "name": "CMS Medicare",
+        "url": "https://www.cms.gov/medicare"
+      },
+      {
+        "name": "KFF",
+        "url": "https://www.kff.org"
+      }
+    ]
+  },
+  {
+    "day": 170,
+    "level": "301",
+    "concept": "Behavioral Health Carve-Out vs Carve-In Economics",
+    "description": "Separate managed behavioral health organizations (MBHOs) vs integrated managed care — mental health parity enforcement, network adequacy.",
+    "learn_more": [
+      {
+        "name": "KFF",
+        "url": "https://www.kff.org"
+      },
+      {
+        "name": "CMS",
+        "url": "https://www.cms.gov"
+      }
+    ]
+  },
+  {
+    "day": 171,
+    "level": "301",
+    "concept": "Ambulatory Surgery Center Acquisition Economics",
+    "description": "ASC valuation multiples, physician co-investment models, hospital-ASC joint ventures, payer rate negotiation for ASCs.",
+    "learn_more": [
+      {
+        "name": "Healthcare Dive",
+        "url": "https://www.healthcaredive.com"
+      },
+      {
+        "name": "Becker's",
+        "url": "https://www.beckershospitalreview.com/finance"
+      }
+    ]
+  },
+  {
+    "day": 172,
+    "level": "301",
+    "concept": "Revenue Diversification in Health Systems",
+    "description": "Beyond inpatient — ambulatory, retail health, digital health ventures, risk-bearing contracts — margin contribution and strategic rationale.",
+    "learn_more": [
+      {
+        "name": "AHA",
+        "url": "https://www.aha.org/topics"
+      },
+      {
+        "name": "Becker's",
+        "url": "https://www.beckershospitalreview.com/finance"
+      }
+    ]
+  },
+  {
+    "day": 173,
+    "level": "301",
+    "concept": "Healthcare Private Equity Due Diligence",
+    "description": "What PE firms look for in healthcare investments — payer mix analysis, denials review, contract rate benchmarking, compliance risk.",
+    "learn_more": [
+      {
+        "name": "Healthcare Dive",
+        "url": "https://www.healthcaredive.com"
+      },
+      {
+        "name": "Becker's",
+        "url": "https://www.beckershospitalreview.com/finance"
+      }
+    ]
+  },
+  {
+    "day": 174,
+    "level": "301",
+    "concept": "Medicaid Managed Care Rate Setting",
+    "description": "State rate development process — actuarial soundness, base data, trend factors, risk corridors, directed payment programs.",
+    "learn_more": [
+      {
+        "name": "CMS Medicaid",
+        "url": "https://www.cms.gov/medicaid"
+      },
+      {
+        "name": "KFF",
+        "url": "https://www.kff.org"
+      }
+    ]
+  },
+  {
+    "day": 175,
+    "level": "301",
+    "concept": "CMS Conditions for Coverage — Outpatient Facilities",
+    "description": "CoC standards for ASCs, dialysis facilities, rural health clinics — survey process, deficiency types, remedies, deemed status.",
+    "learn_more": [
+      {
+        "name": "CMS",
+        "url": "https://www.cms.gov"
+      },
+      {
+        "name": "AHA",
+        "url": "https://www.aha.org/topics"
+      }
+    ]
+  },
+  {
+    "day": 176,
+    "level": "301",
+    "concept": "Physician Group Practice Valuation",
+    "description": "Valuation methods for physician practices — production multiples, EBITDA multiples, fair market value for employment, Stark compliance.",
+    "learn_more": [
+      {
+        "name": "MGMA",
+        "url": "https://www.mgma.com/resources"
+      },
+      {
+        "name": "HFMA",
+        "url": "https://www.hfma.org/revenue-cycle-management/"
+      }
+    ]
+  },
+  {
+    "day": 177,
+    "level": "301",
+    "concept": "Cost-to-Charge Ratios and Price Transparency Data",
+    "description": "CCR application in cost accounting, charge capture strategy, CMS charge master transparency data uses — competitive intelligence.",
+    "learn_more": [
+      {
+        "name": "CMS Medicare",
+        "url": "https://www.cms.gov/medicare"
+      },
+      {
+        "name": "HFMA",
+        "url": "https://www.hfma.org/revenue-cycle-management/"
+      }
+    ]
+  },
+  {
+    "day": 178,
+    "level": "301",
+    "concept": "Bundled Payment Analytics",
+    "description": "Episode cost analysis, attribution accuracy, gain/loss calculation, post-acute spend reduction strategies, gainshare design.",
+    "learn_more": [
+      {
+        "name": "CMS CMMI",
+        "url": "https://innovation.cms.gov"
+      },
+      {
+        "name": "HFMA",
+        "url": "https://www.hfma.org/revenue-cycle-management/"
+      }
+    ]
+  },
+  {
+    "day": 179,
+    "level": "301",
+    "concept": "Reading State Medicaid Managed Care RFPs",
+    "description": "Understanding state MCO procurement — technical requirements, actuarial assumptions, quality metrics, network adequacy standards.",
+    "learn_more": [
+      {
+        "name": "CMS Medicaid",
+        "url": "https://www.cms.gov/medicaid"
+      },
+      {
+        "name": "KFF",
+        "url": "https://www.kff.org"
+      }
+    ]
+  },
+  {
+    "day": 180,
+    "level": "301",
+    "concept": "Healthcare Cost Drivers — Macro View",
+    "description": "What drives US healthcare spending — prices vs utilization vs technology vs aging — international comparisons, policy levers.",
+    "learn_more": [
+      {
+        "name": "KFF",
+        "url": "https://www.kff.org"
+      },
+      {
+        "name": "AHA",
+        "url": "https://www.aha.org/topics"
+      }
+    ]
+  },
+  {
+    "day": 181,
+    "level": "401",
+    "concept": "Hospital-at-Home Economics",
+    "description": "Acute Hospital Care at Home waiver program — patient eligibility, technology requirements, cost comparison, readmission outcomes, CMS extension.",
+    "learn_more": [
+      {
+        "name": "CMS CMMI",
+        "url": "https://innovation.cms.gov"
+      },
+      {
+        "name": "Healthcare Dive",
+        "url": "https://www.healthcaredive.com"
+      }
+    ]
+  },
+  {
+    "day": 182,
+    "level": "401",
+    "concept": "Site-of-Care Economics — Outpatient Migration",
+    "description": "ASC vs HOPD economics for patients and payers — migration trends, payer steerage strategies, provider response, total cost of care.",
+    "learn_more": [
+      {
+        "name": "KFF",
+        "url": "https://www.kff.org"
+      },
+      {
+        "name": "CMS Medicare",
+        "url": "https://www.cms.gov/medicare"
+      }
+    ]
+  },
+  {
+    "day": 183,
+    "level": "401",
+    "concept": "Retail Health Economics",
+    "description": "CVS MinuteClinic, Amazon Clinic, Walmart Health economics — primary care margin challenges, payer contracting, disruptive threat assessment.",
+    "learn_more": [
+      {
+        "name": "Healthcare Dive",
+        "url": "https://www.healthcaredive.com"
+      },
+      {
+        "name": "KFF",
+        "url": "https://www.kff.org"
+      }
+    ]
+  },
+  {
+    "day": 184,
+    "level": "401",
+    "concept": "AI in Denial Management — Current Vendor Landscape",
+    "description": "ML-based denial prediction tools (Waystar, Olive, Waystar, Cohere Health) — accuracy claims, ROI analysis, integration with Epic workflows.",
+    "learn_more": [
+      {
+        "name": "Healthcare Dive",
+        "url": "https://www.healthcaredive.com"
+      },
+      {
+        "name": "Becker's",
+        "url": "https://www.beckershospitalreview.com/finance"
+      }
+    ]
+  },
+  {
+    "day": 185,
+    "level": "401",
+    "concept": "AI in Medical Coding — Current State",
+    "description": "CAC accuracy rates, LLM-assisted coding pilots, coding audit AI, coder productivity impact — vendor landscape and compliance considerations.",
+    "learn_more": [
+      {
+        "name": "HFMA",
+        "url": "https://www.hfma.org/revenue-cycle-management/"
+      },
+      {
+        "name": "Healthcare Dive",
+        "url": "https://www.healthcaredive.com"
+      }
+    ]
+  },
+  {
+    "day": 186,
+    "level": "401",
+    "concept": "Ambient AI in Clinical Documentation",
+    "description": "Ambient listening for clinical notes — Nuance DAX, Microsoft, Suki, Abridge — physician time savings, note quality, EHR integration.",
+    "learn_more": [
+      {
+        "name": "Healthcare Dive",
+        "url": "https://www.healthcaredive.com"
+      },
+      {
+        "name": "Becker's",
+        "url": "https://www.beckershospitalreview.com/finance"
+      }
+    ]
+  },
+  {
+    "day": 187,
+    "level": "401",
+    "concept": "AI in Patient Access and Financial Screening",
+    "description": "Real-time eligibility AI, charity care presumptive eligibility automation, propensity scoring at registration — collection rate and bad debt impact.",
+    "learn_more": [
+      {
+        "name": "HFMA",
+        "url": "https://www.hfma.org/revenue-cycle-management/"
+      },
+      {
+        "name": "Healthcare Dive",
+        "url": "https://www.healthcaredive.com"
+      }
+    ]
+  },
+  {
+    "day": 188,
+    "level": "401",
+    "concept": "RPA in Revenue Cycle",
+    "description": "Robotic process automation use cases — claims status bots, payment posting automation, auth tracking — ROI, bot maintenance, limitations.",
+    "learn_more": [
+      {
+        "name": "HFMA",
+        "url": "https://www.hfma.org/revenue-cycle-management/"
+      },
+      {
+        "name": "Healthcare Dive",
+        "url": "https://www.healthcaredive.com"
+      }
+    ]
+  },
+  {
+    "day": 189,
+    "level": "401",
+    "concept": "Telehealth Policy — What Stuck Post-PHE",
+    "description": "Permanent telehealth flexibilities — audio-only, mental health direct access, originating site reform, cost impact, CMS ongoing extensions.",
+    "learn_more": [
+      {
+        "name": "CMS Medicare",
+        "url": "https://www.cms.gov/medicare"
+      },
+      {
+        "name": "KFF",
+        "url": "https://www.kff.org"
+      }
+    ]
+  },
+  {
+    "day": 190,
+    "level": "401",
+    "concept": "Medicaid Expansion — Remaining Holdout States",
+    "description": "States not yet expanded — political economy, federal match (90%), provider impact, uncompensated care data, recent state movements.",
+    "learn_more": [
+      {
+        "name": "KFF",
+        "url": "https://www.kff.org"
+      },
+      {
+        "name": "CMS Medicaid",
+        "url": "https://www.cms.gov/medicaid"
+      }
+    ]
+  },
+  {
+    "day": 191,
+    "level": "401",
+    "concept": "Health System Turnaround Case Studies",
+    "description": "Case analysis of financially distressed health system turnarounds — labor, payer contract renegotiation, service rationalization, capital restructuring.",
+    "learn_more": [
+      {
+        "name": "Healthcare Dive",
+        "url": "https://www.healthcaredive.com"
+      },
+      {
+        "name": "Becker's",
+        "url": "https://www.beckershospitalreview.com/finance"
+      }
+    ]
+  },
+  {
+    "day": 192,
+    "level": "401",
+    "concept": "Medicare Advantage Growth and Risk Adjustment Controversy",
+    "description": "MA enrollment growth to ~55% of Medicare, upcoding concerns, MedPAC overpayment estimates, RADV audit outcomes, policy reform proposals.",
+    "learn_more": [
+      {
+        "name": "KFF",
+        "url": "https://www.kff.org"
+      },
+      {
+        "name": "CMS Medicare",
+        "url": "https://www.cms.gov/medicare"
+      }
+    ]
+  },
+  {
+    "day": 193,
+    "level": "401",
+    "concept": "Medicaid Redetermination Outcomes and Policy Implications",
+    "description": "Post-COVID unwinding — disenrollment numbers, coverage gaps, ACA marketplace enrollment surge, provider revenue impact, re-enrollment strategies.",
+    "learn_more": [
+      {
+        "name": "KFF",
+        "url": "https://www.kff.org"
+      },
+      {
+        "name": "CMS Medicaid",
+        "url": "https://www.cms.gov/medicaid"
+      }
+    ]
+  },
+  {
+    "day": 194,
+    "level": "401",
+    "concept": "Drug Price Negotiation — IRA Implementation",
+    "description": "Inflation Reduction Act Medicare drug price negotiation — selected drugs, negotiated prices, manufacturer litigation, Part D redesign.",
+    "learn_more": [
+      {
+        "name": "KFF",
+        "url": "https://www.kff.org"
+      },
+      {
+        "name": "CMS Medicaid",
+        "url": "https://www.cms.gov/medicaid"
+      }
+    ]
+  },
+  {
+    "day": 195,
+    "level": "401",
+    "concept": "State Innovation Waivers — 1332 and 1115",
+    "description": "State flexibility under ACA Section 1332 (market reform) and Medicaid Section 1115 (demonstration waivers) — examples and policy implications.",
+    "learn_more": [
+      {
+        "name": "KFF",
+        "url": "https://www.kff.org"
+      },
+      {
+        "name": "CMS",
+        "url": "https://www.cms.gov"
+      }
+    ]
+  },
+  {
+    "day": 196,
+    "level": "401",
+    "concept": "International Health System Comparison — UK NHS",
+    "description": "Beveridge model — public funding, public provision, GP gatekeeping, wait time management, recent financial pressures.",
+    "learn_more": [
+      {
+        "name": "KFF",
+        "url": "https://www.kff.org"
+      },
+      {
+        "name": "Healthcare Dive",
+        "url": "https://www.healthcaredive.com"
+      }
+    ]
+  },
+  {
+    "day": 197,
+    "level": "401",
+    "concept": "International Health System Comparison — Germany",
+    "description": "Bismarck model — statutory sickness funds (GKV), supplemental private insurance (PKV), provider autonomy, reference pricing.",
+    "learn_more": [
+      {
+        "name": "KFF",
+        "url": "https://www.kff.org"
+      },
+      {
+        "name": "Healthcare Dive",
+        "url": "https://www.healthcaredive.com"
+      }
+    ]
+  },
+  {
+    "day": 198,
+    "level": "401",
+    "concept": "Single-Payer Policy Analysis — Medicare for All",
+    "description": "M4A financing options, provider payment rates, transition costs, administrative savings, political economy — empirical evidence review.",
+    "learn_more": [
+      {
+        "name": "KFF",
+        "url": "https://www.kff.org"
+      },
+      {
+        "name": "Healthcare Dive",
+        "url": "https://www.healthcaredive.com"
+      }
+    ]
+  },
+  {
+    "day": 199,
+    "level": "401",
+    "concept": "Health System AI Strategy — Build vs Partner vs Embed",
+    "description": "Health system AI strategy frameworks — proprietary AI development, vendor partnerships, EHR-embedded AI — governance, evaluation, scaling.",
+    "learn_more": [
+      {
+        "name": "Healthcare Dive",
+        "url": "https://www.healthcaredive.com"
+      },
+      {
+        "name": "Becker's",
+        "url": "https://www.beckershospitalreview.com/finance"
+      }
+    ]
+  },
+  {
+    "day": 200,
+    "level": "401",
+    "concept": "The Future of Revenue Cycle — 2030 Scenarios",
+    "description": "Long-range scenarios for RCM — AI automation endpoints, payer-provider API integration, self-service patient financial experience, workforce transition.",
+    "learn_more": [
+      {
+        "name": "HFMA",
+        "url": "https://www.hfma.org/revenue-cycle-management/"
+      },
+      {
+        "name": "Healthcare Dive",
+        "url": "https://www.healthcaredive.com"
+      }
+    ]
+  }
+]

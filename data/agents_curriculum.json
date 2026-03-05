@@ -1,0 +1,1442 @@
+[
+  {
+    "day": 1,
+    "level": "Foundations",
+    "concept": "What is an AI Agent?",
+    "description": "Definition: LLM + perception + memory + action; components of an agent loop; how agents differ from chatbots; autonomous action vs guided response.",
+    "learn_more": [
+      {
+        "name": "Anthropic Docs",
+        "url": "https://docs.anthropic.com/en/docs/build-with-claude/tool-use"
+      },
+      {
+        "name": "Lilian Weng Blog",
+        "url": "https://lilianweng.github.io/posts/"
+      }
+    ]
+  },
+  {
+    "day": 2,
+    "level": "Foundations",
+    "concept": "ReAct Pattern",
+    "description": "Reasoning + Acting framework — interleaved thought-action-observation loops; Yao et al. 2022 paper; ReAct vs chain-of-thought only.",
+    "learn_more": [
+      {
+        "name": "arXiv",
+        "url": "https://arxiv.org/search/?searchtype=all&query=ai+agents"
+      },
+      {
+        "name": "Lilian Weng Blog",
+        "url": "https://lilianweng.github.io/posts/"
+      }
+    ]
+  },
+  {
+    "day": 3,
+    "level": "Foundations",
+    "concept": "Tool Use and Function Calling",
+    "description": "How LLMs invoke external tools — OpenAI function calling, Anthropic tool use API; tool definition JSON schema; parallel tool calls; tool result handling.",
+    "learn_more": [
+      {
+        "name": "Anthropic Docs",
+        "url": "https://docs.anthropic.com/en/docs/build-with-claude/tool-use"
+      },
+      {
+        "name": "LangChain Docs",
+        "url": "https://python.langchain.com/docs/introduction/"
+      }
+    ]
+  },
+  {
+    "day": 4,
+    "level": "Foundations",
+    "concept": "Chain-of-Thought Prompting",
+    "description": "Eliciting step-by-step reasoning — few-shot CoT examples, zero-shot CoT ('think step by step'), self-consistency; when CoT helps and when it doesn't.",
+    "learn_more": [
+      {
+        "name": "arXiv",
+        "url": "https://arxiv.org/search/?searchtype=all&query=ai+agents"
+      },
+      {
+        "name": "Lilian Weng Blog",
+        "url": "https://lilianweng.github.io/posts/"
+      }
+    ]
+  },
+  {
+    "day": 5,
+    "level": "Foundations",
+    "concept": "RAG Fundamentals",
+    "description": "Retrieval-Augmented Generation — document chunking, embedding, vector similarity search, retrieved context injection; naive vs advanced RAG.",
+    "learn_more": [
+      {
+        "name": "LlamaIndex Docs",
+        "url": "https://docs.llamaindex.ai/en/stable/"
+      },
+      {
+        "name": "Lilian Weng Blog",
+        "url": "https://lilianweng.github.io/posts/"
+      }
+    ]
+  },
+  {
+    "day": 6,
+    "level": "Foundations",
+    "concept": "Context Window as Working Memory",
+    "description": "In-context storage — token budgets, KV cache efficiency, context stuffing trade-offs; lost-in-the-middle problem; context window scaling.",
+    "learn_more": [
+      {
+        "name": "Anthropic Docs",
+        "url": "https://docs.anthropic.com/en/docs/build-with-claude/tool-use"
+      },
+      {
+        "name": "Lilian Weng Blog",
+        "url": "https://lilianweng.github.io/posts/"
+      }
+    ]
+  },
+  {
+    "day": 7,
+    "level": "Foundations",
+    "concept": "Short-Term Memory Patterns",
+    "description": "Scratchpad patterns, intermediate reasoning storage, working memory in multi-step agents — how agents maintain state within a session.",
+    "learn_more": [
+      {
+        "name": "LangChain Docs",
+        "url": "https://python.langchain.com/docs/introduction/"
+      },
+      {
+        "name": "Simon Willison",
+        "url": "https://simonwillison.net/tags/llms/"
+      }
+    ]
+  },
+  {
+    "day": 8,
+    "level": "Foundations",
+    "concept": "Long-Term Memory — Vector Stores",
+    "description": "Semantic memory via embedding-based search — how vector stores work (approximate nearest neighbor); Pinecone, Weaviate, Chroma; retrieval quality.",
+    "learn_more": [
+      {
+        "name": "LlamaIndex Docs",
+        "url": "https://docs.llamaindex.ai/en/stable/"
+      },
+      {
+        "name": "LangChain Docs",
+        "url": "https://python.langchain.com/docs/introduction/"
+      }
+    ]
+  },
+  {
+    "day": 9,
+    "level": "Foundations",
+    "concept": "Long-Term Memory — Key-Value and Relational",
+    "description": "Structured memory — exact-match lookups, relational data stores; when to use SQL vs vector; hybrid retrieval patterns for agent memory.",
+    "learn_more": [
+      {
+        "name": "LangChain Docs",
+        "url": "https://python.langchain.com/docs/introduction/"
+      },
+      {
+        "name": "Simon Willison",
+        "url": "https://simonwillison.net/tags/llms/"
+      }
+    ]
+  },
+  {
+    "day": 10,
+    "level": "Foundations",
+    "concept": "Episodic Memory in Agents",
+    "description": "Storing and retrieving past agent interactions — episode indexing, few-shot example generation from history, generalization from experience.",
+    "learn_more": [
+      {
+        "name": "arXiv",
+        "url": "https://arxiv.org/search/?searchtype=all&query=ai+agents"
+      },
+      {
+        "name": "Lilian Weng Blog",
+        "url": "https://lilianweng.github.io/posts/"
+      }
+    ]
+  },
+  {
+    "day": 11,
+    "level": "Foundations",
+    "concept": "Plan-and-Execute Pattern",
+    "description": "Separate planning and execution agents — ReWOO (Reasoning WithOut Observation), Plan-and-Solve; when to plan upfront vs interleave.",
+    "learn_more": [
+      {
+        "name": "arXiv",
+        "url": "https://arxiv.org/search/?searchtype=all&query=ai+agents"
+      },
+      {
+        "name": "LangChain Docs",
+        "url": "https://python.langchain.com/docs/introduction/"
+      }
+    ]
+  },
+  {
+    "day": 12,
+    "level": "Foundations",
+    "concept": "MRKL Systems",
+    "description": "Modular Reasoning, Knowledge, and Language — tool routing from a LLM controller to symbolic modules, calculators, APIs; precursor to modern agents.",
+    "learn_more": [
+      {
+        "name": "arXiv",
+        "url": "https://arxiv.org/search/?searchtype=all&query=ai+agents"
+      },
+      {
+        "name": "Lilian Weng Blog",
+        "url": "https://lilianweng.github.io/posts/"
+      }
+    ]
+  },
+  {
+    "day": 13,
+    "level": "Foundations",
+    "concept": "Tree of Thought Prompting",
+    "description": "Deliberate search over reasoning steps — BFS and DFS exploration of thought trees; value function for node evaluation; when ToT outperforms CoT.",
+    "learn_more": [
+      {
+        "name": "arXiv",
+        "url": "https://arxiv.org/search/?searchtype=all&query=ai+agents"
+      },
+      {
+        "name": "Lilian Weng Blog",
+        "url": "https://lilianweng.github.io/posts/"
+      }
+    ]
+  },
+  {
+    "day": 14,
+    "level": "Foundations",
+    "concept": "Self-Consistency Decoding",
+    "description": "Sample multiple reasoning paths, take majority vote — how to implement, temperature settings, cost vs accuracy trade-off, aggregation methods.",
+    "learn_more": [
+      {
+        "name": "arXiv",
+        "url": "https://arxiv.org/search/?searchtype=all&query=ai+agents"
+      },
+      {
+        "name": "Lilian Weng Blog",
+        "url": "https://lilianweng.github.io/posts/"
+      }
+    ]
+  },
+  {
+    "day": 15,
+    "level": "Foundations",
+    "concept": "Least-to-Most Prompting",
+    "description": "Problem decomposition into subproblems solved sequentially — divide-and-conquer reasoning; generalization to held-out problems; compositional tasks.",
+    "learn_more": [
+      {
+        "name": "arXiv",
+        "url": "https://arxiv.org/search/?searchtype=all&query=ai+agents"
+      },
+      {
+        "name": "Lilian Weng Blog",
+        "url": "https://lilianweng.github.io/posts/"
+      }
+    ]
+  },
+  {
+    "day": 16,
+    "level": "Foundations",
+    "concept": "System Prompts for Agents",
+    "description": "Agent identity, behavioral constraints, tool descriptions, output format instructions — system prompt architecture; what to put where in the prompt.",
+    "learn_more": [
+      {
+        "name": "Anthropic Docs",
+        "url": "https://docs.anthropic.com/en/docs/build-with-claude/tool-use"
+      },
+      {
+        "name": "Simon Willison",
+        "url": "https://simonwillison.net/tags/llms/"
+      }
+    ]
+  },
+  {
+    "day": 17,
+    "level": "Foundations",
+    "concept": "Few-Shot Examples in Agent Prompts",
+    "description": "In-context learning mechanics — example selection strategies, order effects, format matching, dynamic few-shot retrieval from stores.",
+    "learn_more": [
+      {
+        "name": "arXiv",
+        "url": "https://arxiv.org/search/?searchtype=all&query=ai+agents"
+      },
+      {
+        "name": "Anthropic Docs",
+        "url": "https://docs.anthropic.com/en/docs/build-with-claude/tool-use"
+      }
+    ]
+  },
+  {
+    "day": 18,
+    "level": "Foundations",
+    "concept": "Instruction Following vs Goal Specification",
+    "description": "Step-by-step task specification vs high-level goal framing — implications for agent behavior, specification gaming, reward hacking, robustness.",
+    "learn_more": [
+      {
+        "name": "Anthropic Docs",
+        "url": "https://docs.anthropic.com/en/docs/build-with-claude/tool-use"
+      },
+      {
+        "name": "Lilian Weng Blog",
+        "url": "https://lilianweng.github.io/posts/"
+      }
+    ]
+  },
+  {
+    "day": 19,
+    "level": "Foundations",
+    "concept": "Output Format Control",
+    "description": "JSON mode, function calling, constrained decoding, Pydantic validation — ensuring structured, parseable outputs from LLMs for downstream processing.",
+    "learn_more": [
+      {
+        "name": "Anthropic Docs",
+        "url": "https://docs.anthropic.com/en/docs/build-with-claude/tool-use"
+      },
+      {
+        "name": "LangChain Docs",
+        "url": "https://python.langchain.com/docs/introduction/"
+      }
+    ]
+  },
+  {
+    "day": 20,
+    "level": "Foundations",
+    "concept": "Multi-Step Workflow Design",
+    "description": "Task decomposition into sequential steps — step interface design, data passing patterns, state management, idempotency, step granularity.",
+    "learn_more": [
+      {
+        "name": "LangChain Docs",
+        "url": "https://python.langchain.com/docs/introduction/"
+      },
+      {
+        "name": "Simon Willison",
+        "url": "https://simonwillison.net/tags/llms/"
+      }
+    ]
+  },
+  {
+    "day": 21,
+    "level": "Foundations",
+    "concept": "Conditional Branching in Workflows",
+    "description": "Routing based on LLM output — classification steps, confidence-based routing, intent detection, hard vs soft routing decisions.",
+    "learn_more": [
+      {
+        "name": "LangChain Docs",
+        "url": "https://python.langchain.com/docs/introduction/"
+      },
+      {
+        "name": "Anthropic Docs",
+        "url": "https://docs.anthropic.com/en/docs/build-with-claude/tool-use"
+      }
+    ]
+  },
+  {
+    "day": 22,
+    "level": "Foundations",
+    "concept": "Loops and Iteration in Agents",
+    "description": "Retry loops, refinement loops, search loops — termination conditions, loop detection, max iteration budgets, progress tracking.",
+    "learn_more": [
+      {
+        "name": "LangChain Docs",
+        "url": "https://python.langchain.com/docs/introduction/"
+      },
+      {
+        "name": "Simon Willison",
+        "url": "https://simonwillison.net/tags/llms/"
+      }
+    ]
+  },
+  {
+    "day": 23,
+    "level": "Foundations",
+    "concept": "Parallel Execution Patterns",
+    "description": "Fan-out for independent subtasks, result aggregation (join), scatter-gather — async implementation, concurrency limits, partial failure handling.",
+    "learn_more": [
+      {
+        "name": "Anthropic Docs",
+        "url": "https://docs.anthropic.com/en/docs/build-with-claude/tool-use"
+      },
+      {
+        "name": "LangChain Docs",
+        "url": "https://python.langchain.com/docs/introduction/"
+      }
+    ]
+  },
+  {
+    "day": 24,
+    "level": "Foundations",
+    "concept": "Subagent Delegation",
+    "description": "Hierarchical agents — orchestrator assigns tasks to specialized workers; task contracts, result passing, context handoff, delegation depth.",
+    "learn_more": [
+      {
+        "name": "LangChain Docs",
+        "url": "https://python.langchain.com/docs/introduction/"
+      },
+      {
+        "name": "Lilian Weng Blog",
+        "url": "https://lilianweng.github.io/posts/"
+      }
+    ]
+  },
+  {
+    "day": 25,
+    "level": "Foundations",
+    "concept": "Error Handling — Retries and Backoff",
+    "description": "Transient failure recovery — exponential backoff, jitter, retry budgets, idempotency requirements, distinguishing retryable vs fatal errors.",
+    "learn_more": [
+      {
+        "name": "Anthropic Docs",
+        "url": "https://docs.anthropic.com/en/docs/build-with-claude/tool-use"
+      },
+      {
+        "name": "Simon Willison",
+        "url": "https://simonwillison.net/tags/llms/"
+      }
+    ]
+  },
+  {
+    "day": 26,
+    "level": "Foundations",
+    "concept": "Error Handling — Fallback Strategies",
+    "description": "Graceful degradation — simpler model fallback, cached result use, human escalation triggers, partial result return, degraded mode operation.",
+    "learn_more": [
+      {
+        "name": "LangChain Docs",
+        "url": "https://python.langchain.com/docs/introduction/"
+      },
+      {
+        "name": "Simon Willison",
+        "url": "https://simonwillison.net/tags/llms/"
+      }
+    ]
+  },
+  {
+    "day": 27,
+    "level": "Foundations",
+    "concept": "Error Handling — Output Validation and Self-Correction",
+    "description": "LLM-as-judge patterns, schema validation on outputs, self-correction prompts, validation loops, when self-correction hurts vs helps.",
+    "learn_more": [
+      {
+        "name": "arXiv",
+        "url": "https://arxiv.org/search/?searchtype=all&query=ai+agents"
+      },
+      {
+        "name": "Anthropic Docs",
+        "url": "https://docs.anthropic.com/en/docs/build-with-claude/tool-use"
+      }
+    ]
+  },
+  {
+    "day": 28,
+    "level": "Foundations",
+    "concept": "Timeout and Abort Patterns",
+    "description": "Preventing runaway agents — wall-clock timeouts, step-count budgets, cost budgets, watchdog timers, graceful abort vs hard kill.",
+    "learn_more": [
+      {
+        "name": "LangChain Docs",
+        "url": "https://python.langchain.com/docs/introduction/"
+      },
+      {
+        "name": "Simon Willison",
+        "url": "https://simonwillison.net/tags/llms/"
+      }
+    ]
+  },
+  {
+    "day": 29,
+    "level": "Foundations",
+    "concept": "Prompt Injection Attacks",
+    "description": "Malicious instructions in tool outputs, data, or user input — how injection works, indirect injection via web content, defense strategies.",
+    "learn_more": [
+      {
+        "name": "Anthropic Docs",
+        "url": "https://docs.anthropic.com/en/docs/build-with-claude/tool-use"
+      },
+      {
+        "name": "Simon Willison",
+        "url": "https://simonwillison.net/tags/llms/"
+      }
+    ]
+  },
+  {
+    "day": 30,
+    "level": "Foundations",
+    "concept": "Agent Safety Basics",
+    "description": "Minimal footprint principle, irreversibility awareness, permission scoping — Anthropic's guidelines for safe agent design; human oversight preservation.",
+    "learn_more": [
+      {
+        "name": "Anthropic Docs",
+        "url": "https://docs.anthropic.com/en/docs/build-with-claude/tool-use"
+      },
+      {
+        "name": "Anthropic Research",
+        "url": "https://www.anthropic.com/research"
+      }
+    ]
+  },
+  {
+    "day": 31,
+    "level": "Intermediate",
+    "concept": "Multi-Agent Architectures Overview",
+    "description": "Orchestration patterns — centralized coordinator, decentralized peer-to-peer, market-based; when multiple agents beat one; coordination overhead.",
+    "learn_more": [
+      {
+        "name": "Lilian Weng Blog",
+        "url": "https://lilianweng.github.io/posts/"
+      },
+      {
+        "name": "arXiv",
+        "url": "https://arxiv.org/search/?searchtype=all&query=ai+agents"
+      }
+    ]
+  },
+  {
+    "day": 32,
+    "level": "Intermediate",
+    "concept": "Orchestrator-Worker Pattern",
+    "description": "Central coordinator assigns tasks to specialized subagents — task decomposition strategy, result aggregation, context passing, failure handling.",
+    "learn_more": [
+      {
+        "name": "LangChain Docs",
+        "url": "https://python.langchain.com/docs/introduction/"
+      },
+      {
+        "name": "Anthropic Docs",
+        "url": "https://docs.anthropic.com/en/docs/build-with-claude/tool-use"
+      }
+    ]
+  },
+  {
+    "day": 33,
+    "level": "Intermediate",
+    "concept": "Multi-Agent Debate and Verification",
+    "description": "Multiple agents critiquing each other's outputs — adversarial prompting, consensus mechanisms, when debate improves accuracy vs wastes tokens.",
+    "learn_more": [
+      {
+        "name": "arXiv",
+        "url": "https://arxiv.org/search/?searchtype=all&query=ai+agents"
+      },
+      {
+        "name": "Lilian Weng Blog",
+        "url": "https://lilianweng.github.io/posts/"
+      }
+    ]
+  },
+  {
+    "day": 34,
+    "level": "Intermediate",
+    "concept": "Mixture of Agents (MoA)",
+    "description": "Ensemble of LLM agents with an aggregator — diversity benefit, aggregation layer design, MoA vs single large model cost-quality tradeoff.",
+    "learn_more": [
+      {
+        "name": "arXiv",
+        "url": "https://arxiv.org/search/?searchtype=all&query=ai+agents"
+      },
+      {
+        "name": "Lilian Weng Blog",
+        "url": "https://lilianweng.github.io/posts/"
+      }
+    ]
+  },
+  {
+    "day": 35,
+    "level": "Intermediate",
+    "concept": "Human-in-the-Loop — Approval Gates",
+    "description": "Stopping for human confirmation before irreversible actions — interrupt design, notification systems, timeout handling, UX considerations.",
+    "learn_more": [
+      {
+        "name": "Anthropic Docs",
+        "url": "https://docs.anthropic.com/en/docs/build-with-claude/tool-use"
+      },
+      {
+        "name": "LangChain Docs",
+        "url": "https://python.langchain.com/docs/introduction/"
+      }
+    ]
+  },
+  {
+    "day": 36,
+    "level": "Intermediate",
+    "concept": "Human-in-the-Loop — Escalation Patterns",
+    "description": "When to route to human — confidence thresholds, exception classification, escalation queues, handoff protocols, context transfer.",
+    "learn_more": [
+      {
+        "name": "Anthropic Docs",
+        "url": "https://docs.anthropic.com/en/docs/build-with-claude/tool-use"
+      },
+      {
+        "name": "Simon Willison",
+        "url": "https://simonwillison.net/tags/llms/"
+      }
+    ]
+  },
+  {
+    "day": 37,
+    "level": "Intermediate",
+    "concept": "Human-in-the-Loop — Feedback Integration",
+    "description": "Incorporating human corrections into agent behavior — online learning signals, preference data collection, RLHF pipeline basics.",
+    "learn_more": [
+      {
+        "name": "Anthropic Research",
+        "url": "https://www.anthropic.com/research"
+      },
+      {
+        "name": "arXiv",
+        "url": "https://arxiv.org/search/?searchtype=all&query=ai+agents"
+      }
+    ]
+  },
+  {
+    "day": 38,
+    "level": "Intermediate",
+    "concept": "Agent Evaluation — Task Success Metrics",
+    "description": "End-to-end success rate, partial credit scoring, error classification — why task success measurement is hard; evaluation dataset construction.",
+    "learn_more": [
+      {
+        "name": "arXiv",
+        "url": "https://arxiv.org/search/?searchtype=all&query=ai+agents"
+      },
+      {
+        "name": "Lilian Weng Blog",
+        "url": "https://lilianweng.github.io/posts/"
+      }
+    ]
+  },
+  {
+    "day": 39,
+    "level": "Intermediate",
+    "concept": "Agent Evaluation — Trajectory Analysis",
+    "description": "Step-by-step correctness evaluation — action efficiency, unnecessary detours, tool call accuracy, trajectory scoring methods.",
+    "learn_more": [
+      {
+        "name": "arXiv",
+        "url": "https://arxiv.org/search/?searchtype=all&query=ai+agents"
+      },
+      {
+        "name": "Lilian Weng Blog",
+        "url": "https://lilianweng.github.io/posts/"
+      }
+    ]
+  },
+  {
+    "day": 40,
+    "level": "Intermediate",
+    "concept": "Agent Benchmarks — GAIA, SWE-Bench, WebArena",
+    "description": "Standardized agent evaluation suites — task types, difficulty levels, current SOTA results, limitations of existing benchmarks.",
+    "learn_more": [
+      {
+        "name": "arXiv",
+        "url": "https://arxiv.org/search/?searchtype=all&query=ai+agents"
+      },
+      {
+        "name": "Anthropic Research",
+        "url": "https://www.anthropic.com/research"
+      }
+    ]
+  },
+  {
+    "day": 41,
+    "level": "Intermediate",
+    "concept": "Cost and Latency Tracking for Agents",
+    "description": "Per-task token cost, p50/p99 latency, cost per successful completion — instrumentation approaches, budget alerts, efficiency metrics.",
+    "learn_more": [
+      {
+        "name": "Anthropic Docs",
+        "url": "https://docs.anthropic.com/en/docs/build-with-claude/tool-use"
+      },
+      {
+        "name": "Simon Willison",
+        "url": "https://simonwillison.net/tags/llms/"
+      }
+    ]
+  },
+  {
+    "day": 42,
+    "level": "Intermediate",
+    "concept": "Structured Outputs with JSON Mode",
+    "description": "Enforcing schema compliance — JSON mode vs function calling vs grammar-based; reliability comparison; Pydantic integration; error recovery.",
+    "learn_more": [
+      {
+        "name": "Anthropic Docs",
+        "url": "https://docs.anthropic.com/en/docs/build-with-claude/tool-use"
+      },
+      {
+        "name": "LangChain Docs",
+        "url": "https://python.langchain.com/docs/introduction/"
+      }
+    ]
+  },
+  {
+    "day": 43,
+    "level": "Intermediate",
+    "concept": "Function Calling Deep Dive",
+    "description": "Parallel tool calls, nested tool invocations, tool selection accuracy, tool description quality impact, multi-turn tool use patterns.",
+    "learn_more": [
+      {
+        "name": "Anthropic Docs",
+        "url": "https://docs.anthropic.com/en/docs/build-with-claude/tool-use"
+      },
+      {
+        "name": "LangChain Docs",
+        "url": "https://python.langchain.com/docs/introduction/"
+      }
+    ]
+  },
+  {
+    "day": 44,
+    "level": "Intermediate",
+    "concept": "Model Routing for Cost Optimization",
+    "description": "Using cheaper models for simpler subtasks — cascade patterns, difficulty classification, quality-cost frontier, when to route to Haiku vs Sonnet vs Opus.",
+    "learn_more": [
+      {
+        "name": "Anthropic Docs",
+        "url": "https://docs.anthropic.com/en/docs/build-with-claude/tool-use"
+      },
+      {
+        "name": "Simon Willison",
+        "url": "https://simonwillison.net/tags/llms/"
+      }
+    ]
+  },
+  {
+    "day": 45,
+    "level": "Intermediate",
+    "concept": "Prompt Caching for Agent Cost Reduction",
+    "description": "Anthropic prompt caching — cache-eligible prefixes, write/read pricing, agent patterns that benefit most (system prompts, RAG context).",
+    "learn_more": [
+      {
+        "name": "Anthropic Docs",
+        "url": "https://docs.anthropic.com/en/docs/build-with-claude/tool-use"
+      },
+      {
+        "name": "Simon Willison",
+        "url": "https://simonwillison.net/tags/llms/"
+      }
+    ]
+  },
+  {
+    "day": 46,
+    "level": "Intermediate",
+    "concept": "Semantic Caching",
+    "description": "Caching LLM responses by query similarity — embedding-based lookup, cache invalidation, freshness management, hit rate optimization.",
+    "learn_more": [
+      {
+        "name": "LangChain Docs",
+        "url": "https://python.langchain.com/docs/introduction/"
+      },
+      {
+        "name": "Simon Willison",
+        "url": "https://simonwillison.net/tags/llms/"
+      }
+    ]
+  },
+  {
+    "day": 47,
+    "level": "Intermediate",
+    "concept": "Batching for Agent Throughput",
+    "description": "Combining requests — batch API mechanics, throughput vs latency trade-offs, when to batch (async pipelines) vs when not to (interactive).",
+    "learn_more": [
+      {
+        "name": "Anthropic Docs",
+        "url": "https://docs.anthropic.com/en/docs/build-with-claude/tool-use"
+      },
+      {
+        "name": "Simon Willison",
+        "url": "https://simonwillison.net/tags/llms/"
+      }
+    ]
+  },
+  {
+    "day": 48,
+    "level": "Intermediate",
+    "concept": "Observability — Logging Agent Trajectories",
+    "description": "Structured trace logging, trace IDs for multi-step flows, step-level input/output capture, log storage and retention for debugging.",
+    "learn_more": [
+      {
+        "name": "LangChain Docs",
+        "url": "https://python.langchain.com/docs/introduction/"
+      },
+      {
+        "name": "Simon Willison",
+        "url": "https://simonwillison.net/tags/llms/"
+      }
+    ]
+  },
+  {
+    "day": 49,
+    "level": "Intermediate",
+    "concept": "Observability — Distributed Tracing",
+    "description": "LangSmith, Langfuse, Weights & Biases Traces — instrumentation patterns, trace visualization, latency waterfall, cost attribution.",
+    "learn_more": [
+      {
+        "name": "LangChain Docs",
+        "url": "https://python.langchain.com/docs/introduction/"
+      },
+      {
+        "name": "Simon Willison",
+        "url": "https://simonwillison.net/tags/llms/"
+      }
+    ]
+  },
+  {
+    "day": 50,
+    "level": "Intermediate",
+    "concept": "Debugging Agent Failures",
+    "description": "Systematic debugging methodology — replay from trace, counterfactual testing, step isolation, prompt ablation, failure classification.",
+    "learn_more": [
+      {
+        "name": "LangChain Docs",
+        "url": "https://python.langchain.com/docs/introduction/"
+      },
+      {
+        "name": "Simon Willison",
+        "url": "https://simonwillison.net/tags/llms/"
+      }
+    ]
+  },
+  {
+    "day": 51,
+    "level": "Intermediate",
+    "concept": "LangChain Framework Overview",
+    "description": "Chains, agents, tools, memory modules — LCEL composition model, LangGraph for stateful graphs, LangSmith for observability.",
+    "learn_more": [
+      {
+        "name": "LangChain Docs",
+        "url": "https://python.langchain.com/docs/introduction/"
+      },
+      {
+        "name": "Simon Willison",
+        "url": "https://simonwillison.net/tags/llms/"
+      }
+    ]
+  },
+  {
+    "day": 52,
+    "level": "Intermediate",
+    "concept": "LlamaIndex Framework Overview",
+    "description": "Data connectors, indexing pipeline, query engines, agents — RAG-focused design; SimpleDirectoryReader, VectorStoreIndex, ReAct agent.",
+    "learn_more": [
+      {
+        "name": "LlamaIndex Docs",
+        "url": "https://docs.llamaindex.ai/en/stable/"
+      },
+      {
+        "name": "Simon Willison",
+        "url": "https://simonwillison.net/tags/llms/"
+      }
+    ]
+  },
+  {
+    "day": 53,
+    "level": "Intermediate",
+    "concept": "Anthropic Tool Use SDK Deep Dive",
+    "description": "Messages API with tools — tool definition schema, tool_choice parameter, multi-turn tool use, parallel calls, error handling patterns.",
+    "learn_more": [
+      {
+        "name": "Anthropic Docs",
+        "url": "https://docs.anthropic.com/en/docs/build-with-claude/tool-use"
+      },
+      {
+        "name": "Simon Willison",
+        "url": "https://simonwillison.net/tags/llms/"
+      }
+    ]
+  },
+  {
+    "day": 54,
+    "level": "Intermediate",
+    "concept": "AutoGen Framework",
+    "description": "Microsoft multi-agent framework — ConversableAgent, GroupChat, code execution via UserProxyAgent, human proxy patterns.",
+    "learn_more": [
+      {
+        "name": "arXiv",
+        "url": "https://arxiv.org/search/?searchtype=all&query=ai+agents"
+      },
+      {
+        "name": "Simon Willison",
+        "url": "https://simonwillison.net/tags/llms/"
+      }
+    ]
+  },
+  {
+    "day": 55,
+    "level": "Intermediate",
+    "concept": "CrewAI Framework",
+    "description": "Role-based multi-agent — crew definition, task assignment, process types (sequential, hierarchical), tool delegation, memory integration.",
+    "learn_more": [
+      {
+        "name": "LangChain Docs",
+        "url": "https://python.langchain.com/docs/introduction/"
+      },
+      {
+        "name": "Simon Willison",
+        "url": "https://simonwillison.net/tags/llms/"
+      }
+    ]
+  },
+  {
+    "day": 56,
+    "level": "Intermediate",
+    "concept": "Pydantic for Agent Output Validation",
+    "description": "BaseModel for structured outputs, Field validators, model_validator, instructor library — how Pydantic enforces schemas and handles correction.",
+    "learn_more": [
+      {
+        "name": "Anthropic Docs",
+        "url": "https://docs.anthropic.com/en/docs/build-with-claude/tool-use"
+      },
+      {
+        "name": "Simon Willison",
+        "url": "https://simonwillison.net/tags/llms/"
+      }
+    ]
+  },
+  {
+    "day": 57,
+    "level": "Intermediate",
+    "concept": "Async Patterns in Agent Development",
+    "description": "async/await in Python agents — concurrent tool calls, non-blocking I/O, asyncio event loop, aiohttp for parallel web requests.",
+    "learn_more": [
+      {
+        "name": "Anthropic Docs",
+        "url": "https://docs.anthropic.com/en/docs/build-with-claude/tool-use"
+      },
+      {
+        "name": "LangChain Docs",
+        "url": "https://python.langchain.com/docs/introduction/"
+      }
+    ]
+  },
+  {
+    "day": 58,
+    "level": "Intermediate",
+    "concept": "Rate Limiting and API Quota Management",
+    "description": "Anthropic API rate limits — tokens-per-minute, requests-per-minute; backoff strategies, queuing, per-workspace vs per-key limits.",
+    "learn_more": [
+      {
+        "name": "Anthropic Docs",
+        "url": "https://docs.anthropic.com/en/docs/build-with-claude/tool-use"
+      },
+      {
+        "name": "Simon Willison",
+        "url": "https://simonwillison.net/tags/llms/"
+      }
+    ]
+  },
+  {
+    "day": 59,
+    "level": "Intermediate",
+    "concept": "Retrieval Quality Improvement",
+    "description": "Chunking strategies, embedding model selection, hybrid search (BM25 + vector), re-ranking, contextual retrieval (Anthropic) — RAG quality metrics.",
+    "learn_more": [
+      {
+        "name": "Anthropic Docs",
+        "url": "https://docs.anthropic.com/en/docs/build-with-claude/tool-use"
+      },
+      {
+        "name": "LlamaIndex Docs",
+        "url": "https://docs.llamaindex.ai/en/stable/"
+      }
+    ]
+  },
+  {
+    "day": 60,
+    "level": "Intermediate",
+    "concept": "Contextual Retrieval and Document Pre-processing",
+    "description": "Anthropic's contextual retrieval technique — chunk-level context generation, improved recall, combination with BM25, cost analysis.",
+    "learn_more": [
+      {
+        "name": "Anthropic Docs",
+        "url": "https://docs.anthropic.com/en/docs/build-with-claude/tool-use"
+      },
+      {
+        "name": "Anthropic Research",
+        "url": "https://www.anthropic.com/research"
+      }
+    ]
+  },
+  {
+    "day": 61,
+    "level": "Advanced",
+    "concept": "Production Deployment — Stateless Agents",
+    "description": "Request-response agent architecture — stateless handlers, session state externalized to DB, horizontal scaling, cold start latency.",
+    "learn_more": [
+      {
+        "name": "Anthropic Docs",
+        "url": "https://docs.anthropic.com/en/docs/build-with-claude/tool-use"
+      },
+      {
+        "name": "Simon Willison",
+        "url": "https://simonwillison.net/tags/llms/"
+      }
+    ]
+  },
+  {
+    "day": 62,
+    "level": "Advanced",
+    "concept": "Production Deployment — Stateful Agents",
+    "description": "Session persistence — conversation history in Redis/DynamoDB, agent state machines, checkpointing for long-running tasks.",
+    "learn_more": [
+      {
+        "name": "LangChain Docs",
+        "url": "https://python.langchain.com/docs/introduction/"
+      },
+      {
+        "name": "Simon Willison",
+        "url": "https://simonwillison.net/tags/llms/"
+      }
+    ]
+  },
+  {
+    "day": 63,
+    "level": "Advanced",
+    "concept": "Queue-Based Agent Architecture",
+    "description": "Async job queues — Celery + Redis, AWS SQS, task routing, dead letter queues, priority queuing, worker scaling.",
+    "learn_more": [
+      {
+        "name": "Simon Willison",
+        "url": "https://simonwillison.net/tags/llms/"
+      },
+      {
+        "name": "Anthropic Docs",
+        "url": "https://docs.anthropic.com/en/docs/build-with-claude/tool-use"
+      }
+    ]
+  },
+  {
+    "day": 64,
+    "level": "Advanced",
+    "concept": "Streaming Responses in Agents",
+    "description": "Server-sent events, progressive output rendering, streaming tool calls — Anthropic streaming API, client-side handling, latency perception.",
+    "learn_more": [
+      {
+        "name": "Anthropic Docs",
+        "url": "https://docs.anthropic.com/en/docs/build-with-claude/tool-use"
+      },
+      {
+        "name": "Simon Willison",
+        "url": "https://simonwillison.net/tags/llms/"
+      }
+    ]
+  },
+  {
+    "day": 65,
+    "level": "Advanced",
+    "concept": "Fine-Tuning for Agent Tasks",
+    "description": "Instruction fine-tuning vs tool use fine-tuning — when fine-tuning helps agents, data collection methodology, evaluation, cost justification.",
+    "learn_more": [
+      {
+        "name": "Anthropic Research",
+        "url": "https://www.anthropic.com/research"
+      },
+      {
+        "name": "arXiv",
+        "url": "https://arxiv.org/search/?searchtype=all&query=ai+agents"
+      }
+    ]
+  },
+  {
+    "day": 66,
+    "level": "Advanced",
+    "concept": "RLHF and RLAIF for Agent Improvement",
+    "description": "Reinforcement learning from human/AI feedback — reward modeling, PPO basics, Constitutional AI, RLAIF scalability advantages.",
+    "learn_more": [
+      {
+        "name": "Anthropic Research",
+        "url": "https://www.anthropic.com/research"
+      },
+      {
+        "name": "arXiv",
+        "url": "https://arxiv.org/search/?searchtype=all&query=ai+agents"
+      }
+    ]
+  },
+  {
+    "day": 67,
+    "level": "Advanced",
+    "concept": "Healthcare Eligibility Agent Design",
+    "description": "Medicaid/CHIP eligibility triage agent architecture — state system API integration, complex eligibility rules as tools, confidence thresholds, escalation.",
+    "learn_more": [
+      {
+        "name": "Anthropic Docs",
+        "url": "https://docs.anthropic.com/en/docs/build-with-claude/tool-use"
+      },
+      {
+        "name": "LangChain Docs",
+        "url": "https://python.langchain.com/docs/introduction/"
+      }
+    ]
+  },
+  {
+    "day": 68,
+    "level": "Advanced",
+    "concept": "Document Processing Agents",
+    "description": "Medical records, EOB, and claim document extraction — document parsing pipeline, table extraction, form field recognition, validation loops.",
+    "learn_more": [
+      {
+        "name": "Anthropic Docs",
+        "url": "https://docs.anthropic.com/en/docs/build-with-claude/tool-use"
+      },
+      {
+        "name": "LlamaIndex Docs",
+        "url": "https://docs.llamaindex.ai/en/stable/"
+      }
+    ]
+  },
+  {
+    "day": 69,
+    "level": "Advanced",
+    "concept": "Customer Service Automation Agents",
+    "description": "Call deflection, intent classification, knowledge base retrieval, escalation to human — design patterns, containment rate measurement.",
+    "learn_more": [
+      {
+        "name": "Anthropic Docs",
+        "url": "https://docs.anthropic.com/en/docs/build-with-claude/tool-use"
+      },
+      {
+        "name": "Simon Willison",
+        "url": "https://simonwillison.net/tags/llms/"
+      }
+    ]
+  },
+  {
+    "day": 70,
+    "level": "Advanced",
+    "concept": "HIPAA Compliance in LLM Applications",
+    "description": "PHI handling requirements — de-identification methods, BAA with LLM providers, data residency, audit logging, incident response.",
+    "learn_more": [
+      {
+        "name": "Anthropic Docs",
+        "url": "https://docs.anthropic.com/en/docs/build-with-claude/tool-use"
+      },
+      {
+        "name": "Anthropic Research",
+        "url": "https://www.anthropic.com/research"
+      }
+    ]
+  },
+  {
+    "day": 71,
+    "level": "Advanced",
+    "concept": "Audit Trails for Healthcare AI",
+    "description": "Logging requirements for regulated AI — immutable audit logs, decision traceability, explainability documentation, retention periods.",
+    "learn_more": [
+      {
+        "name": "Anthropic Docs",
+        "url": "https://docs.anthropic.com/en/docs/build-with-claude/tool-use"
+      },
+      {
+        "name": "Anthropic Research",
+        "url": "https://www.anthropic.com/research"
+      }
+    ]
+  },
+  {
+    "day": 72,
+    "level": "Advanced",
+    "concept": "Explainability in Agent Decisions",
+    "description": "CoT as audit trail, confidence calibration, saliency for retrieved context, user-facing explanations — compliance and trust requirements.",
+    "learn_more": [
+      {
+        "name": "Anthropic Research",
+        "url": "https://www.anthropic.com/research"
+      },
+      {
+        "name": "arXiv",
+        "url": "https://arxiv.org/search/?searchtype=all&query=ai+agents"
+      }
+    ]
+  },
+  {
+    "day": 73,
+    "level": "Advanced",
+    "concept": "Agent Security — Prompt Injection Defense",
+    "description": "Privilege separation, sandboxing tool outputs, output validation, instruction hierarchy enforcement — defense-in-depth for production agents.",
+    "learn_more": [
+      {
+        "name": "Anthropic Docs",
+        "url": "https://docs.anthropic.com/en/docs/build-with-claude/tool-use"
+      },
+      {
+        "name": "Simon Willison",
+        "url": "https://simonwillison.net/tags/llms/"
+      }
+    ]
+  },
+  {
+    "day": 74,
+    "level": "Advanced",
+    "concept": "Agent Security — Data Exfiltration Prevention",
+    "description": "Tool output filtering, PII detection in generated text, data classification, outbound traffic controls, RBAC for tool access.",
+    "learn_more": [
+      {
+        "name": "Anthropic Docs",
+        "url": "https://docs.anthropic.com/en/docs/build-with-claude/tool-use"
+      },
+      {
+        "name": "Anthropic Research",
+        "url": "https://www.anthropic.com/research"
+      }
+    ]
+  },
+  {
+    "day": 75,
+    "level": "Advanced",
+    "concept": "Guardrails and Content Policies",
+    "description": "Llama Guard, NeMo Guardrails, custom classifier guardrails — input/output filtering, policy enforcement layers, false positive management.",
+    "learn_more": [
+      {
+        "name": "Anthropic Research",
+        "url": "https://www.anthropic.com/research"
+      },
+      {
+        "name": "arXiv",
+        "url": "https://arxiv.org/search/?searchtype=all&query=ai+agents"
+      }
+    ]
+  },
+  {
+    "day": 76,
+    "level": "Advanced",
+    "concept": "SLA and Reliability for AI Systems",
+    "description": "Defining uptime SLAs for AI features, circuit breakers for LLM APIs, degraded mode operation, error budgets, on-call for AI services.",
+    "learn_more": [
+      {
+        "name": "Anthropic Docs",
+        "url": "https://docs.anthropic.com/en/docs/build-with-claude/tool-use"
+      },
+      {
+        "name": "Simon Willison",
+        "url": "https://simonwillison.net/tags/llms/"
+      }
+    ]
+  },
+  {
+    "day": 77,
+    "level": "Advanced",
+    "concept": "Cost Modeling for Production Agent Deployment",
+    "description": "TCO analysis — API costs, compute, vector store, human review, maintenance; per-transaction cost modeling; cost at scale projections.",
+    "learn_more": [
+      {
+        "name": "Anthropic Docs",
+        "url": "https://docs.anthropic.com/en/docs/build-with-claude/tool-use"
+      },
+      {
+        "name": "Simon Willison",
+        "url": "https://simonwillison.net/tags/llms/"
+      }
+    ]
+  },
+  {
+    "day": 78,
+    "level": "Advanced",
+    "concept": "A/B Testing Agent Versions",
+    "description": "Comparing agent behaviors — metric selection (task success, cost, latency, user satisfaction), experiment design, statistical significance.",
+    "learn_more": [
+      {
+        "name": "Simon Willison",
+        "url": "https://simonwillison.net/tags/llms/"
+      },
+      {
+        "name": "Anthropic Docs",
+        "url": "https://docs.anthropic.com/en/docs/build-with-claude/tool-use"
+      }
+    ]
+  },
+  {
+    "day": 79,
+    "level": "Advanced",
+    "concept": "Continuous Improvement Pipelines",
+    "description": "Production feedback loops — failure case collection, evaluation dataset curation, regression testing, scheduled re-evaluation, canary deploys.",
+    "learn_more": [
+      {
+        "name": "Simon Willison",
+        "url": "https://simonwillison.net/tags/llms/"
+      },
+      {
+        "name": "LangChain Docs",
+        "url": "https://python.langchain.com/docs/introduction/"
+      }
+    ]
+  },
+  {
+    "day": 80,
+    "level": "Advanced",
+    "concept": "Model Context Protocol (MCP)",
+    "description": "Anthropic's open standard for connecting LLMs to tools and resources — MCP server architecture, transport layer, tool/resource/prompt primitives.",
+    "learn_more": [
+      {
+        "name": "Anthropic Docs",
+        "url": "https://docs.anthropic.com/en/docs/build-with-claude/tool-use"
+      },
+      {
+        "name": "Simon Willison",
+        "url": "https://simonwillison.net/tags/llms/"
+      }
+    ]
+  },
+  {
+    "day": 81,
+    "level": "Advanced",
+    "concept": "Computer Use Agents",
+    "description": "GUI automation via LLM — Anthropic Computer Use API, action space (click, type, scroll, screenshot), task types, safety constraints.",
+    "learn_more": [
+      {
+        "name": "Anthropic Docs",
+        "url": "https://docs.anthropic.com/en/docs/build-with-claude/tool-use"
+      },
+      {
+        "name": "Anthropic Research",
+        "url": "https://www.anthropic.com/research"
+      }
+    ]
+  },
+  {
+    "day": 82,
+    "level": "Advanced",
+    "concept": "Browser and Web Agents",
+    "description": "Playwright/Selenium-based agents — web navigation action space, form filling, data extraction, anti-bot defenses, reliability challenges.",
+    "learn_more": [
+      {
+        "name": "Simon Willison",
+        "url": "https://simonwillison.net/tags/llms/"
+      },
+      {
+        "name": "Anthropic Docs",
+        "url": "https://docs.anthropic.com/en/docs/build-with-claude/tool-use"
+      }
+    ]
+  },
+  {
+    "day": 83,
+    "level": "Advanced",
+    "concept": "Code Agents and Execution Environments",
+    "description": "Code generation + execution loop — sandboxing (Docker, E2B), safety constraints, iterative debugging, testing within agent loop.",
+    "learn_more": [
+      {
+        "name": "Anthropic Docs",
+        "url": "https://docs.anthropic.com/en/docs/build-with-claude/tool-use"
+      },
+      {
+        "name": "Simon Willison",
+        "url": "https://simonwillison.net/tags/llms/"
+      }
+    ]
+  },
+  {
+    "day": 84,
+    "level": "Advanced",
+    "concept": "Multimodal Agent Architectures",
+    "description": "Vision input (screenshots, documents, charts), audio agents — multimodal tool use, vision-enabled document processing, audio transcription integration.",
+    "learn_more": [
+      {
+        "name": "Anthropic Docs",
+        "url": "https://docs.anthropic.com/en/docs/build-with-claude/tool-use"
+      },
+      {
+        "name": "Anthropic Research",
+        "url": "https://www.anthropic.com/research"
+      }
+    ]
+  },
+  {
+    "day": 85,
+    "level": "Advanced",
+    "concept": "LangGraph for Stateful Agent Workflows",
+    "description": "LangChain's graph-based agent framework — nodes and edges, state management, conditional routing, human-in-the-loop integration, persistence.",
+    "learn_more": [
+      {
+        "name": "LangChain Docs",
+        "url": "https://python.langchain.com/docs/introduction/"
+      },
+      {
+        "name": "Simon Willison",
+        "url": "https://simonwillison.net/tags/llms/"
+      }
+    ]
+  },
+  {
+    "day": 86,
+    "level": "Advanced",
+    "concept": "Memory-Augmented Generation Comparison",
+    "description": "Long-context window vs RAG retrieval vs external memory stores — accuracy, cost, latency trade-offs; which to use when; hybrid architectures.",
+    "learn_more": [
+      {
+        "name": "Anthropic Docs",
+        "url": "https://docs.anthropic.com/en/docs/build-with-claude/tool-use"
+      },
+      {
+        "name": "LlamaIndex Docs",
+        "url": "https://docs.llamaindex.ai/en/stable/"
+      }
+    ]
+  },
+  {
+    "day": 87,
+    "level": "Advanced",
+    "concept": "Agent Swarms and Emergent Coordination",
+    "description": "Large-scale multi-agent systems — coordination mechanisms, blackboard architectures, stigmergy, emergence — practical use cases vs hype.",
+    "learn_more": [
+      {
+        "name": "arXiv",
+        "url": "https://arxiv.org/search/?searchtype=all&query=ai+agents"
+      },
+      {
+        "name": "Lilian Weng Blog",
+        "url": "https://lilianweng.github.io/posts/"
+      }
+    ]
+  },
+  {
+    "day": 88,
+    "level": "Advanced",
+    "concept": "Regulatory Landscape for Autonomous AI Agents",
+    "description": "EU AI Act risk categories, FTC AI guidelines, state-level AI laws, healthcare-specific AI regulations (FDA SaMD), audit and transparency requirements.",
+    "learn_more": [
+      {
+        "name": "Anthropic Research",
+        "url": "https://www.anthropic.com/research"
+      },
+      {
+        "name": "arXiv",
+        "url": "https://arxiv.org/search/?searchtype=all&query=ai+agents"
+      }
+    ]
+  },
+  {
+    "day": 89,
+    "level": "Advanced",
+    "concept": "Financial Assistance Screening Agent Design",
+    "description": "Agent architecture for automated charity care and Medicaid pre-screening — data sources, eligibility logic as tools, patient interaction design.",
+    "learn_more": [
+      {
+        "name": "Anthropic Docs",
+        "url": "https://docs.anthropic.com/en/docs/build-with-claude/tool-use"
+      },
+      {
+        "name": "LangChain Docs",
+        "url": "https://python.langchain.com/docs/introduction/"
+      }
+    ]
+  },
+  {
+    "day": 90,
+    "level": "Advanced",
+    "concept": "The Future of AI Agents — Toward Autonomous Workflows",
+    "description": "Trajectory from narrow task agents to autonomous workflow agents — trust calibration, human oversight transitions, agent capability benchmarks.",
+    "learn_more": [
+      {
+        "name": "Anthropic Research",
+        "url": "https://www.anthropic.com/research"
+      },
+      {
+        "name": "Lilian Weng Blog",
+        "url": "https://lilianweng.github.io/posts/"
+      }
+    ]
+  }
+]
