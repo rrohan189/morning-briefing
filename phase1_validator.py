@@ -40,7 +40,7 @@ USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTM
 TIER1_SOURCES = {
     "bbc", "bbc world", "bbc news", "bbc sport",
     "reuters", "reuters business", "reuters world",
-    "ap", "ap news", "associated press",
+    "ap", "ap news", "associated press", "associated press news",
     "al jazeera",
     "dw", "dw news", "deutsche welle",
     "france24", "france 24",
@@ -62,7 +62,9 @@ TIER2_SOURCES = {
     "abc news",
     "cbs news",
     "nbc news",
+    "fox news", "fox business",
     "espn",
+    "techmeme",
     "techcrunch", "techcrunch ai",
     "the verge", "the verge ai",
     "fortune",
@@ -73,6 +75,30 @@ TIER2_SOURCES = {
     "the economist",
     "foreign affairs",
     "foreign policy",
+    # National / political outlets
+    "washington examiner", "the hill", "usa today", "newsweek",
+    "the week", "slate", "vox", "mother jones",
+    # International outlets
+    "euronews", "euro news",
+    "south china morning post", "scmp",
+    "the manila times", "manila times",
+    "the japan times", "japan times",
+    "the straits times", "straits times",
+    "the hindu", "hindustan times",
+    "the independent", "independent",
+    "sky news",
+    # Regional US papers (not local to Bay Area)
+    "the seattle times", "seattle times",
+    "chicago tribune", "los angeles times", "la times",
+    "boston globe", "the boston globe",
+    "dallas morning news", "the dallas morning news",
+    "denver post", "the denver post",
+    "miami herald", "the miami herald",
+    "triblive", "trib live",
+    # Major aggregators that syndicate AP/Reuters
+    "yahoo", "yahoo news",
+    "aol", "aol news",
+    "msn", "msn news",
 }
 
 # Tier 3: Avoid for GA — niche, single-topic, or aggregator sources
@@ -97,7 +123,11 @@ TIER3_SOURCES = {
     "stat news", "kff health news",
     # Tech-specific (fine for Tech & AI section, NOT for GA)
     "mit technology review", "ars technica", "the information",
-    "techcrunch ai",
+    "techcrunch ai", "siliconangle",
+    # Advocacy / org publications
+    "aarp",
+    # Academic / specialty journals
+    "european medical journal",
 }
 
 # Local papers: NEVER for GA, only for Local section
@@ -263,13 +293,15 @@ FROM_X_HANDLES = [
     "levelsio", "garrytan", "paulg", "bcherny",
     "DrJimFan", "saranormous", "EladGil", "benedictevans",
     "alexalbert__", "toaborai",
+    "GaryMarcus", "ProfCalNewport", "mattshumer_",
 ]
 
 FROM_X_SEARCH_BATCHES = [
     ["karpathy", "sama", "simonw", "emollick"],
     ["levelsio", "garrytan", "paulg", "bcherny"],
     ["DrJimFan", "saranormous", "EladGil", "benedictevans"],
-    ["alexalbert__", "toaborai"],
+    ["alexalbert__", "toaborai", "GaryMarcus"],
+    ["ProfCalNewport", "mattshumer_"],
 ]
 
 # Brand accounts excluded from From X (use only as reference posts)
@@ -372,12 +404,13 @@ RSS_FEEDS = {
     # Health Tech
     "Healthcare Dive": "https://www.healthcaredive.com/feeds/news/",
     "Fierce Healthcare": "https://www.fiercehealthcare.com/rss/xml",
-    "Modern Healthcare": "https://www.modernhealthcare.com/section/rss",
-    "Becker's Hospital Review": "https://www.beckershospitalreview.com/rss/berkshire-healthcare.rss",
+    "Modern Healthcare": "https://www.modernhealthcare.com/section/rss",  # DEAD (404 since ~Feb 2026) — DDG fallback covers this source
+    "Becker's Hospital Review": "https://www.beckershospitalreview.com/rss/berkshire-healthcare.rss",  # DEAD (404) — DDG fallback covers this source
     "STAT News": "https://www.statnews.com/feed/",
     "KFF Health News": "https://kffhealthnews.org/feed/",
 
     # AI & Tech
+    "Techmeme": "https://www.techmeme.com/feed.xml",
     "The Verge AI": "https://www.theverge.com/rss/ai-artificial-intelligence/index.xml",
     "MIT Technology Review": "https://www.technologyreview.com/feed/",
     "Ars Technica": "https://feeds.arstechnica.com/arstechnica/technology-lab",

@@ -7,6 +7,70 @@ A daily email newsletter for Rohan, SVP of Product at PayZen, designed to delive
 
 ---
 
+## Python Pipeline — Quick Start for New Instance
+
+This briefing runs via an automated Python pipeline, NOT via Claude Code generating it interactively. A Claude Code instance is only needed to make code changes — the daily briefing generation is fully automated.
+
+### Key files
+| File | Purpose |
+|------|---------|
+| `run_pipeline.py` | Main orchestrator — runs Phase 1 → Phase 2 → render → (optionally) send |
+| `data_collector.py` | Phase 1: RSS feeds, DDG news search, Google News RSS, X post search, URL date validation |
+| `phase1_validator.py` | Source tier DB + validation utilities (tier check, GA tally, status ID comparison) |
+| `phase2_generator.py` | Article scoring, categorization, dedup, selection logic |
+| `llm_calls.py` | Haiku/Sonnet wrappers — summaries, So Whats, GA one-liners, Healthcare Academy, AI Agents Lab |
+| `render_briefing.py` | HTML renderer — produces the final email from structured JSON |
+| `send-briefing.py` | CSS-inlining + Gmail SMTP send |
+
+### How to run
+```bash
+# Full pipeline (Phase 1 + Phase 2 + render, no send)
+python run_pipeline.py
+
+# Full pipeline + send email
+python run_pipeline.py --send
+
+# Phase 1 only (free — no LLM calls, ~3 min)
+python run_pipeline.py --collect-only
+
+# Cost estimate before committing to Phase 2
+python run_pipeline.py --estimate-cost
+```
+
+### Cost
+- Phase 1: **$0** (pure Python, no LLM)
+- Phase 2: **~$0.10–0.15/run** (Haiku for summaries, Sonnet for So Whats)
+- Total: well under $0.20/briefing
+
+### Dependencies
+```bash
+pip install anthropic python-dotenv duckduckgo-search requests beautifulsoup4 feedparser premailer
+```
+
+### Environment
+Create a `.env` file in the project directory:
+```
+ANTHROPIC_API_KEY=sk-ant-...
+GMAIL_ADDRESS=your-email@gmail.com
+GMAIL_APP_PASSWORD=xxxx-xxxx-xxxx-xxxx
+BRIEFING_RECIPIENT=recipient@email.com
+```
+
+### Automated schedule
+Windows Task Scheduler — runs Sun–Fri at 5:00 AM (Saturday skipped):
+- **Executable:** `C:\Python314\python.exe`
+- **Arguments:** `"C:\Users\rohan\Desktop\ClaudeCode\morning_briefing\run_pipeline.py" --send`
+- **Working dir:** `C:\Users\rohan\Desktop\ClaudeCode\morning_briefing`
+- Settings: `StartWhenAvailable=true`, `WakeToRun=true`
+
+### Phase 1 output
+Saved to `output/phase1-YYYY-MM-DD.json` — auditable record of all candidates, dates, verdicts. Every briefing can be traced back to its source validation.
+
+### Phase 2 output
+Saved to `output/briefing-YYYY-MM-DD.html` — the final email HTML.
+
+---
+
 ## Rohan's Context (for generating "So What" sections)
 
 ### PayZen — What the company does
@@ -46,6 +110,8 @@ A daily email newsletter for Rohan, SVP of Product at PayZen, designed to delive
 **The briefing must be generated in two phases.** Date verification cannot be a prompt instruction — it must be a code step. LLMs will hallucinate plausible dates if asked to "verify" them during generation.
 
 ### Phase 1: Gather and Validate (CODE — not generation)
+
+> **Already implemented.** Phase 1 runs via `data_collector.py` + `phase1_validator.py`. Run `python run_pipeline.py --collect-only` to execute and inspect `output/phase1-YYYY-MM-DD.json`. The instructions below document the validation rules that the code enforces — useful for auditing output or rebuilding the pipeline.
 
 Write and execute a script that:
 
@@ -456,11 +522,13 @@ The best of AI/tech Twitter from the last 24 hours. This section surfaces high-s
 - **Use specific country/region flag emojis** (🇺🇸 🇬🇧 🇮🇱 🇨🇳 🇮🇳 🇳🇬 etc.) — never use 🌐 as a generic fallback. If a story is truly global, pick the most relevant country.
 - **Minimum geographic spread:** At least 4 distinct regions (e.g., US, Europe, Middle East, Asia, Africa, Latin America). If the day's news only surfaces items from 1–2 regions, the source list isn't broad enough — check BBC World, AP, Reuters, Al Jazeera for international coverage.
 - **Source diversity:** Draw from at least 4 distinct sources. **No more than 3 items from the same outlet.** If Al Jazeera or BBC is producing most of the international coverage, swap 1-2 items for the same story from Reuters, AP, or Guardian.
-- **Source quality tiers for GA:**
-  - **Tier 1 (prefer):** BBC, Reuters, AP, Al Jazeera, NPR, NYT, WSJ, The Guardian
-  - **Tier 2 (acceptable):** Bloomberg, CNBC, Financial Times, Politico, Washington Post, CNN, PBS, ABC News, CBS News, NBC News
-  - **Tier 3 (avoid for GA):** Balkan Insight, Just Security, WORLD, Defense One, Yahoo Sports, UNHCR, Olympics.com, Ukr. Pravda, and similar niche publications, aggregators, or single-topic sources. Only use Tier 3 if they are the sole source for a significant story no major outlet has covered — then actively search for Tier 1/2 coverage before including.
-  - **Local papers (NEVER for GA):** East Bay Times, Mercury News, Patch, Danville SanRamon, and similar local papers are for the Local section only. If a national story (e.g., WaPo layoffs, PayPal earnings) is found via a local paper, find the same story from a Tier 1/Tier 2 source instead.
+- **Source quality tiers for GA (enforced by `phase1_validator.py`):**
+  - **Tier 1 (prefer):** BBC, Reuters, AP / Associated Press, Al Jazeera, NPR, NYT, WSJ, The Guardian, DW/Deutsche Welle, France24
+  - **Tier 2 (acceptable):** Bloomberg, CNBC, Financial Times, Politico, Washington Post, CNN, PBS, ABC News, CBS News, NBC News, Fox News, Fox Business, Euronews, Washington Examiner, The Hill, USA Today, Newsweek, Time, Axios, The Atlantic, The Economist, Fortune, Wired, The Verge, TechCrunch, Techmeme, Yahoo News, MSN, AOL, major regional papers (Seattle Times, Chicago Tribune, LA Times, Boston Globe), major international papers (South China Morning Post, Manila Times, Japan Times, Straits Times, The Hindu, The Independent, Sky News)
+  - **Tier 3 (avoid for GA):** Niche/single-topic publications, advocacy orgs (AARP), academic journals (European Medical Journal), tech trades (SiliconANGLE, MIT Technology Review, Ars Technica, The Information), healthcare trades (Healthcare Dive, Fierce Healthcare, Modern Healthcare, Becker's, STAT News — these are fine for the Health Tech section but not GA). Also: aggregators/PR wires (PR Newswire, GlobeNewsWire, Business Wire). Only use Tier 3 if they are the sole source for a significant story no major outlet has covered.
+  - **Local papers (NEVER for GA):** East Bay Times, Mercury News, Patch, SF Chronicle, KQED, and similar local papers are for the Local section only.
+  - **To check a source's tier:** `python phase1_validator.py tier "Source Name"`
+  - **GA fallback:** If the strict Tier 1/2 pool produces 0 GA candidates (e.g., on heavy DDG rate-limit days), the pipeline automatically widens to Unknown-tier sources, excluding known-bad ones (press releases, advocacy orgs, healthcare/tech trades). A `WARNING` is logged. This prevents the GA section from being silently empty.
 - **Every GA item must have a verified URL.** "Search results" or "multiple sources confirm" is not a URL. If Phase 1 can't produce a real article URL for a GA item, the item is not validated and cannot be included.
 - **Paywalls flagged with 🔒** — same as Tier 1, mark paywalled sources in the meta line
 - **Known paywalled sources (always mark with 🔒):** STAT News, Modern Healthcare, The Information, WSJ, NYT, Financial Times. Bloomberg is sometimes paywalled — check the specific article.
@@ -629,50 +697,47 @@ Phase 1 should search/scrape the following:
 
 ## Automation & Email Delivery
 
-### Schedule
-- **6:00 AM Pacific, daily** via Windows Task Scheduler
-- Run Claude Code with `--dangerously-skip-permissions` for unattended execution
+### Automated daily run
+The pipeline runs via Windows Task Scheduler every Sun–Fri at 5:00 AM Pacific (Saturday skipped — quiet news day).
 
-### Task Scheduler setup
+**Task name:** `MorningBriefing`
+- **Executable:** `C:\Python314\python.exe` (full path — no PATH dependency)
+- **Arguments:** `"C:\Users\rohan\Desktop\ClaudeCode\morning_briefing\run_pipeline.py" --send`
+- **Working directory:** `C:\Users\rohan\Desktop\ClaudeCode\morning_briefing`
+- **Settings:** `StartWhenAvailable=true`, `WakeToRun=true` (wakes machine from sleep)
+
+Note: Machine must be in **sleep** mode (not shut down) for WakeToRun to work.
+
+### Manual Task Scheduler setup (if recreating on new machine)
 1. Open Task Scheduler (`taskschd.msc`)
-2. Click "Create Basic Task"
-3. Name: `Morning Intelligence Briefing`
-4. Trigger: Daily, 6:00 AM
-5. Action: Start a Program
-   - Program: `C:\Users\rohan\Desktop\ClaudeCode\morning_briefing\run-briefing.bat`
+2. Create Task (not Basic Task) — gives access to all settings
+3. **General tab:** Name = `MorningBriefing`, check "Run whether user is logged on or not"
+4. **Triggers tab:** New → Daily, 5:00 AM, recur every 1 day. Repeat on Sun/Mon/Tue/Wed/Thu/Fri only (uncheck Saturday)
+5. **Actions tab:** New → Start a Program
+   - Program: `C:\Python314\python.exe`
+   - Arguments: `"C:\Users\rohan\Desktop\ClaudeCode\morning_briefing\run_pipeline.py" --send`
    - Start in: `C:\Users\rohan\Desktop\ClaudeCode\morning_briefing`
-6. In Properties after creation:
-   - Check "Run whether user is logged on or not"
-   - Check "Wake the computer to run this task" (if laptop sleeps overnight)
-   - Under Conditions, uncheck "Start only if on AC power" (if laptop)
+6. **Conditions tab:** Check "Wake the computer to run this task", uncheck "Start only if on AC power"
+7. **Settings tab:** Check "Run task as soon as possible after a scheduled start is missed"
 
 ### Email delivery (Gmail SMTP)
-
 **One-time setup:**
 1. Go to https://myaccount.google.com/apppasswords
-2. Generate an app password for "Mail" (requires 2FA enabled on the account)
-3. Store credentials in a `.env` file in the project directory:
+2. Generate an app password for "Mail" (requires 2FA enabled)
+3. Store in `.env` file in the project directory:
    ```
    GMAIL_ADDRESS=your-email@gmail.com
    GMAIL_APP_PASSWORD=xxxx-xxxx-xxxx-xxxx
-   BRIEFING_RECIPIENT=your-email@gmail.com
+   BRIEFING_RECIPIENT=recipient@email.com
+   ANTHROPIC_API_KEY=sk-ant-...
    ```
 4. Add `.env` to `.gitignore`
 
-**Send script:** See `send-briefing.py` in the project root. The script:
-- Reads the HTML briefing file
-- Inlines all CSS using `premailer` (required for Gmail desktop rendering — Gmail strips `<style>` tags)
-- Sends via Gmail SMTP with the subject line "Morning Intelligence — [Day, Month Date]"
+**Send script:** `send-briefing.py` — reads the HTML briefing, inlines all CSS with `premailer` (required for Gmail desktop rendering — Gmail strips `<style>` tags), and sends via Gmail SMTP.
+
+**Subject line format:** "Morning Intelligence — [Day, Month Date]"
 
 **Dependencies:** `pip install python-dotenv premailer`
 
-### Claude Code workflow (automated)
-When running unattended, Claude Code should:
-1. Run Phase 1 with self-review checkpoint (scan for >48hr articles, apply all hard gates)
-2. Run Phase 2 to generate the HTML briefing
-3. Save the HTML to `output/briefing-YYYY-MM-DD.html`
-4. Call `send-briefing.py` to email it
-5. Log success/failure
-
 ### Reference files
-- **`morning-briefing-template.html`** — The reference HTML template with exact styling. Use this as the base for generating each day's email. Match the typography, color palette, spacing, and component structure precisely.
+- **`morning-briefing-template.html`** — Reference HTML template with exact styling. Used by `render_briefing.py` as the CSS/design source.

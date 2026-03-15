@@ -11,6 +11,7 @@ try:
 except ImportError:
     HAS_PREMAILER = False
 load_dotenv()
+
 def inline_css(html):
     """Inline CSS styles for Gmail desktop compatibility.
     Gmail strips <style> tags from <head>, so all styles
@@ -25,10 +26,14 @@ def inline_css(html):
         print("Warning: premailer not installed - sending without CSS inlining (desktop may look rough)")
         print("Fix with: pip install premailer")
         return html
-def send_briefing(html_path):
-    recipients_raw = os.getenv("BRIEFING_RECIPIENT")
-    recipients = [r.strip() for r in recipients_raw.split(",")]
-    
+
+def send_briefing(html_path, override_recipients=None):
+    if override_recipients:
+        recipients = [r.strip() for r in override_recipients.split(",")]
+    else:
+        recipients_raw = os.getenv("BRIEFING_RECIPIENT")
+        recipients = [r.strip() for r in recipients_raw.split(",")]
+
     msg = MIMEMultipart("alternative")
     msg["Subject"] = f"Morning Intelligence — {datetime.now().strftime('%A, %B %d').replace(' 0', ' ')}"
     msg["From"] = os.getenv("GMAIL_ADDRESS")
@@ -41,8 +46,15 @@ def send_briefing(html_path):
         server.login(os.getenv("GMAIL_ADDRESS"), os.getenv("GMAIL_APP_PASSWORD"))
         server.sendmail(os.getenv("GMAIL_ADDRESS"), recipients, msg.as_string())
         print(f"Briefing sent to {', '.join(recipients)}")
+
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print("Usage: python send-briefing.py <path-to-briefing.html>")
+        print("Usage: python send-briefing.py <path-to-briefing.html> [--to email@example.com]")
         sys.exit(1)
-    send_briefing(sys.argv[1])
+    html_path = sys.argv[1]
+    override = None
+    if "--to" in sys.argv:
+        to_idx = sys.argv.index("--to")
+        if to_idx + 1 < len(sys.argv):
+            override = sys.argv[to_idx + 1]
+    send_briefing(html_path, override_recipients=override)

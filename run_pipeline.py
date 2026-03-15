@@ -835,6 +835,34 @@ def categorize_validated_articles(valid_articles: list[dict]) -> dict:
             ga_candidates.append(extra)
         ga_candidates.sort(key=lambda x: x.get("_score", 0), reverse=True)
 
+    # ---- GA fallback: if strict pool is empty, widen to Unknown-tier sources ----
+    # Protects against days when DDG only surfaces Tier 3 / Unknown sources.
+    # Excludes known-bad sources (press releases, advocacy orgs, niche trades).
+    if not ga_candidates:
+        _GA_FALLBACK_BLOCKED = {
+            "pr newswire", "prnewswire", "globenewswire", "business wire", "businesswire",
+            "ramaonhealthcare", "military times", "aarp", "european medical journal",
+            "siliconangle", "mit technology review", "ars technica", "the information",
+            "healthcare dive", "fierce healthcare", "modern healthcare",
+            "becker's hospital review", "beckers hospital review",
+            "stat news", "kff health news", "techcrunch ai",
+        }
+        _log("  WARNING: GA pool empty after strict tier filter — widening to Unknown sources")
+        fallback_source_counts: dict[str, int] = {}
+        for article in non_local:
+            if article["url"] in tier1_urls:
+                continue
+            source_lower = article.get("source", "").lower()
+            if any(bad in source_lower for bad in _GA_FALLBACK_BLOCKED):
+                continue
+            source = article.get("source", "Unknown")
+            if fallback_source_counts.get(source, 0) < 3:
+                ga_candidates.append(article)
+                fallback_source_counts[source] = fallback_source_counts.get(source, 0) + 1
+        ga_candidates.sort(key=lambda x: x.get("_score", 0), reverse=True)
+        ga_candidates = ga_candidates[:GA_TARGET]
+        _log(f"  GA fallback: {len(ga_candidates)} articles from widened pool")
+
     # Deduplicate local candidates (same story from multiple local outlets)
     # Uses relaxed thresholds + transit entity matching for local news
     local_candidates = _deduplicate_articles(local_candidates, local=True)

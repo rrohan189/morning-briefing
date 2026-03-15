@@ -1172,6 +1172,27 @@ class DataCollector:
                     return "unverified", result
 
             except requests.RequestException as e:
+                # Fetch failed (403, timeout, etc.) — try search_date fallback before giving up
+                search_date_str = candidate.get("search_date", "")
+                fallback_date = _parse_search_date(search_date_str) if search_date_str else None
+                if fallback_date:
+                    age = compute_age_hours(fallback_date.isoformat(), self.delivery_time)
+                    result = {
+                        "headline": headline, "url": url, "source": source,
+                        "verified_date": format_date_iso(fallback_date),
+                        "verified_date_display": format_date(fallback_date),
+                        "age_hours": age,
+                        "date_method": "search_result_fallback",
+                    }
+                    if age is not None and age <= MAX_AGE_HOURS:
+                        result["verdict"] = "PASS"
+                        return "valid", result
+                    else:
+                        result["verdict"] = "REJECT"
+                        result["rejection_reason"] = (
+                            f"Article is {age} hours old (max {MAX_AGE_HOURS}) [search date fallback]"
+                        )
+                        return "stale", result
                 return "error", {
                     "headline": headline, "url": url, "source": source,
                     "verdict": "REJECT", "error": str(e),

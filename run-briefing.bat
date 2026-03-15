@@ -11,9 +11,8 @@ if %errorlevel% neq 0 (
     exit /b %errorlevel%
 )
 
-REM Get today's date in YYYY-MM-DD format
-for /f "tokens=2 delims==" %%I in ('wmic os get localdatetime /value') do set dt=%%I
-set BRIEFING_DATE=%dt:~0,4%-%dt:~4,2%-%dt:~6,2%
+REM Get today's date in YYYY-MM-DD format (using Python - reliable across all Windows contexts)
+for /f %%I in ('python -c "import datetime; print(datetime.date.today())"') do set BRIEFING_DATE=%%I
 
 REM Send briefing via email (auto-inlines CSS for Gmail)
 python send-briefing.py "output\briefing-%BRIEFING_DATE%.html" >> logs\run.log 2>&1
